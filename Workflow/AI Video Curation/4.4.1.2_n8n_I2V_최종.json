@@ -1,0 +1,1357 @@
+{
+  "name": "4.4.1.2_n8n_I2V_최종",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -3664,
+        -720
+      ],
+      "id": "912f7e53-486d-4f4f-b69a-ebbce91aef46",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "text": "=[목표]\n이 이미지를 기반으로 짧은 어휘 교육 영상 프롬프트를 생성하세요.\n**언어: {{ $('Search records').item.json.Language }} 준수 **\n\n[1단계 — 이미지 분석]\n이미지에서 핵심 중급 어휘 2–3개를 선별하세요.\n우선 선택: 일상생활 고빈도 명사\n제외 항목: 추상 개념, 배경 요소\n\n[2단계 — 영상 구성] 총 10초\n\n- 클립 0 (1–3초): 어휘 1 — 중앙 구도 클로즈업 / 내레이터 낭독\n- 클립 1 (4–6초): 어휘 2 — 중앙 구도 클로즈업 / 내레이터 낭독\n- 클립 2 (7–9초): 어휘 3 — 중앙 구도 클로즈업 / 내레이터 낭독\n- 클립 3 (9–10): 전체 화면\n\n[3단계 — 내레이션]\n- 화면 밖 내레이터만 사용\n- 명확한 표준 발음\n- 어휘 명칭만 낭독 — 문장 및 설명 금지\n- 사물 중앙 구도 클로즈업 동시에 **해당 어휘만** 낭독\n\n[스타일]\n시네마틱 리얼리즘 / 부드러운 자연광 / 깔끔한 단색 배경에 사물 단독 배치\n슬로우 푸시인 / 아웃포커스 / 밝고 차분한 실내 분위기\n\n**[금지 사항]**\n텍스트 · 워터마크 · 로고 · 화면 내 대사 · 입 움직임 일체 금지 · 괴이한 연출 금지",
+        "imageUrls": "={{ $('Search records').item.json['Test Image'][0].url }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -3040,
+        -544
+      ],
+      "id": "9881dcd3-2358-4892-b77f-15a04ada6e82",
+      "name": "Focus_Video image",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appjJvyORgzm2LAqc",
+          "mode": "list",
+          "cachedResultName": "4.4. AI 영상 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblmIrADwNmZ1qLU1",
+          "mode": "list",
+          "cachedResultName": "4.4.2. Image to Video_최종",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc/tblmIrADwNmZ1qLU1"
+        },
+        "filterByFormula": "{Status}='ready'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -3520,
+        -720
+      ],
+      "id": "f3bfab7d-293e-4464-ba64-7a20722e76f6",
+      "name": "Search records",
+      "alwaysOutputData": false,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/bytedance/seedance/v1.5/pro/image-to-video",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json['0'].content[0].text }}"
+            },
+            {
+              "name": "image_url",
+              "value": "={{ $('Search records').item.json['Test Image'][0].url }}"
+            },
+            {
+              "name": "duration",
+              "value": "10"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2880,
+        -544
+      ],
+      "id": "ef8b1231-adf6-47a1-8bf4-6287402e4c23",
+      "name": "seedance_Focus"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "text": "=이미지를 분석하여 한중 언어문화 교육용 영상 프롬프트를 생성하세요.\n\n① 문화 해독\n이미지에서 언어문화 교육에 활용 가능한 핵심 요소를 추출하세요.\n- 장소/공간의 문화적 의미\n- 등장인물의 관계와 사회적 맥락\n- 소품, 복장, 배경에 담긴 문화 코드\n\n② 씬 구성 (3~4개 씬)\n각 씬마다 다음을 포함하세요:\n- 시간대: 0~3s / 3~6s / 6~10s 등\n- 카메라: 풀샷, 미디엄샷, 클로즈업, 패닝 등\n- 조명/색채 기조\n- 피사체 동작 및 표정\n- 짧은 대사 또는 내레이션 \n- 해당 언어 **반드시 {{ $('Search records').item.json.Language }} 사용**\n\n③오디오 설계\n- 환경음 및 배경음악(BGM) 분위기\n- 내레이션 톤 (예: 따뜻한, 차분한, 활기찬)\n- 핵심 학습 어휘 또는 표현 1~2개 삽입\n\nNegative Prompt\n모든 사람이 동시에 입 움직임, 여러 사람이 동시에 말함, \n입모양 동기화 과다, 듣는 사람도 입 움직임, 혼란스러운 립싱크",
+        "imageUrls": "={{ $('Search records').item.json['Test Image'][0].url }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -3024,
+        -736
+      ],
+      "id": "b4c6747d-b610-4c2b-b58b-d26f724ec125",
+      "name": "Ani_Analyze image",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/bytedance/seedance/v1.5/pro/image-to-video",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json['0'].content[0].text }}"
+            },
+            {
+              "name": "image_url",
+              "value": "={{ $('Search records').item.json['Test Image'][0].url }}"
+            },
+            {
+              "name": "duration",
+              "value": "10"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2848,
+        -736
+      ],
+      "id": "a79c1bf8-b1c4-4719-9067-d5553758dc0b",
+      "name": "Ani_seedance"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Type",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -3376,
+        -720
+      ],
+      "id": "2182b73f-aa6c-4f7b-b28f-c1b7f984a5cf",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Type }}",
+                    "rightValue": "Animation",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "ae851b04-ab6d-48c7-8376-4906fb1cfc10"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "a1226b3a-a610-49fc-b094-a4cce93f78af",
+                    "leftValue": "={{ $json.Type }}",
+                    "rightValue": "Focus_Video",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -3232,
+        -720
+      ],
+      "id": "e44b1cd7-6628-463c-967b-a767566894ec",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b9490dc3-05b1-4595-84d8-872a0a763844",
+              "leftValue": "={{ $('Search records').item.json.Language }}",
+              "rightValue": "ko",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -2640,
+        -720
+      ],
+      "id": "60e780c2-bd0b-46e3-b7ac-3adfc7030be0",
+      "name": "If_ko"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b9490dc3-05b1-4595-84d8-872a0a763844",
+              "leftValue": "={{ $('Search records').item.json.Language }}",
+              "rightValue": "ko",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -2592,
+        -224
+      ],
+      "id": "7c0bde5c-a766-4576-9d24-44042bfb679f",
+      "name": "If_ko1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appjJvyORgzm2LAqc",
+          "mode": "list",
+          "cachedResultName": "4.4. AI 영상 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblmIrADwNmZ1qLU1",
+          "mode": "list",
+          "cachedResultName": "4.4.2. Image to Video_최종",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc/tblmIrADwNmZ1qLU1"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Search records').first().json.id }}",
+            "Status": "done",
+            "Ani_Video": "={{ [ { \"url\": $json.video.url } ] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Test Image",
+              "displayName": "Test Image",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Language",
+              "displayName": "Language",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "zh-CN",
+                  "value": "zh-CN"
+                },
+                {
+                  "name": "ko",
+                  "value": "ko"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Type",
+              "displayName": "Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Animation",
+                  "value": "Animation"
+                },
+                {
+                  "name": "Focus_Video",
+                  "value": "Focus_Video"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Ani_Video",
+              "displayName": "Ani_Video",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Focus_Video",
+              "displayName": "Focus_Video",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -2224,
+        -848
+      ],
+      "id": "7be157b4-14f2-4d6d-9c1f-044a385f18ad",
+      "name": "Ko_Ani",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appjJvyORgzm2LAqc",
+          "mode": "list",
+          "cachedResultName": "4.4. AI 영상 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblmIrADwNmZ1qLU1",
+          "mode": "list",
+          "cachedResultName": "4.4.2. Image to Video_최종",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc/tblmIrADwNmZ1qLU1"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Search records').first().json.id }}",
+            "Status": "done",
+            "Ani_Video": "={{ [ { \"url\": $json.video.url } ] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Test Image",
+              "displayName": "Test Image",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Language",
+              "displayName": "Language",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "zh-CN",
+                  "value": "zh-CN"
+                },
+                {
+                  "name": "ko",
+                  "value": "ko"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Type",
+              "displayName": "Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Animation",
+                  "value": "Animation"
+                },
+                {
+                  "name": "Focus_Video",
+                  "value": "Focus_Video"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Ani_Video",
+              "displayName": "Ani_Video",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Focus_Video",
+              "displayName": "Focus_Video",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -2224,
+        -592
+      ],
+      "id": "71741179-fc36-4cb7-a877-de951dfa21a0",
+      "name": "Ch_Ani",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/workflow-utilities/auto-subtitle",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"video_url\": \"{{ $json.video.url }}\",\n  \"language\": \"ko\",\n  \"font_name\": \"Noto Sans KR\",\n  \"font_size\": 100,\n  \"font_weight\": \"bold\",\n  \"font_color\": \"white\",\n  \"highlight_color\": \"purple\",\n  \"stroke_width\": 3,\n  \"stroke_color\": \"black\",\n  \"background_color\": \"none\",\n  \"position\": \"bottom\",\n  \"y_offset\": 75,\n  \"words_per_subtitle\": 5,\n  \"enable_animation\": true\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 120000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2432,
+        -848
+      ],
+      "id": "cefc002c-bedf-4468-850e-2980e1640f77",
+      "name": "KO_Sub_Ani"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/workflow-utilities/auto-subtitle",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"video_url\": \"{{ $json.video.url }}\",\n  \"language\": \"zh-CN\",\n  \"font_name\": \"Noto Sans SC\",\n  \"font_size\": 100,\n  \"font_weight\": \"bold\",\n  \"font_color\": \"white\",\n  \"highlight_color\": \"purple\",\n  \"stroke_width\": 3,\n  \"stroke_color\": \"black\",\n  \"background_color\": \"none\",\n  \"position\": \"bottom\",\n  \"y_offset\": 75,\n  \"words_per_subtitle\": 6,\n  \"enable_animation\": true\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 120000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2432,
+        -592
+      ],
+      "id": "c8673dfb-6f4d-4b95-9552-1c470e3eddc3",
+      "name": "CH_Sub_Ani"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appjJvyORgzm2LAqc",
+          "mode": "list",
+          "cachedResultName": "4.4. AI 영상 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblmIrADwNmZ1qLU1",
+          "mode": "list",
+          "cachedResultName": "4.4.2. Image to Video_최종",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc/tblmIrADwNmZ1qLU1"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Search records').first().json.id }}",
+            "Status": "done",
+            "Focus_Video": "={{ [ { \"url\": $json.video.url } ] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Test Image",
+              "displayName": "Test Image",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Language",
+              "displayName": "Language",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "zh-CN",
+                  "value": "zh-CN"
+                },
+                {
+                  "name": "ko",
+                  "value": "ko"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Type",
+              "displayName": "Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Animation",
+                  "value": "Animation"
+                },
+                {
+                  "name": "Focus_Video",
+                  "value": "Focus_Video"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Ani_Video",
+              "displayName": "Ani_Video",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Focus_Video",
+              "displayName": "Focus_Video",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -2176,
+        -352
+      ],
+      "id": "26262bb5-174a-4f36-8d67-3b19801e046b",
+      "name": "Ko_Focus",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appjJvyORgzm2LAqc",
+          "mode": "list",
+          "cachedResultName": "4.4. AI 영상 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblmIrADwNmZ1qLU1",
+          "mode": "list",
+          "cachedResultName": "4.4.2. Image to Video_최종",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc/tblmIrADwNmZ1qLU1"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Search records').first().json.id }}",
+            "Status": "done",
+            "Focus_Video": "={{ [ { \"url\": $json.video.url } ] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Test Image",
+              "displayName": "Test Image",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Language",
+              "displayName": "Language",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "zh-CN",
+                  "value": "zh-CN"
+                },
+                {
+                  "name": "ko",
+                  "value": "ko"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Type",
+              "displayName": "Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Animation",
+                  "value": "Animation"
+                },
+                {
+                  "name": "Focus_Video",
+                  "value": "Focus_Video"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Ani_Video",
+              "displayName": "Ani_Video",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Focus_Video",
+              "displayName": "Focus_Video",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -2176,
+        -96
+      ],
+      "id": "198be17d-b241-4d46-abb9-9f2129dcf766",
+      "name": "Ch_Focus",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/workflow-utilities/auto-subtitle",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"video_url\": \"{{ $json.video.url }}\",\n  \"language\": \"ko\",\n  \"font_name\": \"Noto Sans KR\",\n  \"font_size\": 100,\n  \"font_weight\": \"bold\",\n  \"font_color\": \"white\",\n  \"highlight_color\": \"purple\",\n  \"stroke_width\": 3,\n  \"stroke_color\": \"black\",\n  \"background_color\": \"none\",\n  \"position\": \"bottom\",\n  \"y_offset\": 75,\n  \"words_per_subtitle\": 5,\n  \"enable_animation\": true\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 120000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2384,
+        -352
+      ],
+      "id": "a21da645-a7dd-40b9-b1bd-adf5a03fc6ae",
+      "name": "KO_Sub_Foc"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/workflow-utilities/auto-subtitle",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"video_url\": \"{{ $json.video.url }}\",\n  \"language\": \"zh-CN\",\n  \"font_name\": \"Noto Sans SC\",\n  \"font_size\": 100,\n  \"font_weight\": \"bold\",\n  \"font_color\": \"white\",\n  \"highlight_color\": \"purple\",\n  \"stroke_width\": 3,\n  \"stroke_color\": \"black\",\n  \"background_color\": \"none\",\n  \"position\": \"bottom\",\n  \"y_offset\": 75,\n  \"words_per_subtitle\": 6,\n  \"enable_animation\": true\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 120000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2384,
+        -96
+      ],
+      "id": "0e9bb40b-0e19-4b70-8dd0-4c450bbf5b85",
+      "name": "CH_Sub_Foc"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Focus_Video image": {
+      "main": [
+        [
+          {
+            "node": "seedance_Focus",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "seedance_Focus": {
+      "main": [
+        [
+          {
+            "node": "If_ko1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ani_Analyze image": {
+      "main": [
+        [
+          {
+            "node": "Ani_seedance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ani_seedance": {
+      "main": [
+        [
+          {
+            "node": "If_ko",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Ani_Analyze image",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Focus_Video image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If_ko": {
+      "main": [
+        [
+          {
+            "node": "KO_Sub_Ani",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "CH_Sub_Ani",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If_ko1": {
+      "main": [
+        [
+          {
+            "node": "KO_Sub_Foc",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "CH_Sub_Foc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KO_Sub_Ani": {
+      "main": [
+        [
+          {
+            "node": "Ko_Ani",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_Sub_Ani": {
+      "main": [
+        [
+          {
+            "node": "Ch_Ani",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KO_Sub_Foc": {
+      "main": [
+        [
+          {
+            "node": "Ko_Focus",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_Sub_Foc": {
+      "main": [
+        [
+          {
+            "node": "Ch_Focus",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c645ffaf-fe9b-495c-a428-a3e647835f63",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "324b20db7bd7622c84e52c3bee689ffea3754ee2e9d9027179fea14d6a4cb1d7"
+  },
+  "id": "UBoSVMB08pdQCBst",
+  "tags": []
+}

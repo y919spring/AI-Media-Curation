@@ -1,0 +1,1313 @@
+{
+  "name": "4.4.1.4_n8n_V2V_최종",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -3936,
+        -544
+      ],
+      "id": "c1ebc0ba-7909-4ae3-b9df-26831d648a02",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c45a1c47-9a93-42cb-a065-8493938941b6",
+              "name": "=Video_ID",
+              "value": "={{ $('Search records').item.json['Video_url'].match(/(?:v=|shorts\\/|youtu\\.be\\/)([a-zA-Z0-9_-]{11})/)[1] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3632,
+        -544
+      ],
+      "id": "0c355d72-b542-4d59-814c-79e4c1b7cf25",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/elevenlabs/sound-effects/v2",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "={{ $json.text }}"
+            },
+            {
+              "name": "duration_seconds",
+              "value": "5"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2976,
+        128
+      ],
+      "id": "7e78043f-50b6-4e9e-ac3b-cc5a684a3b29",
+      "name": "11labs_sound"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/minimax/speech-2.6-turbo",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json.output[0].content[0].text }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2864,
+        -544
+      ],
+      "id": "1fd915c6-eb80-4ef8-a9ea-70f1e72d60c9",
+      "name": "Minimax_narration"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-nano"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -3392,
+        -96
+      ],
+      "id": "53ebc056-b2a3-4a94-b828-cc53b9f2eb06",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "numberOfItems": 5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserItemList",
+      "typeVersion": 1,
+      "position": [
+        -3200,
+        -96
+      ],
+      "id": "65c98044-5034-41bc-95b1-dce98d859bf7",
+      "name": "Item List Output Parser"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=아래 스크립트를 기반으로 시각적으로 강렬하고 교육적 흥미를 유발하는 장면 프롬프트 5개를 생성하세요.\n\n요구사항:\n감각적이고 동작 중심의 묘사 사용 (정적인 장면보다 움직임과 변화 강조)\n스크립트 흐름에 따라 논리적 순서로 전개\n평범한 일상보다 독창적이고 시각적으로 강렬한 장면 구성\ncinematic shot, dynamic angle, dramatic lighting 등 영상미 키워드 포함\n각 프롬프트는 영어로 작성하며 100단어 이내로 구체적으로 서술\n9:16 형식 추출\n큰따옴표(\"\") 사용 금지\n\n스크립트:\n{{ $('Narration text').item.json.output[0].content[0].text }}",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -3344,
+        -240
+      ],
+      "id": "4423b2a3-59df-4a67-970b-acf7bbae706c",
+      "name": "img_prompt"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-nano"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -3408,
+        288
+      ],
+      "id": "a04007da-af7a-4ef2-bd42-2e5352901c8c",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=아래 이미지 프롬프트에 어울리는 효과음 프롬프트를 생성하세요.\n\n요구사항:\n1.결과물은 영어로 작성하며 5~10단어로 간결하게 서술\n2.큰따옴표(\"\") 사용 금지\n3.사람의 목소리, 말소리, 보컬이 연상되는 표현 절대 금지\n4.주변 환경음, 자연음, 기계음 등 비음성 사운드 중심으로 작성\n5.plain text만 허용, 별도 포맷이나 구두점 사용 금지\n\n예시:\nA howling desert wind sweeping across the dunes\n\n이미지 프롬프트:\n{{ $('img_prompt').all()[$itemIndex].json.text }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -3392,
+        128
+      ],
+      "id": "ab758c60-b916-4c69-a196-e91ae530a06e",
+      "name": "sound_prompt"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/bytedance/seedance/v1/lite/image-to-video",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $('img_prompt').item.json.text }}"
+            },
+            {
+              "name": "image_url",
+              "value": "={{ $json.images[0].url }}"
+            },
+            {
+              "name": "duration_seconds",
+              "value": "5"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 120000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2752,
+        -224
+      ],
+      "id": "30187b21-2406-489e-b32b-f5260976fbc2",
+      "name": "seedance_vid"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -2320,
+        -224
+      ],
+      "id": "bf1e4564-10d2-451c-a0d0-0b1c6fc0877a",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -2176,
+        -208
+      ],
+      "id": "77704289-d828-4364-af30-920ee33f94e7",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n\"scene1\": \"{{ $json[\"\"][1].video.url }}\",\n\"scene2\": \"{{ $json[\"\"][2].video.url }}\",\n\"scene3\": \"{{ $json[\"\"][3].video.url }}\",\n\"scene4\": \"{{ $json[\"\"][4].video.url }}\",\n\"scene5\": \"{{ $json[\"\"][5].video.url }}\",\n\"sound1\": \"{{ $json[\"\"][6].audio.url }}\",\n\"sound2\": \"{{ $json[\"\"][7].audio.url }}\",\n\"sound3\": \"{{ $json[\"\"][8].audio.url }}\",\n\"sound4\": \"{{ $json[\"\"][9].audio.url }}\",\n\"sound5\": \"{{ $json[\"\"][10].audio.url }}\",\n\"narration\": \"{{ $json[\"\"][0].audio.url }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2016,
+        -208
+      ],
+      "id": "d8665cd5-0f26-4200-8572-9a3c55425329",
+      "name": "Combine URLs"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "={{ $json.candidates[0].content.parts[0].text }}\n영상 자막 전사 파일 내용을 분석하고, 이에 관련된 15초 가량의 문화 배경 내레이션을 만든다. \n\n예시:\n- 자막 테스트가 한국어인 경우:\n병원: 한국병원\n한국의 병원 시스템은 공공의료와 민간의료가 함께 운영되는 구조로, 의료 접근성이 높고 진료가 빠른 것이 특징입니다.\n의료기관은 규모에 따라 의원, 병원, 종합병원, 그리고 상급종합병원으로 구분됩니다. \n최근에는 모바일 예약, 전자 의무기록, 무인 수납기 등 디지털 의료 시스템이 도입되어 더욱 편리한 진료 환경을 제공하고 있습니다.\n이처럼 한국의 병원은 효율적이고 체계적인 의료 서비스를 제공하는 의료 시스템으로 평가받고 있습니다.\n\n- 자막 테스트가 중국어인 경우:\n中国的医疗制度主要由医疗服务体系和医疗保障体系两部分组成。\n在医疗保障方面，中国建立了以基本医疗保险为主体的制度。同时，还配套大病保险和医疗救助制度，用于减轻高额医疗费用带来的负担。\n近年来，中国也在推进分级诊疗以及数字化医疗服务，以提高医疗资源利用效率和医疗服务水平。\n总体来看，中国医疗制度的特点是覆盖范围广、层级分明，并不断向更加公平和高效的方向发展。"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -3184,
+        -544
+      ],
+      "id": "861e0258-2612-4c03-a271-3182ec1a981a",
+      "name": "Narration text",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $('Combine URLs').item.json;\n\nreturn [\n  { json: { video_url: data.scene1, audio_url: data.sound1 } },\n  { json: { video_url: data.scene2, audio_url: data.sound2 } },\n  { json: { video_url: data.scene3, audio_url: data.sound3 } },\n  { json: { video_url: data.scene4, audio_url: data.sound4 } },\n  { json: { video_url: data.scene5, audio_url: data.sound5 } }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1856,
+        -208
+      ],
+      "id": "0733dae5-2013-42a9-9112-fc46af026066",
+      "name": "LOOP"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -1968,
+        64
+      ],
+      "id": "3549205d-9cb8-4f1d-966a-d67543d41593",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/ffmpeg-api/merge-audio-video",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"video_url\": \"{{ $json.video_url }}\",\n  \"audio_url\": \"{{ $json.audio_url }}\"\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 120000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2160,
+        64
+      ],
+      "id": "338d2f11-8c40-46b2-8e7e-1d8797b77885",
+      "name": "ffmpeg_A&V"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/ffmpeg-api/merge-videos",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"video_urls\": [\n    \"{{ $json.data[0].video.url }}\",\n    \"{{ $json.data[1].video.url }}\",\n    \"{{ $json.data[2].video.url }}\",\n    \"{{ $json.data[3].video.url }}\",\n    \"{{ $json.data[4].video.url }}\"\n  ]\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 120000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -1808,
+        64
+      ],
+      "id": "0e2903bc-536b-4daa-b906-a611d71330fe",
+      "name": "ffmpeg_V&V"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/ffmpeg-api/merge-audio-video",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"video_url\": \"{{ $json.video.url }}\",\n  \"audio_url\": \"{{ $('Combine URLs').first().json.narration }}\"\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 120000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -1632,
+        64
+      ],
+      "id": "6e305d6b-1ab0-46e0-ad26-99d6c87be5f0",
+      "name": "ffmpeg_A&V1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b9490dc3-05b1-4595-84d8-872a0a763844",
+              "leftValue": "={{ $('Search records').item.json.Language }}",
+              "rightValue": "KO",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1424,
+        64
+      ],
+      "id": "31fa3340-3c0a-4238-9f33-8808c4cc4461",
+      "name": "If_ko"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/workflow-utilities/auto-subtitle",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"video_url\": \"{{ $json.video.url }}\",\n  \"language\": \"ko\",\n  \"font_name\": \"Noto Sans KR\",\n  \"font_size\": 100,\n  \"font_weight\": \"bold\",\n  \"font_color\": \"white\",\n  \"highlight_color\": \"purple\",\n  \"stroke_width\": 3,\n  \"stroke_color\": \"black\",\n  \"background_color\": \"none\",\n  \"position\": \"bottom\",\n  \"y_offset\": 75,\n  \"words_per_subtitle\": 5,\n  \"enable_animation\": true\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 120000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -1216,
+        -64
+      ],
+      "id": "63f87ee9-2791-4768-858d-13ff53fd570d",
+      "name": "KO_Subtitle"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/workflow-utilities/auto-subtitle",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"video_url\": \"{{ $json.video.url }}\",\n  \"language\": \"zh-CN\",\n  \"font_name\": \"Noto Sans SC\",\n  \"font_size\": 100,\n  \"font_weight\": \"bold\",\n  \"font_color\": \"white\",\n  \"highlight_color\": \"purple\",\n  \"stroke_width\": 3,\n  \"stroke_color\": \"black\",\n  \"background_color\": \"none\",\n  \"position\": \"bottom\",\n  \"y_offset\": 75,\n  \"words_per_subtitle\": 6,\n  \"enable_animation\": true\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 120000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -1216,
+        192
+      ],
+      "id": "95924393-8051-4990-b20e-ef123553fce9",
+      "name": "CH_Subtitle"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appjJvyORgzm2LAqc",
+          "mode": "list",
+          "cachedResultName": "4.4. AI 영상 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl0XYZWZXA96sHrt",
+          "mode": "list",
+          "cachedResultName": "4.4.4. Video to Video",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc/tbl0XYZWZXA96sHrt"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Search records').first().json.id }}",
+            "Status": "done",
+            "Shot form_video": "={{[{ \"url\": $node[\"KO_Subtitle\"].json.video.url }]}}",
+            "Shot form_text": "={{ $('Narration text').item.json.output[0].content[0].text }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Video_url",
+              "displayName": "Video_url",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Language",
+              "displayName": "Language",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Zh",
+                  "value": "Zh"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Shot form_video",
+              "displayName": "Shot form_video",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Shot form_text",
+              "displayName": "Shot form_text",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -1008,
+        -64
+      ],
+      "id": "4c1f4d44-1b02-46bb-a0c0-fd318fd4d459",
+      "name": "Ko_Shorts",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appjJvyORgzm2LAqc",
+          "mode": "list",
+          "cachedResultName": "4.4. AI 영상 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl0XYZWZXA96sHrt",
+          "mode": "list",
+          "cachedResultName": "4.4.4. Video to Video",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc/tbl0XYZWZXA96sHrt"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Search records').first().json.id }}",
+            "Status": "done",
+            "Shot form_video": "={{[{ \"url\": $node[\"CH_Subtitle\"].json.video.url }]}}",
+            "Shot form_text": "={{ $('Narration text').item.json.output[0].content[0].text }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Video_url",
+              "displayName": "Video_url",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Language",
+              "displayName": "Language",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Zh",
+                  "value": "Zh"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Shot form_video",
+              "displayName": "Shot form_video",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Shot form_text",
+              "displayName": "Shot form_text",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -1008,
+        192
+      ],
+      "id": "90f96153-9da0-4848-a78b-bd3ed115e8a1",
+      "name": "Ch_Shorts",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "AIzaSyDjkkwbI8JpyLrjZ0fbAB3fusNdCjquFAI"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={   \"contents\": [     {       \"parts\": [         {           \"fileData\": {             \"fileUri\": \"{{ $('Search records').item.json.Video_url }}\",              \"mimeType\": \"video/*\"           }         },         {           \"text\": \"请用视频语言准确完整地转录音频。格式 : - 文本。请保持原始语言，不要翻译成其他语言。如果视频语言是中文，输出必须使用简体中文，可以慢些，务必转录到视频最后，不得省略。\"         }       ]     }   ] }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3408,
+        -544
+      ],
+      "id": "ec484a56-8dff-4255-95a9-19e1cbcda4d8",
+      "name": "Gemini API subtitle"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appjJvyORgzm2LAqc",
+          "mode": "list",
+          "cachedResultName": "4.4. AI 영상 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl0XYZWZXA96sHrt",
+          "mode": "list",
+          "cachedResultName": "4.4.4. Video to Video",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc/tbl0XYZWZXA96sHrt"
+        },
+        "filterByFormula": "{Status}='ready'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -3792,
+        -544
+      ],
+      "id": "a21bc2f1-2c6f-4ccb-b503-f9d0c823da07",
+      "name": "Search records",
+      "alwaysOutputData": false,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/bytedance/seedream/v4.5/text-to-image",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json.text }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2992,
+        -240
+      ],
+      "id": "20e9b40c-45c1-4556-bab0-ea6bc51f60d7",
+      "name": "Seedream_IMG"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Gemini API subtitle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Minimax_narration": {
+      "main": [
+        [
+          {
+            "node": "img_prompt",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "img_prompt",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item List Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "img_prompt",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "img_prompt": {
+      "main": [
+        [
+          {
+            "node": "Seedream_IMG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "sound_prompt",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sound_prompt": {
+      "main": [
+        [
+          {
+            "node": "11labs_sound",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "seedance_vid": {
+      "main": [
+        [
+          {
+            "node": "sound_prompt",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "11labs_sound": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Combine URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine URLs": {
+      "main": [
+        [
+          {
+            "node": "LOOP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Narration text": {
+      "main": [
+        [
+          {
+            "node": "Minimax_narration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LOOP": {
+      "main": [
+        [
+          {
+            "node": "ffmpeg_A&V",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "ffmpeg_V&V",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ffmpeg_A&V": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ffmpeg_V&V": {
+      "main": [
+        [
+          {
+            "node": "ffmpeg_A&V1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ffmpeg_A&V1": {
+      "main": [
+        [
+          {
+            "node": "If_ko",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If_ko": {
+      "main": [
+        [
+          {
+            "node": "KO_Subtitle",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "CH_Subtitle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KO_Subtitle": {
+      "main": [
+        [
+          {
+            "node": "Ko_Shorts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_Subtitle": {
+      "main": [
+        [
+          {
+            "node": "Ch_Shorts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini API subtitle": {
+      "main": [
+        [
+          {
+            "node": "Narration text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seedream_IMG": {
+      "main": [
+        [
+          {
+            "node": "seedance_vid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "9f3c518f-9fc6-4e61-8ac9-ae4e25564856",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "324b20db7bd7622c84e52c3bee689ffea3754ee2e9d9027179fea14d6a4cb1d7"
+  },
+  "id": "gwHVKXeP0mVkbEnx",
+  "tags": []
+}

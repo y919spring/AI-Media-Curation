@@ -1,0 +1,981 @@
+{
+  "name": "4.4.1.3_n8n_A2V_최종",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -4016,
+        -512
+      ],
+      "id": "595c1a19-03e3-4aa8-a601-847298c0af1c",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Search records').item.json.Type }}",
+                    "rightValue": "Dialogue",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "ae851b04-ab6d-48c7-8376-4906fb1cfc10"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "a1226b3a-a610-49fc-b094-a4cce93f78af",
+                    "leftValue": "={{ $('Search records').item.json.Type }}",
+                    "rightValue": "Short sentences",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -3568,
+        -576
+      ],
+      "id": "1824832f-2150-491d-9f80-db903545d271",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "text": "- \"너는 고성능 오디오 분석 전문가다. 첨부된 HSK/TOPIK 오디오를 듣고 다음 규칙에 따라 전사하라.\n1. **화자 구별:** 목소리의 톤과 성별을 분석하여 '남:' 그리고 '여:'로 구분하여 대화 형식으로 작성하라. 한 명만 말하는 경우 '남','녀'를 표시하지 않음\n2. **언어:** 오디오가 중국어면 **중국어 간체(简体中文)**로, 한국어면 **표준 한국어**로 작성하라.\n3. **정확도:** 초급 수준의 단어와 문장 부호를 정확히 사용하라.\n4. **출력 형식:** 인사말이나 부연 설명 없이 아래 예시와 같은 형식으로만 출력하라.\n5. 같은 화자 두 번 연속 나오는 경우, 하나로 합침\n(예시)\n남: 안녕하세요.\n여: 네, 반갑습니다.\n男：你好。\n女：你好。\n한 명만 말하는 경우 '남','녀'를 표시하지 않음\n5. **제약**: 중국어면 반드시 简体로 출력해줘 \"",
+        "audioUrls": "={{ $json.Audio[0].url }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -3712,
+        -656
+      ],
+      "id": "dddf03c7-fb45-4d54-8b40-8c389943dbb0",
+      "name": "Analyze audio",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "cZlsETbdSpajXEar",
+          "name": "Gemini_학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appjJvyORgzm2LAqc",
+          "mode": "list",
+          "cachedResultName": "4.4. AI 영상 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl7Y5PlaLn9pG67T",
+          "mode": "list",
+          "cachedResultName": "4.4.3. Audio to Video",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc/tbl7Y5PlaLn9pG67T"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Search records').item.json.id }}",
+            "Status": "done",
+            "Dialogue": "=[{ \"url\": \"{{ $json.webContentLink }}\" }]",
+            "Source": "={{ $('Analyze audio').item.json.content.parts[0].text }}",
+            "Thumbnail": "={{[{\"url\": $node[\"Dia_Nano_IMG\"].json.images[0].url}] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Audio",
+              "displayName": "Audio",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Language",
+              "displayName": "Language",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Zh",
+                  "value": "Zh"
+                },
+                {
+                  "name": "Ko",
+                  "value": "Ko"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Type",
+              "displayName": "Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Dialogue",
+                  "value": "Dialogue"
+                },
+                {
+                  "name": "Short sentences",
+                  "value": "Short sentences"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Dialogue",
+              "displayName": "Dialogue",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Short sentences",
+              "displayName": "Short sentences",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Thumbnail",
+              "displayName": "Thumbnail",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -2400,
+        -656
+      ],
+      "id": "d070480a-bdaa-4b92-bebf-68a7bf455641",
+      "name": "Dia_video",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=아래는 한국어 또는 중국어 듣기 문항의 전사 스크립트이다.\n스크립트를 분석하여 영상 중심 이미지 생성에 필요한 요소를 추출하라.\n\n## 분석 전 필독 지침\n- 스크립트에 명시된 화자 태그(남: / 여: / 男: / 女: / 아나운서 등)를 최우선 근거로 삼는다.\n- 태그가 없을 경우, 호칭(언니, 오빠, 선생님 등) · 종결어미 · 직함 · 대화 맥락으로 성별과 역할을 추정한다.\n- 추정 근거가 불충분하면 \"불명확\"으로 표기하고 추정 근거를 병기한다.\n- 역할은 반드시 대화 내 기능적 역할(질문자/응답자, 요청자/처리자 등)과\n  사회적 역할(고객/직원, 학생/교사 등)을 분리하여 기술한다.\n\n## 추출 항목:\n\n1. **장소(Location)**\n   대화가 이루어지는 공간 (예: 카페, 병원, 회사, 거리 등)\n\n2. **인물(Characters)** ← 강화 항목\n   각 화자별로 아래 4가지를 개별 행으로 작성한다.\n   - 화자 ID    : 스크립트 내 태그 또는 순서 번호 (예: 화자A / 남1 / 아나운서)\n   - 성별       : 남성 / 여성 / 불명확 + [판단 근거: 태그 명시 | 호칭 | 어미 | 맥락 추정]\n   - 사회적 역할: 대화 상황에서의 신분 (예: 고객, 직원, 의사, 환자, 교사, 학생)\n   - 기능적 역할: 대화 흐름 내 역할 (예: 질문자, 응답자, 요청자, 안내자, 불만 제기자)\n\n3. **감정/분위기(Mood)**\n   전체적인 분위기 (예: 친근함, 긴장, 당황, 진지함 등)\n\n4. **장면(Scene Flow)**\n   스크립트의 중심 장면 구성\n\n5. **국가 문화**\n   {{ $('Search records').item.json.Language }}\n\n스크립트:\n{{ $json.content.parts[0].text }}\n",
+        "messages": {
+          "messageValues": []
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -3392,
+        -656
+      ],
+      "id": "e68c4593-8a45-4a2c-87de-75887f1cfd3c",
+      "name": "img_prompt"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-nano"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -3392,
+        -784
+      ],
+      "id": "32fb191d-6ce1-4b9b-b46c-03e213feb82e",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "=AI_박사학위논문_영상_{{ $now.format('YYYYMMDD_HHmmss') }}.mp4",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1x77u-OtyTvkEyUfW6d9gZ0dYQLFGd5pH",
+          "mode": "list",
+          "cachedResultName": "AI 영상 큐레이션",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1x77u-OtyTvkEyUfW6d9gZ0dYQLFGd5pH"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2544,
+        -656
+      ],
+      "id": "3cbae3d6-d834-4872-8f7d-ccefd35078e3",
+      "name": "Upload file",
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "RZzgO1tsXnGmdQyD",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "modelId": {
+          "__rl": true,
+          "value": "sora-2-pro",
+          "mode": "list",
+          "cachedResultName": "SORA-2-PRO"
+        },
+        "prompt": "=주어진 이미지를 **정확히 그대로** 유지하면서 자연스럽게 애니메이션화 해주세요.\n\n**이미지 Reference (강력 준수):**\n- 이미지에 있는 **남성 캐릭터**와 **여성 캐릭터**의 외모, 의상, 위치, 표정을 첫 프레임부터 완벽하게 유지해주세요.\n\n**대사 (정확히 그대로 사용):**\n{{ $('Analyze audio').item.json.content.parts[0].text }}\n\n**연출 지시:**\n부드럽고 cinematic한 카메라 움직임으로 자연스럽게 움직이게 해주세요. 과도한 카메라 흔들림이나 장면 변화 없이, 주어진 이미지의 본질을 유지하면서 생동감 있게 만들어주세요.",
+        "seconds": 8,
+        "options": {
+          "binaryPropertyNameReference": "data"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -2688,
+        -656
+      ],
+      "id": "bef503f0-4db0-4bec-b897-ab6b0924e555",
+      "name": "Dia_Generate a video",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/nano-banana-2",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json.text }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -3120,
+        -656
+      ],
+      "id": "2b553966-55f1-4694-aad6-47e056bb3d62",
+      "name": "Dia_Nano_IMG"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=아래 내레이션 스크립트를 바탕으로 영상을 생성하세요.\n\n요구사항:\n1. 영상에 텍스트, 문자 절대 금지\n2. 내레이션의 언어(Zh면 简体中文; Ko면 한국어)만 출력\n3. 내레이션은 \"내레이션 스크립트{{ $json.content.parts[0].text }}\"를 바탕으로 한 마디만 논리적으로 요약\n4.영상 길이: 10~12초\n\n내레이션 스크립트:\n{{ $json.content.parts[0].text }}\n\n내레이션 언어:\n{{ $('Search records').item.json.Language }}\n\nNegative Prompt  필수 포함: no text, no subtitles, no logo, no watermark, no graphic overlays, no UI elements"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -3408,
+        -464
+      ],
+      "id": "ffac1871-2751-423c-9b89-f280633556be",
+      "name": "nar_video_prompt",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appjJvyORgzm2LAqc",
+          "mode": "list",
+          "cachedResultName": "4.4. AI 영상 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl7Y5PlaLn9pG67T",
+          "mode": "list",
+          "cachedResultName": "4.4.3. Audio to Video",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc/tbl7Y5PlaLn9pG67T"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Search records').item.json.id }}",
+            "Status": "done",
+            "Short sentences": "={{ [{ \"url\": $node[\"Kling_Narra\"].json.video.url }] }}",
+            "Source": "={{ $('Analyze audio').item.json.content.parts[0].text }}",
+            "Thumbnail": "={{ [{\"url\": $node[\"Cloudnary_video\"].json.secure_url.replace('/upload/', '/upload/so_2/').replace('.mp4', '.jpg') }] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Audio",
+              "displayName": "Audio",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Language",
+              "displayName": "Language",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Zh",
+                  "value": "Zh"
+                },
+                {
+                  "name": "Ko",
+                  "value": "Ko"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Type",
+              "displayName": "Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Dialogue",
+                  "value": "Dialogue"
+                },
+                {
+                  "name": "Short sentences",
+                  "value": "Short sentences"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Dialogue",
+              "displayName": "Dialogue",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Short sentences",
+              "displayName": "Short sentences",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Thumbnail",
+              "displayName": "Thumbnail",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -2816,
+        -464
+      ],
+      "id": "09b6a309-f1ce-4f82-8cef-e57431a89f47",
+      "name": "Narra_video",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appjJvyORgzm2LAqc",
+          "mode": "list",
+          "cachedResultName": "4.4. AI 영상 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl7Y5PlaLn9pG67T",
+          "mode": "list",
+          "cachedResultName": "4.4.3. Audio to Video",
+          "cachedResultUrl": "https://airtable.com/appjJvyORgzm2LAqc/tbl7Y5PlaLn9pG67T"
+        },
+        "filterByFormula": "{Status}='ready'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -3856,
+        -576
+      ],
+      "id": "edbb8886-db9d-4dcd-8fef-59b172b58b16",
+      "name": "Search records",
+      "alwaysOutputData": false,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/kling-video/v3/pro/text-to-video",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json.output[0].content[0].text }}"
+            },
+            {
+              "name": "duration",
+              "value": "10"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -3120,
+        -464
+      ],
+      "id": "c9ffa63b-857d-4d44-b6e4-cffccb1557eb",
+      "name": "Kling_Narra"
+    },
+    {
+      "parameters": {
+        "operation": "resize",
+        "width": 1280,
+        "height": 720,
+        "resizeOption": "ignoreAspectRatio",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        -2832,
+        -656
+      ],
+      "id": "38f5306c-b97c-435c-b917-3830f06a664a",
+      "name": "Edit Image"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Dia_Nano_IMG').item.json.images[0].url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -2976,
+        -656
+      ],
+      "id": "2966eea6-3d75-4cb7-a079-0af6fbea261d",
+      "name": "Get_Image"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.cloudinary.com/v1_1/dk7gzkbvz/video/upload",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "cloudinaryApi",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "file",
+              "value": "={{ $json.video.url }}"
+            },
+            {
+              "name": "upload_preset",
+              "value": "n8n_a2v_video"
+            },
+            {
+              "name": "resource_type",
+              "value": "video"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -2960,
+        -464
+      ],
+      "id": "2e8e1b6a-0972-4633-a2fa-c45efb258f06",
+      "name": "Cloudnary_video",
+      "credentials": {
+        "cloudinaryApi": {
+          "id": "ge7i5s7xcEoREHPX",
+          "name": "Cloudinary account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "img_prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "nar_video_prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze audio": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "img_prompt",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "img_prompt": {
+      "main": [
+        [
+          {
+            "node": "Dia_Nano_IMG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload file": {
+      "main": [
+        [
+          {
+            "node": "Dia_video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dia_Generate a video": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dia_Nano_IMG": {
+      "main": [
+        [
+          {
+            "node": "Get_Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "nar_video_prompt": {
+      "main": [
+        [
+          {
+            "node": "Kling_Narra",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "Analyze audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kling_Narra": {
+      "main": [
+        [
+          {
+            "node": "Cloudnary_video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Image": {
+      "main": [
+        [
+          {
+            "node": "Dia_Generate a video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_Image": {
+      "main": [
+        [
+          {
+            "node": "Edit Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloudnary_video": {
+      "main": [
+        [
+          {
+            "node": "Narra_video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "7169eeb1-8dee-4950-8f3a-aff7d10e976a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "324b20db7bd7622c84e52c3bee689ffea3754ee2e9d9027179fea14d6a4cb1d7"
+  },
+  "id": "ysmarHeR0L10dcLE",
+  "tags": []
+}
