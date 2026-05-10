@@ -1,0 +1,2107 @@
+{
+  "name": "2.4.1.4_n8n_V2I_최종",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -736,
+        -864
+      ],
+      "id": "2413541e-7d54-4cb3-a9e7-21381fac2836",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "app1Af4d3ZuAZ1Zwp",
+          "mode": "list",
+          "cachedResultName": "AI 이미지 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblReMOhajNEkQyZN",
+          "mode": "list",
+          "cachedResultName": "2.4.4. Video to Image_최종",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp/tblReMOhajNEkQyZN"
+        },
+        "filterByFormula": "{Status}='ready'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -592,
+        -864
+      ],
+      "id": "dc6c1316-d134-4fe9-aa82-0e4b5f498933",
+      "name": "Search records",
+      "alwaysOutputData": false,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "AIzaSyDjkkwbI8JpyLrjZ0fbAB3fusNdCjquFAI"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={   \"contents\": [     {       \"parts\": [         {           \"fileData\": {             \"fileUri\": \"{{ $('Search records').item.json['YouTube URL'] }}\",              \"mimeType\": \"video/*\"           }         },         {           \"text\": \"请用视频语言准确完整地转录音频。格式 : - 文本。请保持原始语言，不要翻译成其他语言。如果视频语言是中文，输出必须使用简体中文，可以慢些，务必转录到视频最后，不得省略。\"         }       ]     }   ] }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -352,
+        -880
+      ],
+      "id": "18bef6ae-7de7-43bb-904a-b886b526027c",
+      "name": "Gemini API 자막 추출"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['Image Type'] }}",
+                    "rightValue": "Thumbnail",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "f47d7403-6e93-447d-97bc-fa136f87cdcc"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "58aec875-d0df-4dc1-b716-9617f88ec5a0",
+                    "leftValue": "={{ $json['Image Type'] }}",
+                    "rightValue": "Comic",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "0aa2ed47-7a9a-4f01-9709-4fa90d813af6",
+                    "leftValue": "={{ $json['Image Type'] }}",
+                    "rightValue": "Mindmap",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        32,
+        -848
+      ],
+      "id": "8f716644-2d18-4c3a-8fd3-1b102e5fb0aa",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c45a1c47-9a93-42cb-a065-8493938941b6",
+              "name": "=Video_ID",
+              "value": "={{ $('Search records').item.json['YouTube URL'].match(/(?:v=|shorts\\/|youtu\\.be\\/)([a-zA-Z0-9_-]{11})/)[1] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -448,
+        -752
+      ],
+      "id": "0b62da0b-96e8-4c16-8254-3ce1d95d4154",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5.2",
+          "mode": "list",
+          "cachedResultName": "GPT-5.2"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=【썸네일】\n\n자막 파일을 분석하여, 아래 조건을 모두 충족하는 영상 썸네일 생성 프롬프트를 추출해줘.\n\n[썸네일 구성 요소]\n장면 이미지 — 영상의 핵심 주제를 시각적으로 표현하는 배경 또는 장면\n텍스트 요소 — 영상 제목과 주요 어휘 3개를 텍스트 및 이모지 형태로 이미지 내에 삽입\n학습 수준 표시 — 해당 콘텐츠의 난이도(학습 단계)를 이미지 내에 시각적으로 표기\n\n[언어 조건]\n프롬프트 언어 — 이미지 생성 프롬프트는 입력 파일의 언어(소스 언어)를 따라 작성\n각 항목이 프롬프트에 명확히 반영되도록 구조화하여 출력해줘.\n\n[자막 파일]\n {{ $('Gemini API 자막 추출').item.json.candidates[0].content.parts[0].text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        304,
+        -1200
+      ],
+      "id": "aa006ae9-0e35-43fa-a96d-5f53de581a3c",
+      "name": "  썸네일 프롬프트",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5.2",
+          "mode": "list",
+          "cachedResultName": "GPT-5.2"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=자막 파일을 분석하여, 아래 조건을 모두 충족하는 9칸 만화 이미지 생성 프롬프트를 추출해줘.\n[이미지 구성 요소]\n1.캐릭터 일치성 — 썸네일과 동일한 캐릭터를 9개 패널 전체에 일관되게 유지\n2.패널 서사 — 영상의 시간적 흐름을 패널 1→9 순서로 반영한 장면 구성\n3.대화문 삽입 — 각 패널에 해당 소스 언어의 대화문을 말풍선 형태로 삽입\n4.나레이션 박스 — 꼬리 없는 직사각형 나레이션 박스를 각 패널 최하단에 배치\n5.문화적 배경 — 영상의 문화적 맥락(중국/한국)에 맞는 배경을 시각적으로 정확히 재현\n6.학습 수준 표시 — 난이도(초급/중급/고급 등)를 이미지 내에 시각적으로 표기\n[언어 조건]\n7. 프롬프트 언어 — 입력 파일의 소스 언어를 따라 작성\n각 항목이 프롬프트에 명확히 반영되도록 구조화하여 출력해줘.\n[자막 파일]\n {{ $('Gemini API 자막 추출').item.json.candidates[0].content.parts[0].text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        288,
+        -832
+      ],
+      "id": "3334dd08-22df-48f0-82fa-54a59642cf3b",
+      "name": "9칸 만화 프롬프트",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/bytedance/seedream/v5/lite/text-to-image",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=prompt",
+              "value": "={{ $json.output[0].content[0].text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        768,
+        -1296
+      ],
+      "id": "b8a38730-f6f1-4254-b8b3-855e238c1192",
+      "name": "CH_See_썸네일",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WM8EAChZZeMPUryk",
+          "name": "fal.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/nano-banana-2",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=prompt",
+              "value": "={{ $json.output[0].content[0].text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        768,
+        -1120
+      ],
+      "id": "9d4a19a4-4cc3-4391-a012-24bfcf739991",
+      "name": "KO_Nano_썸네일",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WM8EAChZZeMPUryk",
+          "name": "fal.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "app1Af4d3ZuAZ1Zwp",
+          "mode": "list",
+          "cachedResultName": "AI 이미지 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblReMOhajNEkQyZN",
+          "mode": "list",
+          "cachedResultName": "2.4.4. Video to Image_최종",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp/tblReMOhajNEkQyZN"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Search records').item.json.id }}",
+            "Status": "done",
+            "Thumbnail": "={{ [{ \"url\": $json.images[0].url }] }}",
+            "Subtitle": "={{ $('Gemini API 자막 추출').item.json.candidates[0].content.parts[0].text }}",
+            "Video_ID": "={{ $('Edit Fields').item.json.Video_ID }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "YouTube URL",
+              "displayName": "YouTube URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CH",
+                  "value": "CH"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Image Type",
+              "displayName": "Image Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Thumbnail",
+                  "value": "Thumbnail"
+                },
+                {
+                  "name": "Comic",
+                  "value": "Comic"
+                },
+                {
+                  "name": "Mindmap",
+                  "value": "Mindmap"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Thumbnail",
+              "displayName": "Thumbnail",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Comic",
+              "displayName": "Comic",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Mindmap",
+              "displayName": "Mindmap",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Video_ID",
+              "displayName": "Video_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Subtitle",
+              "displayName": "Subtitle",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        912,
+        -1296
+      ],
+      "id": "1bf617b5-ae74-4309-accc-5d81841d6cb2",
+      "name": "CH_썸네일 업로드",
+      "alwaysOutputData": false,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "app1Af4d3ZuAZ1Zwp",
+          "mode": "list",
+          "cachedResultName": "AI 이미지 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblReMOhajNEkQyZN",
+          "mode": "list",
+          "cachedResultName": "2.4.4. Video to Image_최종",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp/tblReMOhajNEkQyZN"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Search records').item.json.id }}",
+            "Status": "done",
+            "Thumbnail": "={{ [{ \"url\": $json.images[0].url }] }}",
+            "Subtitle": "={{ $('Gemini API 자막 추출').item.json.candidates[0].content.parts[0].text }}",
+            "Video_ID": "={{ $('Edit Fields').item.json.Video_ID }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "YouTube URL",
+              "displayName": "YouTube URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CH",
+                  "value": "CH"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Image Type",
+              "displayName": "Image Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Thumbnail",
+                  "value": "Thumbnail"
+                },
+                {
+                  "name": "Comic",
+                  "value": "Comic"
+                },
+                {
+                  "name": "Mindmap",
+                  "value": "Mindmap"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Thumbnail",
+              "displayName": "Thumbnail",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Comic",
+              "displayName": "Comic",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Mindmap",
+              "displayName": "Mindmap",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Video_ID",
+              "displayName": "Video_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Subtitle",
+              "displayName": "Subtitle",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        912,
+        -1120
+      ],
+      "id": "96b80f9a-1707-46b6-abe9-8888dd6c9208",
+      "name": "KO_썸네일 업로드",
+      "alwaysOutputData": false,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/nano-banana-2",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=prompt",
+              "value": "={{ $json.output[0].content[0].text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        768,
+        -752
+      ],
+      "id": "940c2c83-c57f-4ca2-88d7-06fa0dae9b08",
+      "name": "KO_Nano_만화",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WM8EAChZZeMPUryk",
+          "name": "fal.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "app1Af4d3ZuAZ1Zwp",
+          "mode": "list",
+          "cachedResultName": "AI 이미지 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblReMOhajNEkQyZN",
+          "mode": "list",
+          "cachedResultName": "2.4.4. Video to Image_최종",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp/tblReMOhajNEkQyZN"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Search records').item.json.id }}",
+            "Status": "done",
+            "Subtitle": "={{ $('Gemini API 자막 추출').item.json.candidates[0].content.parts[0].text }}",
+            "Video_ID": "={{ $('Edit Fields').item.json.Video_ID }}",
+            "Comic": "={{ [{ \"url\": $json.images[0].url }] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "YouTube URL",
+              "displayName": "YouTube URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CH",
+                  "value": "CH"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Image Type",
+              "displayName": "Image Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Thumbnail",
+                  "value": "Thumbnail"
+                },
+                {
+                  "name": "Comic",
+                  "value": "Comic"
+                },
+                {
+                  "name": "Mindmap",
+                  "value": "Mindmap"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Thumbnail",
+              "displayName": "Thumbnail",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Comic",
+              "displayName": "Comic",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Mindmap",
+              "displayName": "Mindmap",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Video_ID",
+              "displayName": "Video_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Subtitle",
+              "displayName": "Subtitle",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        928,
+        -912
+      ],
+      "id": "d699e218-11da-4a25-aeab-66d05f74b6a9",
+      "name": "CH_만화 업로드",
+      "alwaysOutputData": false,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "app1Af4d3ZuAZ1Zwp",
+          "mode": "list",
+          "cachedResultName": "AI 이미지 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblReMOhajNEkQyZN",
+          "mode": "list",
+          "cachedResultName": "2.4.4. Video to Image_최종",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp/tblReMOhajNEkQyZN"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Search records').item.json.id }}",
+            "Status": "done",
+            "Subtitle": "={{ $('Gemini API 자막 추출').item.json.candidates[0].content.parts[0].text }}",
+            "Video_ID": "={{ $('Edit Fields').item.json.Video_ID }}",
+            "Comic": "={{ [{ \"url\": $json.images[0].url }] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "YouTube URL",
+              "displayName": "YouTube URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CH",
+                  "value": "CH"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Image Type",
+              "displayName": "Image Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Thumbnail",
+                  "value": "Thumbnail"
+                },
+                {
+                  "name": "Comic",
+                  "value": "Comic"
+                },
+                {
+                  "name": "Mindmap",
+                  "value": "Mindmap"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Thumbnail",
+              "displayName": "Thumbnail",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Comic",
+              "displayName": "Comic",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Mindmap",
+              "displayName": "Mindmap",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Video_ID",
+              "displayName": "Video_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Subtitle",
+              "displayName": "Subtitle",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        928,
+        -752
+      ],
+      "id": "f84eb4e8-a13c-48eb-acc2-d9e1d853a0dc",
+      "name": "KO_만화 업로드",
+      "alwaysOutputData": false,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5.2",
+          "mode": "list",
+          "cachedResultName": "GPT-5.2"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=업로드된 파일을 분석하여, 아래 조건을 모두 충족하는 교육용 마인드맵 이미지 생성 프롬프트를 추출해줘.\n\n[이미지 구성 요소]\n1. 중심 노드 —  영상 제목 또는 핵심 주제를 중앙에 배치\n2. 핵심 분기 — 아래 4개 주제 분기를 중심 노드에서 방사형으로 구성\n3. 분기 내용 — 각 분기에 해당하는 세부 항목을 정확한 문자로 표기\n- 핵심 어휘：3~4개\n- 핵심 문형：3~4개\n- 문화 예절：3~4개\n- 내용 개요：이야기 흐름 요약\n\n4. 아이콘 요소 — 각 분기 항목에 내용을 직관적으로 나타내는 심플한 아이콘 삽입\n5. 학습 수준 표시 — 난이도(초급/중급 등)를 중심노드 하단에 표기\n\n[언어 조건]\n6. 프롬프트 언어 — 자막 파일 언어와 완전히 일치\n  각 항목이 프롬프트에 명확히 반영되도록 구조화하여 자막 파일 언어와 일치하게 출력해줘.\n[자막 파일]\n {{ $('Gemini API 자막 추출').item.json.candidates[0].content.parts[0].text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        320,
+        -496
+      ],
+      "id": "0758cebd-9885-4a20-94fe-8d9c4154b2dc",
+      "name": "마인드맵 프롬프트",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "726a8a77-432c-4df0-ad7b-1fa3ecd5b9df",
+              "leftValue": "={{ $('Search records').item.json['Cultural Region'] }}",
+              "rightValue": "CH",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        560,
+        -832
+      ],
+      "id": "f820e1c7-9b46-4b09-85a2-b164eccbb506",
+      "name": "CH_만화"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "726a8a77-432c-4df0-ad7b-1fa3ecd5b9df",
+              "leftValue": "={{ $('Search records').item.json['Cultural Region'] }}",
+              "rightValue": "CH",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        576,
+        -1200
+      ],
+      "id": "1c969cbe-0144-431d-a24b-b0cadf9328b5",
+      "name": "CH_썸네일"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "726a8a77-432c-4df0-ad7b-1fa3ecd5b9df",
+              "leftValue": "={{ $('Search records').item.json['Cultural Region'] }}",
+              "rightValue": "CH",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        592,
+        -496
+      ],
+      "id": "6caef143-bf19-4890-9567-4a5fab87f6fe",
+      "name": "CH_마인드맵"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/bytedance/seedream/v5/lite/text-to-image",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=prompt",
+              "value": "={{ $json.output[0].content[0].text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        784,
+        -576
+      ],
+      "id": "7b1c4081-f14d-4761-b929-378a51a6b9f8",
+      "name": "CH_See_마인드맵",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WM8EAChZZeMPUryk",
+          "name": "fal.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/nano-banana-2",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=prompt",
+              "value": "={{ $json.output[0].content[0].text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        784,
+        -400
+      ],
+      "id": "f7229567-e8d4-4dc3-a9d2-b89d1513f7ab",
+      "name": "KO_Nano_마인드맵",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WM8EAChZZeMPUryk",
+          "name": "fal.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "app1Af4d3ZuAZ1Zwp",
+          "mode": "list",
+          "cachedResultName": "AI 이미지 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblReMOhajNEkQyZN",
+          "mode": "list",
+          "cachedResultName": "2.4.4. Video to Image_최종",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp/tblReMOhajNEkQyZN"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Search records').item.json.id }}",
+            "Status": "done",
+            "Subtitle": "={{ $('Gemini API 자막 추출').item.json.candidates[0].content.parts[0].text }}",
+            "Video_ID": "={{ $('Edit Fields').item.json.Video_ID }}",
+            "Mindmap": "={{ [{ \"url\": $json.images[0].url }] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "YouTube URL",
+              "displayName": "YouTube URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CH",
+                  "value": "CH"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Image Type",
+              "displayName": "Image Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Thumbnail",
+                  "value": "Thumbnail"
+                },
+                {
+                  "name": "Comic",
+                  "value": "Comic"
+                },
+                {
+                  "name": "Mindmap",
+                  "value": "Mindmap"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Thumbnail",
+              "displayName": "Thumbnail",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Comic",
+              "displayName": "Comic",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Mindmap",
+              "displayName": "Mindmap",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Video_ID",
+              "displayName": "Video_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Subtitle",
+              "displayName": "Subtitle",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        928,
+        -576
+      ],
+      "id": "846a6ade-8c0b-48d7-a66f-6a0972a68d7b",
+      "name": "CH_마인드맵 업로드",
+      "alwaysOutputData": false,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "app1Af4d3ZuAZ1Zwp",
+          "mode": "list",
+          "cachedResultName": "AI 이미지 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblReMOhajNEkQyZN",
+          "mode": "list",
+          "cachedResultName": "2.4.4. Video to Image_최종",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp/tblReMOhajNEkQyZN"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Search records').item.json.id }}",
+            "Status": "done",
+            "Subtitle": "={{ $('Gemini API 자막 추출').item.json.candidates[0].content.parts[0].text }}",
+            "Video_ID": "={{ $('Edit Fields').item.json.Video_ID }}",
+            "Mindmap": "={{ [{ \"url\": $json.images[0].url }] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "YouTube URL",
+              "displayName": "YouTube URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CH",
+                  "value": "CH"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Image Type",
+              "displayName": "Image Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Thumbnail",
+                  "value": "Thumbnail"
+                },
+                {
+                  "name": "Comic",
+                  "value": "Comic"
+                },
+                {
+                  "name": "Mindmap",
+                  "value": "Mindmap"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Thumbnail",
+              "displayName": "Thumbnail",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Comic",
+              "displayName": "Comic",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Mindmap",
+              "displayName": "Mindmap",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Video_ID",
+              "displayName": "Video_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Subtitle",
+              "displayName": "Subtitle",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        928,
+        -400
+      ],
+      "id": "ecceb5cf-f27a-47a7-a5d6-a0d948cdbbd1",
+      "name": "KO_마인드맵 업로드",
+      "alwaysOutputData": false,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Image Type",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        -912
+      ],
+      "id": "fd0f688d-d4aa-472d-be1b-240b2368516c",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/nano-banana-2",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=prompt",
+              "value": "={{ $json.output[0].content[0].text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        784,
+        -912
+      ],
+      "id": "731a64b6-c489-4654-a0ab-0207ae5d50cd",
+      "name": "CH_Nano_만화",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WM8EAChZZeMPUryk",
+          "name": "fal.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c45a1c47-9a93-42cb-a065-8493938941b6",
+              "name": "=Image Type",
+              "value": "={{ $('Search records').first().json['Image Type'] }}",
+              "type": "array"
+            },
+            {
+              "id": "bebb21bb-3d8f-463a-be25-233384aa10d1",
+              "name": "gemini_text",
+              "value": "={{ $json.candidates[0].content.parts[0].text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -208,
+        -768
+      ],
+      "id": "b7551b7e-ae1e-41e8-9f63-4ad21bc4b68a",
+      "name": "Image Type 분리"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini API 자막 추출": {
+      "main": [
+        [
+          {
+            "node": "Image Type 분리",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "  썸네일 프롬프트",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "9칸 만화 프롬프트",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "마인드맵 프롬프트",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Gemini API 자막 추출",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "  썸네일 프롬프트": {
+      "main": [
+        [
+          {
+            "node": "CH_썸네일",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_See_썸네일": {
+      "main": [
+        [
+          {
+            "node": "CH_썸네일 업로드",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KO_Nano_썸네일": {
+      "main": [
+        [
+          {
+            "node": "KO_썸네일 업로드",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "9칸 만화 프롬프트": {
+      "main": [
+        [
+          {
+            "node": "CH_만화",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KO_Nano_만화": {
+      "main": [
+        [
+          {
+            "node": "KO_만화 업로드",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "마인드맵 프롬프트": {
+      "main": [
+        [
+          {
+            "node": "CH_마인드맵",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_만화": {
+      "main": [
+        [
+          {
+            "node": "CH_Nano_만화",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "KO_Nano_만화",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_썸네일": {
+      "main": [
+        [
+          {
+            "node": "CH_See_썸네일",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "KO_Nano_썸네일",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_마인드맵": {
+      "main": [
+        [
+          {
+            "node": "CH_See_마인드맵",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "KO_Nano_마인드맵",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_See_마인드맵": {
+      "main": [
+        [
+          {
+            "node": "CH_마인드맵 업로드",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KO_Nano_마인드맵": {
+      "main": [
+        [
+          {
+            "node": "KO_마인드맵 업로드",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_Nano_만화": {
+      "main": [
+        [
+          {
+            "node": "CH_만화 업로드",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Type 분리": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "0186cc18-0f58-4468-8613-9676e3b9ea0f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "324b20db7bd7622c84e52c3bee689ffea3754ee2e9d9027179fea14d6a4cb1d7"
+  },
+  "id": "MBGFRs8EnMw7QNvm4Z1TS",
+  "tags": []
+}

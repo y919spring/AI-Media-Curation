@@ -1,0 +1,3612 @@
+{
+  "name": "2.4.1.3_n8n_A2I_HTML",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -592,
+        -1552
+      ],
+      "id": "ddf9fe52-53c8-49f4-9a7b-521e02687f42"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "app1Af4d3ZuAZ1Zwp",
+          "mode": "list",
+          "cachedResultName": "2.4. AI 이미지 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblmIv9gVigTE7QD5",
+          "mode": "list",
+          "cachedResultName": "2.4.3 Audio to Image_HTML",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp/tblmIv9gVigTE7QD5"
+        },
+        "filterByFormula": "({Status}='ready')",
+        "options": {}
+      },
+      "name": "Get Audio from Airtable",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        -448,
+        -1584
+      ],
+      "id": "403a9b62-19f5-4ac3-bc98-28d32045ce00",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json['Source Audio'][0].url }}",
+        "options": {}
+      },
+      "name": "Download Audio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -304,
+        -1760
+      ],
+      "id": "460ea5e5-5143-4d0d-9b4c-debaa8868a08"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "text": "- \"너는 고성능 오디오 분석 전문가다. 첨부된 HSK/TOPIK 오디오를 듣고 다음 규칙에 따라 전사하라.\n1. **화자 구별:** 목소리의 톤과 성별을 분석하여 '남:' 그리고 '여:'로 구분하여 대화 형식으로 작성하라. 한 명만 말하는 경우 '남','녀'를 표시하지 않음\n2. **언어:** 오디오가 중국어면 **중국어 간체(简体中文)**로, 한국어면 **표준 한국어**로 작성하라.\n3. **정확도:** 초급 수준의 단어와 문장 부호를 정확히 사용하라.\n4. **출력 형식:** 인사말이나 부연 설명 없이 아래 예시와 같은 형식으로만 출력하라.\n5. 같은 화자 두 번 연속 나오는 경우, 하나로 합침\n(예시)\n남: 안녕하세요.\n여: 네, 반갑습니다.\n男：你好。\n女：你好。\n한 명만 말하는 경우 '남','녀'를 표시하지 않음\n5. **제약**: 중국어면 반드시 简体로 출력해줘 \"",
+        "audioUrls": "={{ $('Get Audio from Airtable').item.json['Source Audio'][0].url }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        480,
+        -1664
+      ],
+      "id": "ab3cddb0-1302-47fe-8d5e-f99278f850c2",
+      "name": "Analyze audio",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "cZlsETbdSpajXEar",
+          "name": "Gemini_학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.qrserver.com/v1/create-qr-code/?size=300x300&data={{ $json.webViewLink }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        16,
+        -1680
+      ],
+      "id": "9aaaa86c-bb9f-47bc-b264-ab253f963160",
+      "name": "Generate QR Code"
+    },
+    {
+      "parameters": {
+        "name": "=qr_{{ Date.now() }}.png",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1KOYdYmLMf1N_ess5MBtY2DqH5zKzIJGR",
+          "mode": "list",
+          "cachedResultName": "AI박사학위논문_이미지",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1KOYdYmLMf1N_ess5MBtY2DqH5zKzIJGR"
+        },
+        "options": {}
+      },
+      "name": "QR to Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        192,
+        -1680
+      ],
+      "id": "a9f76929-18e7-4669-ad94-d0286a179125",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "RZzgO1tsXnGmdQyD",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "app1Af4d3ZuAZ1Zwp",
+          "mode": "list",
+          "cachedResultName": "2.4. AI 이미지 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblmIv9gVigTE7QD5",
+          "mode": "list",
+          "cachedResultName": "2.4.3 Audio to Image_HTML",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp/tblmIv9gVigTE7QD5"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "QR_code": "={{ [ { \"url\": $('QR to Drive').item.json.webContentLink} ] }}",
+            "id": "={{ $('Get Audio from Airtable').item.json.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true
+            },
+            {
+              "id": "Level",
+              "displayName": "Level",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source Audio",
+              "displayName": "Source Audio",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CH",
+                  "value": "CH"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Audion Type",
+              "displayName": "Audion Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Culture_Image",
+                  "value": "Culture_Image"
+                },
+                {
+                  "name": "Poster",
+                  "value": "Poster"
+                },
+                {
+                  "name": "Node-based diagram",
+                  "value": "Node-based diagram"
+                },
+                {
+                  "name": "",
+                  "value": ""
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Culture_Image",
+              "displayName": "Culture_Image",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Culture_Image_HTML",
+              "displayName": "Culture_Image_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Poster",
+              "displayName": "Poster",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Poster_HTML",
+              "displayName": "Poster_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Node-based diagram",
+              "displayName": "Node-based diagram",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Node-based diagram_HTML",
+              "displayName": "Node-based diagram_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "QR_code",
+              "displayName": "QR_code",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Created Time",
+              "displayName": "Created Time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "name": "QR upload Airtable",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        336,
+        -1680
+      ],
+      "id": "6e0e136b-a452-4e0d-b235-ae1f6d61b83f",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dd52227e-f9ff-441d-8416-833b83d21fde",
+              "name": "prompt",
+              "value": "=당신은 한중 언어문화 교육을 위한 듣기 장면 시각화 전문 일러스트레이터이다. 입력소스에서 장소, 인물(성별·신분), 핵심 행위, 감정, 맥락을 추출한다. 추출된 요소를 하나의 통합 장면 이미지로 구성한다. 입력 소스의 언어적 배경에 따라 해당 언어 문화국{{ $('Get Audio from Airtable').item.json['Cultural Region'] }}의 정체성(의상, 건축, 소품)을 반영한다. 텍스트 삽입 금지.\n입력소스: {{ $('Analyze audio').item.json.content.parts[0].text }}",
+              "type": "string"
+            },
+            {
+              "id": "7bdb2e48-ac84-4b3c-939b-91bec0970971",
+              "name": "=source",
+              "value": "={{ $('Analyze audio').item.json.content.parts[0].text }}",
+              "type": "string"
+            },
+            {
+              "id": "bddd4a53-000d-4105-beb4-97abc920616a",
+              "name": "audioSrc",
+              "value": "={{ $json.secure_url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1568,
+        -2256
+      ],
+      "id": "52fd078a-b85a-48f4-aadc-d58958c86de2",
+      "name": "Cul_Prompt"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dd52227e-f9ff-441d-8416-833b83d21fde",
+              "name": "prompt",
+              "value": "=당신은 언어문화 교육을 위한 문화 포스터 디자이너이자 정보 시각화 전문가이다. \n- 입력 소스(source)에서 주제, 핵심 키워드, 배경 정보를 파악한다. \n- 포스터 상단에 주제목만 배치한다. \n- 중앙에 문화 주제를 대표하는 시각적 장면을 배치한다.\n- 하단에 2개의 (해당 언어){{ $('Get Audio from Airtable').item.json['Cultural Region'] }} 키워드로 렌더링한다. \n- 해당 문화의 정체성(의상, 건축, 소품)을 반영한다.\n입력 소스\n{{ $json.content.parts[0].text }}",
+              "type": "string"
+            },
+            {
+              "id": "5a292658-f416-4b50-bdd6-fc053b44a2b3",
+              "name": "입력 소스",
+              "value": "={{ $json.content.parts[0].text }}",
+              "type": "string"
+            },
+            {
+              "id": "0418f2f9-1b3c-4833-9f0e-4d9a78f0fa19",
+              "name": "audioSrc",
+              "value": "={{ $json.secure_url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1584,
+        -1616
+      ],
+      "id": "bf25e598-a693-48ca-a1b1-881429a83bc5",
+      "name": "Poster Prompt"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f247e0dd-9345-42b7-9cfc-83dbe9d1b0ad",
+              "leftValue": "={{ $('Get Audio from Airtable').item.json['Cultural Region'] }}",
+              "rightValue": "CH",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1728,
+        -1744
+      ],
+      "id": "f69c24ae-5f4a-40e4-b882-e22f5371a0f3",
+      "name": "CH_Poster"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "app1Af4d3ZuAZ1Zwp",
+          "mode": "list",
+          "cachedResultName": "2.4. AI 이미지 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblmIv9gVigTE7QD5",
+          "mode": "list",
+          "cachedResultName": "2.4.3 Audio to Image_HTML",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp/tblmIv9gVigTE7QD5"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get Audio from Airtable').item.json.id }}",
+            "Status": "done",
+            "Poster": "={{ [{\"url\": $node[\"CH_Poster_Tem\"].json.render_url}] }}",
+            "Poster_HTML": "=https://{{ $(\"CH_Poster_Vercel_HTML\").item.json.url }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Level",
+              "displayName": "Level",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source Audio",
+              "displayName": "Source Audio",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CH",
+                  "value": "CH"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Audion Type",
+              "displayName": "Audion Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Culture_Image",
+                  "value": "Culture_Image"
+                },
+                {
+                  "name": "Poster",
+                  "value": "Poster"
+                },
+                {
+                  "name": "Node-based diagram",
+                  "value": "Node-based diagram"
+                },
+                {
+                  "name": "",
+                  "value": ""
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Culture_Image",
+              "displayName": "Culture_Image",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Culture_Image_HTML",
+              "displayName": "Culture_Image_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Poster",
+              "displayName": "Poster",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Poster_HTML",
+              "displayName": "Poster_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Node-based diagram",
+              "displayName": "Node-based diagram",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Node-based diagram_HTML",
+              "displayName": "Node-based diagram_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "QR_code",
+              "displayName": "QR_code",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Created Time",
+              "displayName": "Created Time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "name": "CH_Poster upload",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        2736,
+        -1808
+      ],
+      "id": "41a7fe1c-0f54-4e6a-b3e9-4dba1d4a4835",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "app1Af4d3ZuAZ1Zwp",
+          "mode": "list",
+          "cachedResultName": "2.4. AI 이미지 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblmIv9gVigTE7QD5",
+          "mode": "list",
+          "cachedResultName": "2.4.3 Audio to Image_HTML",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp/tblmIv9gVigTE7QD5"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get Audio from Airtable').item.json.id }}",
+            "Status": "done",
+            "Poster": "={{ [{\"url\": $node[\"KO_Poster_Tem\"].json.render_url}] }}",
+            "Poster_HTML": "=https://{{ $(\"KO_Poster_Vercel_HTML\").item.json.url }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Level",
+              "displayName": "Level",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source Audio",
+              "displayName": "Source Audio",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CH",
+                  "value": "CH"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Audion Type",
+              "displayName": "Audion Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Culture_Image",
+                  "value": "Culture_Image"
+                },
+                {
+                  "name": "Poster",
+                  "value": "Poster"
+                },
+                {
+                  "name": "Node-based diagram",
+                  "value": "Node-based diagram"
+                },
+                {
+                  "name": "",
+                  "value": ""
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Culture_Image",
+              "displayName": "Culture_Image",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Culture_Image_HTML",
+              "displayName": "Culture_Image_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Poster",
+              "displayName": "Poster",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Poster_HTML",
+              "displayName": "Poster_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Node-based diagram",
+              "displayName": "Node-based diagram",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Node-based diagram_HTML",
+              "displayName": "Node-based diagram_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "QR_code",
+              "displayName": "QR_code",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Created Time",
+              "displayName": "Created Time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "name": "KO_Poster upload",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        2768,
+        -1600
+      ],
+      "id": "c9a95f7e-be6a-4eb8-a87d-32b576c811a1",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dd52227e-f9ff-441d-8416-833b83d21fde",
+              "name": "prompt",
+              "value": "=당신은 언어문화 교육을 위한 정보 구조 시각화 전문가이다\n1. 입력 소스에서 인물관계도와 시간 흐름도를 추출한다.\n2. 인물관계도를 좌측에, 시간 흐름도를 우측에 배치한다.\n3. 인물은 아이콘으로, 관계와 사건은 화살표와 라벨로 표시한다.\n4. 시간 흐름도는 상→하 순서로 사건을 배열한다.\n5. 모든 텍스트는 입력 소스 언어{{ $('Get Audio from Airtable').item.json['Cultural Region'] }}로 렌더링한다.\n입력 소스: {{ $('Analyze audio').item.json.content.parts[0].text }}",
+              "type": "string"
+            },
+            {
+              "id": "903f5e5b-e357-4318-88f3-cec3a88122b3",
+              "name": "입력 소스",
+              "value": "={{ $('Analyze audio').item.json.content.parts[0].text }}",
+              "type": "string"
+            },
+            {
+              "id": "39049c37-2088-407f-9b7b-c3bef0877d3e",
+              "name": "audioSrc",
+              "value": "={{ $json.secure_url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1584,
+        -1360
+      ],
+      "id": "47d434aa-d960-49a4-bd0c-8be60a9c6c69",
+      "name": "Diagram Prompt"
+    },
+    {
+      "parameters": {
+        "template": {
+          "__rl": true,
+          "value": "62841dbf-dc6b-412a-b30f-b3da98326d61",
+          "mode": "list",
+          "cachedResultName": "CH Flashcard"
+        },
+        "layers": {
+          "layer": [
+            {
+              "layerName": "Image",
+              "text": "=",
+              "image_url": "={{ $json.images[0].url }}",
+              "video_url": "=",
+              "additionalProperties": {}
+            },
+            {
+              "layerName": "image-2",
+              "text": "=",
+              "image_url": "={{ $node['QR to Drive'].json.webViewLink }}",
+              "video_url": "=",
+              "additionalProperties": {}
+            }
+          ]
+        },
+        "additionalOptions": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-templated.templated",
+      "typeVersion": 1,
+      "position": [
+        2112,
+        -1808
+      ],
+      "id": "f0381b47-33df-4546-b353-9da61b611e11",
+      "name": "CH_Poster_Tem",
+      "credentials": {
+        "templatedApi": {
+          "id": "8SRpZKB5HEVweuid",
+          "name": "Templated account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "template": {
+          "__rl": true,
+          "value": "62841dbf-dc6b-412a-b30f-b3da98326d61",
+          "mode": "list",
+          "cachedResultName": "CH Flashcard"
+        },
+        "layers": {
+          "layer": [
+            {
+              "layerName": "Image",
+              "text": "=",
+              "image_url": "={{ $json.images[0].url }}",
+              "video_url": "=",
+              "additionalProperties": {}
+            },
+            {
+              "layerName": "image-2",
+              "text": "=",
+              "image_url": "={{ $node['QR to Drive'].json.webViewLink }}",
+              "video_url": "=",
+              "additionalProperties": {}
+            }
+          ]
+        },
+        "additionalOptions": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-templated.templated",
+      "typeVersion": 1,
+      "position": [
+        2128,
+        -1600
+      ],
+      "id": "41a617f1-95ef-43ae-bbd8-24bfbf7c685f",
+      "name": "KO_Poster_Tem",
+      "credentials": {
+        "templatedApi": {
+          "id": "8SRpZKB5HEVweuid",
+          "name": "Templated account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "template": {
+          "__rl": true,
+          "value": "62841dbf-dc6b-412a-b30f-b3da98326d61",
+          "mode": "list",
+          "cachedResultName": "CH Flashcard"
+        },
+        "layers": {
+          "layer": [
+            {
+              "layerName": "Image",
+              "text": "=",
+              "image_url": "={{ $json.images[0].url }}",
+              "video_url": "=",
+              "additionalProperties": {}
+            },
+            {
+              "layerName": "image-2",
+              "text": "=",
+              "image_url": "={{ $node['QR to Drive'].json.webViewLink }}",
+              "video_url": "=",
+              "additionalProperties": {}
+            }
+          ]
+        },
+        "additionalOptions": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-templated.templated",
+      "typeVersion": 1,
+      "position": [
+        2128,
+        -2096
+      ],
+      "id": "20bbd5ae-5ae1-4d06-9db0-3e333e16a6d9",
+      "name": "KO_Cul_Tem",
+      "credentials": {
+        "templatedApi": {
+          "id": "8SRpZKB5HEVweuid",
+          "name": "Templated account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "template": {
+          "__rl": true,
+          "value": "62841dbf-dc6b-412a-b30f-b3da98326d61",
+          "mode": "list",
+          "cachedResultName": "CH Flashcard"
+        },
+        "layers": {
+          "layer": [
+            {
+              "layerName": "Image",
+              "text": "=",
+              "image_url": "={{ $json.images[0].url }}",
+              "video_url": "=",
+              "additionalProperties": {}
+            },
+            {
+              "layerName": "image-2",
+              "text": "=",
+              "image_url": "={{ $node['QR to Drive'].json.webViewLink }}",
+              "video_url": "=",
+              "additionalProperties": {}
+            }
+          ]
+        },
+        "additionalOptions": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-templated.templated",
+      "typeVersion": 1,
+      "position": [
+        2128,
+        -2288
+      ],
+      "id": "87ae71a0-5aae-4c52-9300-0d146579639d",
+      "name": "Ch_Cul_Tem",
+      "credentials": {
+        "templatedApi": {
+          "id": "8SRpZKB5HEVweuid",
+          "name": "Templated account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "app1Af4d3ZuAZ1Zwp",
+          "mode": "list",
+          "cachedResultName": "2.4. AI 이미지 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblmIv9gVigTE7QD5",
+          "mode": "list",
+          "cachedResultName": "2.4.3 Audio to Image_HTML",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp/tblmIv9gVigTE7QD5"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get Audio from Airtable').item.json.id }}",
+            "Status": "done",
+            "Culture_Image_HTML": "=https://{{ $(\"CH_Vercel_HTML\").item.json.url }}",
+            "Culture_Image": "={{ [{\"url\": $node[\"Ch_Cul_Tem\"].json.render_url}] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Level",
+              "displayName": "Level",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source Audio",
+              "displayName": "Source Audio",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CH",
+                  "value": "CH"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Audion Type",
+              "displayName": "Audion Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Culture_Image",
+                  "value": "Culture_Image"
+                },
+                {
+                  "name": "Poster",
+                  "value": "Poster"
+                },
+                {
+                  "name": "Node-based diagram",
+                  "value": "Node-based diagram"
+                },
+                {
+                  "name": "",
+                  "value": ""
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Culture_Image",
+              "displayName": "Culture_Image",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Culture_Image_HTML",
+              "displayName": "Culture_Image_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Poster",
+              "displayName": "Poster",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Poster_HTML",
+              "displayName": "Poster_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Node-based diagram",
+              "displayName": "Node-based diagram",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Node-based diagram_HTML",
+              "displayName": "Node-based diagram_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "QR_code",
+              "displayName": "QR_code",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Created Time",
+              "displayName": "Created Time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "name": "CH_Cul_upload",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        2800,
+        -2288
+      ],
+      "id": "1db91a04-4db7-4fca-85a5-5118b335aacf",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/nano-banana-2",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=prompt",
+              "value": "={{ $json.prompt }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1888,
+        -1808
+      ],
+      "id": "1dd198de-35b3-490a-9734-1a6f873d87a3",
+      "name": "CH_Nano Ba_poster",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WM8EAChZZeMPUryk",
+          "name": "fal.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/nano-banana-2",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=prompt",
+              "value": "={{ $json.prompt }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1904,
+        -1600
+      ],
+      "id": "85f44c9d-3a24-49b3-827d-7503d4061afe",
+      "name": "KO_Nano Ba_poster",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WM8EAChZZeMPUryk",
+          "name": "fal.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f247e0dd-9345-42b7-9cfc-83dbe9d1b0ad",
+              "leftValue": "={{ $('Get Audio from Airtable').item.json['Cultural Region'] }}",
+              "rightValue": "CH",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1744,
+        -1360
+      ],
+      "id": "27aea89e-8e77-40f3-9923-402c97c31837",
+      "name": "CH_Diagram"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/bytedance/seedream/v4.5/text-to-image",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=prompt",
+              "value": "={{ $json.prompt }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1920,
+        -1376
+      ],
+      "id": "5eb3f909-93e8-4706-b1a1-e0f8e149708d",
+      "name": "CH_Seedream_dia",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WM8EAChZZeMPUryk",
+          "name": "fal.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "template": {
+          "__rl": true,
+          "value": "62841dbf-dc6b-412a-b30f-b3da98326d61",
+          "mode": "list",
+          "cachedResultName": "CH Flashcard"
+        },
+        "layers": {
+          "layer": [
+            {
+              "layerName": "Image",
+              "text": "=",
+              "image_url": "={{ $json.images[0].url }}",
+              "video_url": "=",
+              "additionalProperties": {}
+            },
+            {
+              "layerName": "image-2",
+              "text": "=",
+              "image_url": "={{ $node['QR to Drive'].json.webViewLink }}",
+              "video_url": "=",
+              "additionalProperties": {}
+            }
+          ]
+        },
+        "additionalOptions": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-templated.templated",
+      "typeVersion": 1,
+      "position": [
+        2112,
+        -1376
+      ],
+      "id": "e1a7493d-0170-47f6-8cc0-1595821fe88c",
+      "name": "Ch_Dia_Tem",
+      "credentials": {
+        "templatedApi": {
+          "id": "8SRpZKB5HEVweuid",
+          "name": "Templated account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "app1Af4d3ZuAZ1Zwp",
+          "mode": "list",
+          "cachedResultName": "2.4. AI 이미지 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblmIv9gVigTE7QD5",
+          "mode": "list",
+          "cachedResultName": "2.4.3 Audio to Image_HTML",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp/tblmIv9gVigTE7QD5"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get Audio from Airtable').item.json.id }}",
+            "Status": "done",
+            "Node-based diagram": "={{ [{\"url\": $node[\"Ch_Dia_Tem\"].json.render_url}] }}",
+            "Node-based diagram_HTML": "=https://{{ $(\"CH_Dia_Vercel_HTML\").item.json.url }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Level",
+              "displayName": "Level",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source Audio",
+              "displayName": "Source Audio",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CH",
+                  "value": "CH"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Audion Type",
+              "displayName": "Audion Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Culture_Image",
+                  "value": "Culture_Image"
+                },
+                {
+                  "name": "Poster",
+                  "value": "Poster"
+                },
+                {
+                  "name": "Node-based diagram",
+                  "value": "Node-based diagram"
+                },
+                {
+                  "name": "",
+                  "value": ""
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Culture_Image",
+              "displayName": "Culture_Image",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Culture_Image_HTML",
+              "displayName": "Culture_Image_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Poster",
+              "displayName": "Poster",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Poster_HTML",
+              "displayName": "Poster_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Node-based diagram",
+              "displayName": "Node-based diagram",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Node-based diagram_HTML",
+              "displayName": "Node-based diagram_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "QR_code",
+              "displayName": "QR_code",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Created Time",
+              "displayName": "Created Time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "name": "CH_Dia_upload",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        2720,
+        -1376
+      ],
+      "id": "e759be95-0b61-431d-9dfc-94863b469f1a",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/nano-banana-2",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=prompt",
+              "value": "={{ $json.prompt }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1888,
+        -1136
+      ],
+      "id": "bf498ae5-d1ef-4cd8-98ef-df2cfa553a13",
+      "name": "KO_Nano Ba_dia",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WM8EAChZZeMPUryk",
+          "name": "fal.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "template": {
+          "__rl": true,
+          "value": "62841dbf-dc6b-412a-b30f-b3da98326d61",
+          "mode": "list",
+          "cachedResultName": "CH Flashcard"
+        },
+        "layers": {
+          "layer": [
+            {
+              "layerName": "Image",
+              "text": "=",
+              "image_url": "={{ $json.images[0].url }}",
+              "video_url": "=",
+              "additionalProperties": {}
+            },
+            {
+              "layerName": "image-2",
+              "text": "=",
+              "image_url": "={{ $node['QR to Drive'].json.webViewLink }}",
+              "video_url": "=",
+              "additionalProperties": {}
+            }
+          ]
+        },
+        "additionalOptions": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-templated.templated",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        -1136
+      ],
+      "id": "3bceaaf6-f887-4c18-9964-956cede6b102",
+      "name": "KO_Dia_Tem",
+      "credentials": {
+        "templatedApi": {
+          "id": "8SRpZKB5HEVweuid",
+          "name": "Templated account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "app1Af4d3ZuAZ1Zwp",
+          "mode": "list",
+          "cachedResultName": "2.4. AI 이미지 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblmIv9gVigTE7QD5",
+          "mode": "list",
+          "cachedResultName": "2.4.3 Audio to Image_HTML",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp/tblmIv9gVigTE7QD5"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get Audio from Airtable').item.json.id }}",
+            "Status": "done",
+            "Node-based diagram": "={{ [{\"url\": $node[\"KO_Dia_Tem\"].json.render_url}] }}",
+            "Node-based diagram_HTML": "=https://{{ $(\"KO_Dia_Vercel_HTML\").item.json.url }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Level",
+              "displayName": "Level",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source Audio",
+              "displayName": "Source Audio",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CH",
+                  "value": "CH"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Audion Type",
+              "displayName": "Audion Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Culture_Image",
+                  "value": "Culture_Image"
+                },
+                {
+                  "name": "Poster",
+                  "value": "Poster"
+                },
+                {
+                  "name": "Node-based diagram",
+                  "value": "Node-based diagram"
+                },
+                {
+                  "name": "",
+                  "value": ""
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Culture_Image",
+              "displayName": "Culture_Image",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Culture_Image_HTML",
+              "displayName": "Culture_Image_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Poster",
+              "displayName": "Poster",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Poster_HTML",
+              "displayName": "Poster_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Node-based diagram",
+              "displayName": "Node-based diagram",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Node-based diagram_HTML",
+              "displayName": "Node-based diagram_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "QR_code",
+              "displayName": "QR_code",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Created Time",
+              "displayName": "Created Time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "name": "KO_Dia upload",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        2736,
+        -1136
+      ],
+      "id": "88ead541-8ad7-4a43-a923-04d27cc200a4",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/bytedance/seedream/v4.5/text-to-image",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=prompt",
+              "value": "={{ $json.prompt }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1904,
+        -2288
+      ],
+      "id": "8cf7eabf-4335-42b2-a38e-6e61aa8dfaba",
+      "name": "CH_Seedream_image",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WM8EAChZZeMPUryk",
+          "name": "fal.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "={{ $node[\"Download Audio\"].json.filename }}",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1KOYdYmLMf1N_ess5MBtY2DqH5zKzIJGR",
+          "mode": "list",
+          "cachedResultName": "AI박사학위논문_이미지",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1KOYdYmLMf1N_ess5MBtY2DqH5zKzIJGR"
+        },
+        "options": {}
+      },
+      "name": "Audio to Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -144,
+        -1680
+      ],
+      "id": "4c5b32da-ef1b-40d7-b215-89e7a108a33a",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "RZzgO1tsXnGmdQyD",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.cloudinary.com/v1_1/dk7gzkbvz/auto/upload",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            },
+            {
+              "name": "upload_preset",
+              "value": "HTML_a2i_audio_"
+            },
+            {
+              "name": "resource_type",
+              "value": "auto"
+            },
+            {
+              "name": "folder",
+              "value": "a2i_audio"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        240,
+        -1856
+      ],
+      "id": "b38e6545-6dca-4515-a1f8-214b0b24c708",
+      "name": "Cloudinary_audio url"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.vercel.com/v13/deployments",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer vcp_2cNHp0NI1HnVscF4EsLaEnUc0WAW9HAhiljMyREg2gCB5o5VE93ZPxLm"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"name\": \"a2l-poster-{{ $json.recordId }}\",\n  \"target\": \"production\",\n  \"project\": \"a2i_n8n_curation\",\n  \"files\": [\n    {\n      \"file\": \"{{ $json.fileName }}\",\n      \"data\": \"{{ $json.htmlBase64 }}\",\n      \"encoding\": \"base64\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2576,
+        -2288
+      ],
+      "id": "ad47283e-abd3-49d6-9fe6-2a55b036f94a",
+      "name": "CH_Vercel_HTML"
+    },
+    {
+      "parameters": {
+        "jsCode": "// === 1. 이미지 URL (이전 이미지 생성 노드에서) ===\nconst imageUrl = $json.url || $json.render_url || \"\";\n\n// === 2. 오디오 URL (Cloudinary에서) ===\nconst audioSrc = $node[\"CH_Cul\"].json.audioSrc || \"\";\n\n// === 3. 메타데이터 ===\nconst level = $json[\"A Level\"] || $node[\"Get Audio from Airtable\"].json[\"A Level\"] || \"\";\nconst region = $json[\"Cultural Region\"] || $node[\"Get Audio from Airtable\"].json[\"Cultural Region\"] || \"\";\nconst recordId = $json.id || $node[\"Get Audio from Airtable\"].json.id || \"test_\" + Date.now();\n\n// === 4. 검증 ===\nconsole.log(\"imageUrl:\", imageUrl ? imageUrl.substring(0, 80) : \"없음\");\nconsole.log(\"audioSrc:\", audioSrc ? audioSrc.substring(0, 80) : \"없음\");\n\nif (!imageUrl) throw new Error(\"이미지 URL을 찾을 수 없습니다.\");\nif (!audioSrc) throw new Error(\"Cloudinary 오디오 URL을 찾을 수 없습니다.\");\n\n// === 5. HTML 생성 ===\nconst htmlContent = `<!DOCTYPE html>\n<html lang=\"ko\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>${level} - ${region}</title>\n  <style>\n    * { margin:0; padding:0; box-sizing:border-box; }\n    body {\n      min-height:100vh; display:flex; align-items:center; justify-content:center;\n      background:linear-gradient(135deg, #f8f0fa 0%, #e8f4f8 100%);\n      font-family:'Segoe UI', sans-serif; padding:20px;\n    }\n    .card {\n      max-width:720px; width:100%; border-radius:20px; overflow:hidden;\n      background:#fff; box-shadow:0 20px 60px rgba(0,0,0,0.15);\n    }\n    .image-wrap {\n      position:relative; cursor:pointer; overflow:hidden;\n    }\n    .image-wrap img { width:100%; display:block; transition:transform 0.3s; }\n    .image-wrap:hover img { transform:scale(1.02); }\n    .play-btn {\n      position:absolute; bottom:24px; left:50%; transform:translateX(-50%);\n      background:rgba(255,77,77,0.95); color:#fff;\n      padding:14px 36px; border-radius:50px; border:none;\n      font-size:18px; font-weight:bold; cursor:pointer;\n      box-shadow:0 8px 25px rgba(255,77,77,0.4);\n      transition:all 0.3s; display:flex; align-items:center; gap:8px;\n    }\n    .play-btn:hover { background:#e63939; transform:translateX(-50%) scale(1.05); }\n    .play-btn.playing { background:#4CAF50; box-shadow:0 8px 25px rgba(76,175,80,0.4); }\n    .controls {\n      padding:20px 24px; display:flex; align-items:center; justify-content:space-between;\n    }\n    .badge {\n      background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff;\n      padding:6px 16px; border-radius:20px; font-size:13px; font-weight:600;\n    }\n    .progress-bar {\n      flex:1; margin:0 16px; height:4px; background:#e5e7eb; border-radius:4px;\n      overflow:hidden; cursor:pointer;\n    }\n    .progress-fill {\n      height:100%; width:0%; background:linear-gradient(90deg,#6366f1,#ec4899);\n      border-radius:4px; transition:width 0.1s;\n    }\n    .time { font-size:13px; color:#9ca3af; min-width:40px; text-align:right; }\n    .error-msg {\n      color:#d32f2f; text-align:center; padding:12px; font-size:14px; display:none;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"card\">\n    <div class=\"image-wrap\" onclick=\"toggleAudio()\">\n      <img src=\"${imageUrl}\" alt=\"${level} ${region} Culture Poster\">\n      <button class=\"play-btn\" id=\"playBtn\">\n        <span id=\"playIcon\">▶</span>\n        <span id=\"playText\">소리 듣기</span>\n      </button>\n    </div>\n    <div class=\"controls\">\n      <span class=\"badge\">${level} · ${region}</span>\n      <div class=\"progress-bar\" id=\"progressBar\" onclick=\"seek(event)\">\n        <div class=\"progress-fill\" id=\"progressFill\"></div>\n      </div>\n      <span class=\"time\" id=\"timeDisplay\">0:00</span>\n    </div>\n    <p class=\"error-msg\" id=\"errorMsg\"></p>\n  </div>\n\n  <audio id=\"myAudio\" preload=\"metadata\"></audio>\n\n  <script>\n    const audio = document.getElementById(\"myAudio\");\n    const playBtn = document.getElementById(\"playBtn\");\n    const playIcon = document.getElementById(\"playIcon\");\n    const playText = document.getElementById(\"playText\");\n    const progressFill = document.getElementById(\"progressFill\");\n    const timeDisplay = document.getElementById(\"timeDisplay\");\n    const errorMsg = document.getElementById(\"errorMsg\");\n\n    audio.src = \"${audioSrc.replace(/\"/g, '\\\\\\\\\"')}\";\n\n    audio.addEventListener(\"timeupdate\", () => {\n      if (audio.duration) {\n        progressFill.style.width = (audio.currentTime / audio.duration * 100) + \"%\";\n        const sec = Math.floor(audio.currentTime);\n        timeDisplay.textContent = Math.floor(sec/60) + \":\" + String(sec%60).padStart(2,\"0\");\n      }\n    });\n\n    audio.addEventListener(\"error\", () => {\n      errorMsg.textContent = \"오디오 로드 실패: \" + (audio.error?.message || \"파일을 확인하세요\");\n      errorMsg.style.display = \"block\";\n    });\n\n    audio.addEventListener(\"ended\", () => {\n      playIcon.textContent = \"▶\";\n      playText.textContent = \"다시 듣기\";\n      playBtn.classList.remove(\"playing\");\n      progressFill.style.width = \"0%\";\n    });\n\n    function toggleAudio() {\n      if (audio.paused) {\n        audio.play().then(() => {\n          playIcon.textContent = \"⏸\";\n          playText.textContent = \"재생 중...\";\n          playBtn.classList.add(\"playing\");\n        }).catch(err => {\n          errorMsg.textContent = \"재생 오류: \" + err.message;\n          errorMsg.style.display = \"block\";\n        });\n      } else {\n        audio.pause();\n        playIcon.textContent = \"▶\";\n        playText.textContent = \"계속 듣기\";\n        playBtn.classList.remove(\"playing\");\n      }\n    }\n\n    function seek(e) {\n      e.stopPropagation();\n      const bar = document.getElementById(\"progressBar\");\n      const ratio = e.offsetX / bar.offsetWidth;\n      audio.currentTime = ratio * audio.duration;\n    }\n  </script>\n</body>\n</html>`;\n\n// === 6. Base64 변환 및 반환 ===\nconst base64Html = Buffer.from(htmlContent, \"utf-8\").toString(\"base64\");\n\nreturn [{\n  json: {\n    recordId: recordId,\n    htmlBase64: base64Html,\n    fileName: \"index.html\",\n    projectName: \"a2i-ch-\" + recordId\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2352,
+        -2288
+      ],
+      "id": "b94db664-32c9-4a59-9d4f-db34a9982dc8",
+      "name": "Ch_Cul_Tem+audio"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "app1Af4d3ZuAZ1Zwp",
+          "mode": "list",
+          "cachedResultName": "2.4. AI 이미지 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblmIv9gVigTE7QD5",
+          "mode": "list",
+          "cachedResultName": "2.4.3 Audio to Image_HTML",
+          "cachedResultUrl": "https://airtable.com/app1Af4d3ZuAZ1Zwp/tblmIv9gVigTE7QD5"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get Audio from Airtable').item.json.id }}",
+            "Status": "done",
+            "Culture_Image_HTML": "=https://{{ $(\"KO_Cul_Vercel_HTML\").item.json.url }}",
+            "Culture_Image": "={{ [{\"url\": $node[\"KO_Cul_Tem\"].json.render_url}] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Level",
+              "displayName": "Level",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source Audio",
+              "displayName": "Source Audio",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CH",
+                  "value": "CH"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Audion Type",
+              "displayName": "Audion Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Culture_Image",
+                  "value": "Culture_Image"
+                },
+                {
+                  "name": "Poster",
+                  "value": "Poster"
+                },
+                {
+                  "name": "Node-based diagram",
+                  "value": "Node-based diagram"
+                },
+                {
+                  "name": "",
+                  "value": ""
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Culture_Image",
+              "displayName": "Culture_Image",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Culture_Image_HTML",
+              "displayName": "Culture_Image_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Poster",
+              "displayName": "Poster",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Poster_HTML",
+              "displayName": "Poster_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Node-based diagram",
+              "displayName": "Node-based diagram",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Node-based diagram_HTML",
+              "displayName": "Node-based diagram_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "QR_code",
+              "displayName": "QR_code",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Created Time",
+              "displayName": "Created Time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "name": "KO_Cul_upload",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [
+        2800,
+        -2096
+      ],
+      "id": "f8effc11-b801-4e09-ac41-83fa922d46bf",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// === 1. 이미지 URL (이전 이미지 생성 노드에서) ===\nconst imageUrl = $json.url || $json.render_url || \"\";\n\n// === 2. 오디오 URL (Cloudinary에서) ===\nconst audioSrc = $node[\"CH_Poster\"].json.audioSrc || \"\";\n\n// === 3. 메타데이터 ===\nconst level = $json[\"A Level\"] || $node[\"Get Audio from Airtable\"].json[\"A Level\"] || \"\";\nconst region = $json[\"Cultural Region\"] || $node[\"Get Audio from Airtable\"].json[\"Cultural Region\"] || \"\";\nconst recordId = $json.id || $node[\"Get Audio from Airtable\"].json.id || \"test_\" + Date.now();\n\n// === 4. 검증 ===\nconsole.log(\"imageUrl:\", imageUrl ? imageUrl.substring(0, 80) : \"없음\");\nconsole.log(\"audioSrc:\", audioSrc ? audioSrc.substring(0, 80) : \"없음\");\n\nif (!imageUrl) throw new Error(\"이미지 URL을 찾을 수 없습니다.\");\nif (!audioSrc) throw new Error(\"Cloudinary 오디오 URL을 찾을 수 없습니다.\");\n\n// === 5. HTML 생성 ===\nconst htmlContent = `<!DOCTYPE html>\n<html lang=\"ko\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>${level} - ${region}</title>\n  <style>\n    * { margin:0; padding:0; box-sizing:border-box; }\n    body {\n      min-height:100vh; display:flex; align-items:center; justify-content:center;\n      background:linear-gradient(135deg, #f8f0fa 0%, #e8f4f8 100%);\n      font-family:'Segoe UI', sans-serif; padding:20px;\n    }\n    .card {\n      max-width:720px; width:100%; border-radius:20px; overflow:hidden;\n      background:#fff; box-shadow:0 20px 60px rgba(0,0,0,0.15);\n    }\n    .image-wrap {\n      position:relative; cursor:pointer; overflow:hidden;\n    }\n    .image-wrap img { width:100%; display:block; transition:transform 0.3s; }\n    .image-wrap:hover img { transform:scale(1.02); }\n    .play-btn {\n      position:absolute; bottom:24px; left:50%; transform:translateX(-50%);\n      background:rgba(255,77,77,0.95); color:#fff;\n      padding:14px 36px; border-radius:50px; border:none;\n      font-size:18px; font-weight:bold; cursor:pointer;\n      box-shadow:0 8px 25px rgba(255,77,77,0.4);\n      transition:all 0.3s; display:flex; align-items:center; gap:8px;\n    }\n    .play-btn:hover { background:#e63939; transform:translateX(-50%) scale(1.05); }\n    .play-btn.playing { background:#4CAF50; box-shadow:0 8px 25px rgba(76,175,80,0.4); }\n    .controls {\n      padding:20px 24px; display:flex; align-items:center; justify-content:space-between;\n    }\n    .badge {\n      background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff;\n      padding:6px 16px; border-radius:20px; font-size:13px; font-weight:600;\n    }\n    .progress-bar {\n      flex:1; margin:0 16px; height:4px; background:#e5e7eb; border-radius:4px;\n      overflow:hidden; cursor:pointer;\n    }\n    .progress-fill {\n      height:100%; width:0%; background:linear-gradient(90deg,#6366f1,#ec4899);\n      border-radius:4px; transition:width 0.1s;\n    }\n    .time { font-size:13px; color:#9ca3af; min-width:40px; text-align:right; }\n    .error-msg {\n      color:#d32f2f; text-align:center; padding:12px; font-size:14px; display:none;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"card\">\n    <div class=\"image-wrap\" onclick=\"toggleAudio()\">\n      <img src=\"${imageUrl}\" alt=\"${level} ${region} Culture Poster\">\n      <button class=\"play-btn\" id=\"playBtn\">\n        <span id=\"playIcon\">▶</span>\n        <span id=\"playText\">소리 듣기</span>\n      </button>\n    </div>\n    <div class=\"controls\">\n      <span class=\"badge\">${level} · ${region}</span>\n      <div class=\"progress-bar\" id=\"progressBar\" onclick=\"seek(event)\">\n        <div class=\"progress-fill\" id=\"progressFill\"></div>\n      </div>\n      <span class=\"time\" id=\"timeDisplay\">0:00</span>\n    </div>\n    <p class=\"error-msg\" id=\"errorMsg\"></p>\n  </div>\n\n  <audio id=\"myAudio\" preload=\"metadata\"></audio>\n\n  <script>\n    const audio = document.getElementById(\"myAudio\");\n    const playBtn = document.getElementById(\"playBtn\");\n    const playIcon = document.getElementById(\"playIcon\");\n    const playText = document.getElementById(\"playText\");\n    const progressFill = document.getElementById(\"progressFill\");\n    const timeDisplay = document.getElementById(\"timeDisplay\");\n    const errorMsg = document.getElementById(\"errorMsg\");\n\n    audio.src = \"${audioSrc.replace(/\"/g, '\\\\\\\\\"')}\";\n\n    audio.addEventListener(\"timeupdate\", () => {\n      if (audio.duration) {\n        progressFill.style.width = (audio.currentTime / audio.duration * 100) + \"%\";\n        const sec = Math.floor(audio.currentTime);\n        timeDisplay.textContent = Math.floor(sec/60) + \":\" + String(sec%60).padStart(2,\"0\");\n      }\n    });\n\n    audio.addEventListener(\"error\", () => {\n      errorMsg.textContent = \"오디오 로드 실패: \" + (audio.error?.message || \"파일을 확인하세요\");\n      errorMsg.style.display = \"block\";\n    });\n\n    audio.addEventListener(\"ended\", () => {\n      playIcon.textContent = \"▶\";\n      playText.textContent = \"다시 듣기\";\n      playBtn.classList.remove(\"playing\");\n      progressFill.style.width = \"0%\";\n    });\n\n    function toggleAudio() {\n      if (audio.paused) {\n        audio.play().then(() => {\n          playIcon.textContent = \"⏸\";\n          playText.textContent = \"재생 중...\";\n          playBtn.classList.add(\"playing\");\n        }).catch(err => {\n          errorMsg.textContent = \"재생 오류: \" + err.message;\n          errorMsg.style.display = \"block\";\n        });\n      } else {\n        audio.pause();\n        playIcon.textContent = \"▶\";\n        playText.textContent = \"계속 듣기\";\n        playBtn.classList.remove(\"playing\");\n      }\n    }\n\n    function seek(e) {\n      e.stopPropagation();\n      const bar = document.getElementById(\"progressBar\");\n      const ratio = e.offsetX / bar.offsetWidth;\n      audio.currentTime = ratio * audio.duration;\n    }\n  </script>\n</body>\n</html>`;\n\n// === 6. Base64 변환 및 반환 ===\nconst base64Html = Buffer.from(htmlContent, \"utf-8\").toString(\"base64\");\n\nreturn [{\n  json: {\n    recordId: recordId,\n    htmlBase64: base64Html,\n    fileName: \"index.html\",\n    projectName: \"a2i-ch-\" + recordId\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2336,
+        -1808
+      ],
+      "id": "83a6483a-6493-4fcf-800f-28da41432de5",
+      "name": "Ch_Poster+audio"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.vercel.com/v13/deployments",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer vcp_2cNHp0NI1HnVscF4EsLaEnUc0WAW9HAhiljMyREg2gCB5o5VE93ZPxLm"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"name\": \"a2l-poster-{{ $json.recordId }}\",\n  \"target\": \"production\",\n  \"project\": \"a2i_n8n_curation\",\n  \"files\": [\n    {\n      \"file\": \"{{ $json.fileName }}\",\n      \"data\": \"{{ $json.htmlBase64 }}\",\n      \"encoding\": \"base64\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2576,
+        -2096
+      ],
+      "id": "01f54873-d600-4c61-b2c6-f47e49a8550b",
+      "name": "KO_Cul_Vercel_HTML"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.vercel.com/v13/deployments",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer vcp_2cNHp0NI1HnVscF4EsLaEnUc0WAW9HAhiljMyREg2gCB5o5VE93ZPxLm"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"name\": \"a2l-poster-{{ $json.recordId }}\",\n  \"target\": \"production\",\n  \"project\": \"a2i_n8n_curation\",\n  \"files\": [\n    {\n      \"file\": \"{{ $json.fileName }}\",\n      \"data\": \"{{ $json.htmlBase64 }}\",\n      \"encoding\": \"base64\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2576,
+        -1600
+      ],
+      "id": "4275f2bd-a968-4dd0-a42f-9462c239bc92",
+      "name": "KO_Poster_Vercel_HTML"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.vercel.com/v13/deployments",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer vcp_2cNHp0NI1HnVscF4EsLaEnUc0WAW9HAhiljMyREg2gCB5o5VE93ZPxLm"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"name\": \"a2l-poster-{{ $json.recordId }}\",\n  \"target\": \"production\",\n  \"project\": \"a2i_n8n_curation\",\n  \"files\": [\n    {\n      \"file\": \"{{ $json.fileName }}\",\n      \"data\": \"{{ $json.htmlBase64 }}\",\n      \"encoding\": \"base64\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2560,
+        -1808
+      ],
+      "id": "b93beadf-e579-4a54-9158-b52cad64a18e",
+      "name": "CH_Poster_Vercel_HTML"
+    },
+    {
+      "parameters": {
+        "jsCode": "// === 1. 이미지 URL (이전 이미지 생성 노드에서) ===\nconst imageUrl = $json.url || $json.render_url || \"\";\n\n// === 2. 오디오 URL (Cloudinary에서) ===\nconst audioSrc = $node[\"CH_Diagram\"].json.audioSrc || \"\";\n\n// === 3. 메타데이터 ===\nconst level = $json[\"A Level\"] || $node[\"Get Audio from Airtable\"].json[\"A Level\"] || \"\";\nconst region = $json[\"Cultural Region\"] || $node[\"Get Audio from Airtable\"].json[\"Cultural Region\"] || \"\";\nconst recordId = $json.id || $node[\"Get Audio from Airtable\"].json.id || \"test_\" + Date.now();\n\n// === 4. 검증 ===\nconsole.log(\"imageUrl:\", imageUrl ? imageUrl.substring(0, 80) : \"없음\");\nconsole.log(\"audioSrc:\", audioSrc ? audioSrc.substring(0, 80) : \"없음\");\n\nif (!imageUrl) throw new Error(\"이미지 URL을 찾을 수 없습니다.\");\nif (!audioSrc) throw new Error(\"Cloudinary 오디오 URL을 찾을 수 없습니다.\");\n\n// === 5. HTML 생성 ===\nconst htmlContent = `<!DOCTYPE html>\n<html lang=\"ko\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>${level} - ${region}</title>\n  <style>\n    * { margin:0; padding:0; box-sizing:border-box; }\n    body {\n      min-height:100vh; display:flex; align-items:center; justify-content:center;\n      background:linear-gradient(135deg, #f8f0fa 0%, #e8f4f8 100%);\n      font-family:'Segoe UI', sans-serif; padding:20px;\n    }\n    .card {\n      max-width:720px; width:100%; border-radius:20px; overflow:hidden;\n      background:#fff; box-shadow:0 20px 60px rgba(0,0,0,0.15);\n    }\n    .image-wrap {\n      position:relative; cursor:pointer; overflow:hidden;\n    }\n    .image-wrap img { width:100%; display:block; transition:transform 0.3s; }\n    .image-wrap:hover img { transform:scale(1.02); }\n    .play-btn {\n      position:absolute; bottom:24px; left:50%; transform:translateX(-50%);\n      background:rgba(255,77,77,0.95); color:#fff;\n      padding:14px 36px; border-radius:50px; border:none;\n      font-size:18px; font-weight:bold; cursor:pointer;\n      box-shadow:0 8px 25px rgba(255,77,77,0.4);\n      transition:all 0.3s; display:flex; align-items:center; gap:8px;\n    }\n    .play-btn:hover { background:#e63939; transform:translateX(-50%) scale(1.05); }\n    .play-btn.playing { background:#4CAF50; box-shadow:0 8px 25px rgba(76,175,80,0.4); }\n    .controls {\n      padding:20px 24px; display:flex; align-items:center; justify-content:space-between;\n    }\n    .badge {\n      background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff;\n      padding:6px 16px; border-radius:20px; font-size:13px; font-weight:600;\n    }\n    .progress-bar {\n      flex:1; margin:0 16px; height:4px; background:#e5e7eb; border-radius:4px;\n      overflow:hidden; cursor:pointer;\n    }\n    .progress-fill {\n      height:100%; width:0%; background:linear-gradient(90deg,#6366f1,#ec4899);\n      border-radius:4px; transition:width 0.1s;\n    }\n    .time { font-size:13px; color:#9ca3af; min-width:40px; text-align:right; }\n    .error-msg {\n      color:#d32f2f; text-align:center; padding:12px; font-size:14px; display:none;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"card\">\n    <div class=\"image-wrap\" onclick=\"toggleAudio()\">\n      <img src=\"${imageUrl}\" alt=\"${level} ${region} Culture Poster\">\n      <button class=\"play-btn\" id=\"playBtn\">\n        <span id=\"playIcon\">▶</span>\n        <span id=\"playText\">소리 듣기</span>\n      </button>\n    </div>\n    <div class=\"controls\">\n      <span class=\"badge\">${level} · ${region}</span>\n      <div class=\"progress-bar\" id=\"progressBar\" onclick=\"seek(event)\">\n        <div class=\"progress-fill\" id=\"progressFill\"></div>\n      </div>\n      <span class=\"time\" id=\"timeDisplay\">0:00</span>\n    </div>\n    <p class=\"error-msg\" id=\"errorMsg\"></p>\n  </div>\n\n  <audio id=\"myAudio\" preload=\"metadata\"></audio>\n\n  <script>\n    const audio = document.getElementById(\"myAudio\");\n    const playBtn = document.getElementById(\"playBtn\");\n    const playIcon = document.getElementById(\"playIcon\");\n    const playText = document.getElementById(\"playText\");\n    const progressFill = document.getElementById(\"progressFill\");\n    const timeDisplay = document.getElementById(\"timeDisplay\");\n    const errorMsg = document.getElementById(\"errorMsg\");\n\n    audio.src = \"${audioSrc.replace(/\"/g, '\\\\\\\\\"')}\";\n\n    audio.addEventListener(\"timeupdate\", () => {\n      if (audio.duration) {\n        progressFill.style.width = (audio.currentTime / audio.duration * 100) + \"%\";\n        const sec = Math.floor(audio.currentTime);\n        timeDisplay.textContent = Math.floor(sec/60) + \":\" + String(sec%60).padStart(2,\"0\");\n      }\n    });\n\n    audio.addEventListener(\"error\", () => {\n      errorMsg.textContent = \"오디오 로드 실패: \" + (audio.error?.message || \"파일을 확인하세요\");\n      errorMsg.style.display = \"block\";\n    });\n\n    audio.addEventListener(\"ended\", () => {\n      playIcon.textContent = \"▶\";\n      playText.textContent = \"다시 듣기\";\n      playBtn.classList.remove(\"playing\");\n      progressFill.style.width = \"0%\";\n    });\n\n    function toggleAudio() {\n      if (audio.paused) {\n        audio.play().then(() => {\n          playIcon.textContent = \"⏸\";\n          playText.textContent = \"재생 중...\";\n          playBtn.classList.add(\"playing\");\n        }).catch(err => {\n          errorMsg.textContent = \"재생 오류: \" + err.message;\n          errorMsg.style.display = \"block\";\n        });\n      } else {\n        audio.pause();\n        playIcon.textContent = \"▶\";\n        playText.textContent = \"계속 듣기\";\n        playBtn.classList.remove(\"playing\");\n      }\n    }\n\n    function seek(e) {\n      e.stopPropagation();\n      const bar = document.getElementById(\"progressBar\");\n      const ratio = e.offsetX / bar.offsetWidth;\n      audio.currentTime = ratio * audio.duration;\n    }\n  </script>\n</body>\n</html>`;\n\n// === 6. Base64 변환 및 반환 ===\nconst base64Html = Buffer.from(htmlContent, \"utf-8\").toString(\"base64\");\n\nreturn [{\n  json: {\n    recordId: recordId,\n    htmlBase64: base64Html,\n    fileName: \"index.html\",\n    projectName: \"a2i-ch-\" + recordId\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2336,
+        -1376
+      ],
+      "id": "8b14445f-d2a4-41aa-911e-60af652cf538",
+      "name": "Ch_Dia+audio"
+    },
+    {
+      "parameters": {
+        "jsCode": "// === 1. 이미지 URL (이전 이미지 생성 노드에서) ===\nconst imageUrl = $json.url || $json.render_url || \"\";\n\n// === 2. 오디오 URL \nconst audioSrc = $node[\"CH_Cul\"].json.audioSrc || \"\";\n\n// === 3. 메타데이터 ===\nconst level = $json[\"A Level\"] || $node[\"Get Audio from Airtable\"].json[\"A Level\"] || \"\";\nconst region = $json[\"Cultural Region\"] || $node[\"Get Audio from Airtable\"].json[\"Cultural Region\"] || \"\";\nconst recordId = $json.id || $node[\"Get Audio from Airtable\"].json.id || \"test_\" + Date.now();\n\n// === 4. 검증 ===\nconsole.log(\"imageUrl:\", imageUrl ? imageUrl.substring(0, 80) : \"없음\");\nconsole.log(\"audioSrc:\", audioSrc ? audioSrc.substring(0, 80) : \"없음\");\n\nif (!imageUrl) throw new Error(\"이미지 URL을 찾을 수 없습니다.\");\nif (!audioSrc) throw new Error(\"Cloudinary 오디오 URL을 찾을 수 없습니다.\");\n\n// === 5. HTML 생성 ===\nconst htmlContent = `<!DOCTYPE html>\n<html lang=\"ko\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>${level} - ${region}</title>\n  <style>\n    * { margin:0; padding:0; box-sizing:border-box; }\n    body {\n      min-height:100vh; display:flex; align-items:center; justify-content:center;\n      background:linear-gradient(135deg, #f8f0fa 0%, #e8f4f8 100%);\n      font-family:'Segoe UI', sans-serif; padding:20px;\n    }\n    .card {\n      max-width:720px; width:100%; border-radius:20px; overflow:hidden;\n      background:#fff; box-shadow:0 20px 60px rgba(0,0,0,0.15);\n    }\n    .image-wrap {\n      position:relative; cursor:pointer; overflow:hidden;\n    }\n    .image-wrap img { width:100%; display:block; transition:transform 0.3s; }\n    .image-wrap:hover img { transform:scale(1.02); }\n    .play-btn {\n      position:absolute; bottom:24px; left:50%; transform:translateX(-50%);\n      background:rgba(255,77,77,0.95); color:#fff;\n      padding:14px 36px; border-radius:50px; border:none;\n      font-size:18px; font-weight:bold; cursor:pointer;\n      box-shadow:0 8px 25px rgba(255,77,77,0.4);\n      transition:all 0.3s; display:flex; align-items:center; gap:8px;\n    }\n    .play-btn:hover { background:#e63939; transform:translateX(-50%) scale(1.05); }\n    .play-btn.playing { background:#4CAF50; box-shadow:0 8px 25px rgba(76,175,80,0.4); }\n    .controls {\n      padding:20px 24px; display:flex; align-items:center; justify-content:space-between;\n    }\n    .badge {\n      background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff;\n      padding:6px 16px; border-radius:20px; font-size:13px; font-weight:600;\n    }\n    .progress-bar {\n      flex:1; margin:0 16px; height:4px; background:#e5e7eb; border-radius:4px;\n      overflow:hidden; cursor:pointer;\n    }\n    .progress-fill {\n      height:100%; width:0%; background:linear-gradient(90deg,#6366f1,#ec4899);\n      border-radius:4px; transition:width 0.1s;\n    }\n    .time { font-size:13px; color:#9ca3af; min-width:40px; text-align:right; }\n    .error-msg {\n      color:#d32f2f; text-align:center; padding:12px; font-size:14px; display:none;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"card\">\n    <div class=\"image-wrap\" onclick=\"toggleAudio()\">\n      <img src=\"${imageUrl}\" alt=\"${level} ${region} Culture Poster\">\n      <button class=\"play-btn\" id=\"playBtn\">\n        <span id=\"playIcon\">▶</span>\n        <span id=\"playText\">소리 듣기</span>\n      </button>\n    </div>\n    <div class=\"controls\">\n      <span class=\"badge\">${level} · ${region}</span>\n      <div class=\"progress-bar\" id=\"progressBar\" onclick=\"seek(event)\">\n        <div class=\"progress-fill\" id=\"progressFill\"></div>\n      </div>\n      <span class=\"time\" id=\"timeDisplay\">0:00</span>\n    </div>\n    <p class=\"error-msg\" id=\"errorMsg\"></p>\n  </div>\n\n  <audio id=\"myAudio\" preload=\"metadata\"></audio>\n\n  <script>\n    const audio = document.getElementById(\"myAudio\");\n    const playBtn = document.getElementById(\"playBtn\");\n    const playIcon = document.getElementById(\"playIcon\");\n    const playText = document.getElementById(\"playText\");\n    const progressFill = document.getElementById(\"progressFill\");\n    const timeDisplay = document.getElementById(\"timeDisplay\");\n    const errorMsg = document.getElementById(\"errorMsg\");\n\n    audio.src = \"${audioSrc.replace(/\"/g, '\\\\\\\\\"')}\";\n\n    audio.addEventListener(\"timeupdate\", () => {\n      if (audio.duration) {\n        progressFill.style.width = (audio.currentTime / audio.duration * 100) + \"%\";\n        const sec = Math.floor(audio.currentTime);\n        timeDisplay.textContent = Math.floor(sec/60) + \":\" + String(sec%60).padStart(2,\"0\");\n      }\n    });\n\n    audio.addEventListener(\"error\", () => {\n      errorMsg.textContent = \"오디오 로드 실패: \" + (audio.error?.message || \"파일을 확인하세요\");\n      errorMsg.style.display = \"block\";\n    });\n\n    audio.addEventListener(\"ended\", () => {\n      playIcon.textContent = \"▶\";\n      playText.textContent = \"다시 듣기\";\n      playBtn.classList.remove(\"playing\");\n      progressFill.style.width = \"0%\";\n    });\n\n    function toggleAudio() {\n      if (audio.paused) {\n        audio.play().then(() => {\n          playIcon.textContent = \"⏸\";\n          playText.textContent = \"재생 중...\";\n          playBtn.classList.add(\"playing\");\n        }).catch(err => {\n          errorMsg.textContent = \"재생 오류: \" + err.message;\n          errorMsg.style.display = \"block\";\n        });\n      } else {\n        audio.pause();\n        playIcon.textContent = \"▶\";\n        playText.textContent = \"계속 듣기\";\n        playBtn.classList.remove(\"playing\");\n      }\n    }\n\n    function seek(e) {\n      e.stopPropagation();\n      const bar = document.getElementById(\"progressBar\");\n      const ratio = e.offsetX / bar.offsetWidth;\n      audio.currentTime = ratio * audio.duration;\n    }\n  </script>\n</body>\n</html>`;\n\n// === 6. Base64 변환 및 반환 ===\nconst base64Html = Buffer.from(htmlContent, \"utf-8\").toString(\"base64\");\n\nreturn [{\n  json: {\n    recordId: recordId,\n    htmlBase64: base64Html,\n    fileName: \"index.html\",\n    projectName: \"a2i-ch-\" + recordId\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2352,
+        -2096
+      ],
+      "id": "57268d4f-7466-4ec8-a268-55964581a953",
+      "name": "Ko_Cul_Tem+audio"
+    },
+    {
+      "parameters": {
+        "jsCode": "// === 1. 이미지 URL (이전 이미지 생성 노드에서) ===\nconst imageUrl = $json.url || $json.render_url || \"\";\n\n// === 2. 오디오 URL \nconst audioSrc = $node[\"CH_Poster\"].json.audioSrc || \"\";\n\n// === 3. 메타데이터 ===\nconst level = $json[\"A Level\"] || $node[\"Get Audio from Airtable\"].json[\"A Level\"] || \"\";\nconst region = $json[\"Cultural Region\"] || $node[\"Get Audio from Airtable\"].json[\"Cultural Region\"] || \"\";\nconst recordId = $json.id || $node[\"Get Audio from Airtable\"].json.id || \"test_\" + Date.now();\n\n// === 4. 검증 ===\nconsole.log(\"imageUrl:\", imageUrl ? imageUrl.substring(0, 80) : \"없음\");\nconsole.log(\"audioSrc:\", audioSrc ? audioSrc.substring(0, 80) : \"없음\");\n\nif (!imageUrl) throw new Error(\"이미지 URL을 찾을 수 없습니다.\");\nif (!audioSrc) throw new Error(\"Cloudinary 오디오 URL을 찾을 수 없습니다.\");\n\n// === 5. HTML 생성 ===\nconst htmlContent = `<!DOCTYPE html>\n<html lang=\"ko\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>${level} - ${region}</title>\n  <style>\n    * { margin:0; padding:0; box-sizing:border-box; }\n    body {\n      min-height:100vh; display:flex; align-items:center; justify-content:center;\n      background:linear-gradient(135deg, #f8f0fa 0%, #e8f4f8 100%);\n      font-family:'Segoe UI', sans-serif; padding:20px;\n    }\n    .card {\n      max-width:720px; width:100%; border-radius:20px; overflow:hidden;\n      background:#fff; box-shadow:0 20px 60px rgba(0,0,0,0.15);\n    }\n    .image-wrap {\n      position:relative; cursor:pointer; overflow:hidden;\n    }\n    .image-wrap img { width:100%; display:block; transition:transform 0.3s; }\n    .image-wrap:hover img { transform:scale(1.02); }\n    .play-btn {\n      position:absolute; bottom:24px; left:50%; transform:translateX(-50%);\n      background:rgba(255,77,77,0.95); color:#fff;\n      padding:14px 36px; border-radius:50px; border:none;\n      font-size:18px; font-weight:bold; cursor:pointer;\n      box-shadow:0 8px 25px rgba(255,77,77,0.4);\n      transition:all 0.3s; display:flex; align-items:center; gap:8px;\n    }\n    .play-btn:hover { background:#e63939; transform:translateX(-50%) scale(1.05); }\n    .play-btn.playing { background:#4CAF50; box-shadow:0 8px 25px rgba(76,175,80,0.4); }\n    .controls {\n      padding:20px 24px; display:flex; align-items:center; justify-content:space-between;\n    }\n    .badge {\n      background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff;\n      padding:6px 16px; border-radius:20px; font-size:13px; font-weight:600;\n    }\n    .progress-bar {\n      flex:1; margin:0 16px; height:4px; background:#e5e7eb; border-radius:4px;\n      overflow:hidden; cursor:pointer;\n    }\n    .progress-fill {\n      height:100%; width:0%; background:linear-gradient(90deg,#6366f1,#ec4899);\n      border-radius:4px; transition:width 0.1s;\n    }\n    .time { font-size:13px; color:#9ca3af; min-width:40px; text-align:right; }\n    .error-msg {\n      color:#d32f2f; text-align:center; padding:12px; font-size:14px; display:none;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"card\">\n    <div class=\"image-wrap\" onclick=\"toggleAudio()\">\n      <img src=\"${imageUrl}\" alt=\"${level} ${region} Culture Poster\">\n      <button class=\"play-btn\" id=\"playBtn\">\n        <span id=\"playIcon\">▶</span>\n        <span id=\"playText\">소리 듣기</span>\n      </button>\n    </div>\n    <div class=\"controls\">\n      <span class=\"badge\">${level} · ${region}</span>\n      <div class=\"progress-bar\" id=\"progressBar\" onclick=\"seek(event)\">\n        <div class=\"progress-fill\" id=\"progressFill\"></div>\n      </div>\n      <span class=\"time\" id=\"timeDisplay\">0:00</span>\n    </div>\n    <p class=\"error-msg\" id=\"errorMsg\"></p>\n  </div>\n\n  <audio id=\"myAudio\" preload=\"metadata\"></audio>\n\n  <script>\n    const audio = document.getElementById(\"myAudio\");\n    const playBtn = document.getElementById(\"playBtn\");\n    const playIcon = document.getElementById(\"playIcon\");\n    const playText = document.getElementById(\"playText\");\n    const progressFill = document.getElementById(\"progressFill\");\n    const timeDisplay = document.getElementById(\"timeDisplay\");\n    const errorMsg = document.getElementById(\"errorMsg\");\n\n    audio.src = \"${audioSrc.replace(/\"/g, '\\\\\\\\\"')}\";\n\n    audio.addEventListener(\"timeupdate\", () => {\n      if (audio.duration) {\n        progressFill.style.width = (audio.currentTime / audio.duration * 100) + \"%\";\n        const sec = Math.floor(audio.currentTime);\n        timeDisplay.textContent = Math.floor(sec/60) + \":\" + String(sec%60).padStart(2,\"0\");\n      }\n    });\n\n    audio.addEventListener(\"error\", () => {\n      errorMsg.textContent = \"오디오 로드 실패: \" + (audio.error?.message || \"파일을 확인하세요\");\n      errorMsg.style.display = \"block\";\n    });\n\n    audio.addEventListener(\"ended\", () => {\n      playIcon.textContent = \"▶\";\n      playText.textContent = \"다시 듣기\";\n      playBtn.classList.remove(\"playing\");\n      progressFill.style.width = \"0%\";\n    });\n\n    function toggleAudio() {\n      if (audio.paused) {\n        audio.play().then(() => {\n          playIcon.textContent = \"⏸\";\n          playText.textContent = \"재생 중...\";\n          playBtn.classList.add(\"playing\");\n        }).catch(err => {\n          errorMsg.textContent = \"재생 오류: \" + err.message;\n          errorMsg.style.display = \"block\";\n        });\n      } else {\n        audio.pause();\n        playIcon.textContent = \"▶\";\n        playText.textContent = \"계속 듣기\";\n        playBtn.classList.remove(\"playing\");\n      }\n    }\n\n    function seek(e) {\n      e.stopPropagation();\n      const bar = document.getElementById(\"progressBar\");\n      const ratio = e.offsetX / bar.offsetWidth;\n      audio.currentTime = ratio * audio.duration;\n    }\n  </script>\n</body>\n</html>`;\n\n// === 6. Base64 변환 및 반환 ===\nconst base64Html = Buffer.from(htmlContent, \"utf-8\").toString(\"base64\");\n\nreturn [{\n  json: {\n    recordId: recordId,\n    htmlBase64: base64Html,\n    fileName: \"index.html\",\n    projectName: \"a2i-ch-\" + recordId\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2352,
+        -1600
+      ],
+      "id": "afd1d152-7fec-4bce-bfa6-c275e81d45e9",
+      "name": "Ko_Poster+audio"
+    },
+    {
+      "parameters": {
+        "jsCode": "// === 1. 이미지 URL (이전 이미지 생성 노드에서) ===\nconst imageUrl = $json.url || $json.render_url || \"\";\n\n// === 2. 오디오 URL \nconst audioSrc = $node[\"CH_Diagram\"].json.audioSrc || \"\";\n\n// === 3. 메타데이터 ===\nconst level = $json[\"A Level\"] || $node[\"Get Audio from Airtable\"].json[\"A Level\"] || \"\";\nconst region = $json[\"Cultural Region\"] || $node[\"Get Audio from Airtable\"].json[\"Cultural Region\"] || \"\";\nconst recordId = $json.id || $node[\"Get Audio from Airtable\"].json.id || \"test_\" + Date.now();\n\n// === 4. 검증 ===\nconsole.log(\"imageUrl:\", imageUrl ? imageUrl.substring(0, 80) : \"없음\");\nconsole.log(\"audioSrc:\", audioSrc ? audioSrc.substring(0, 80) : \"없음\");\n\nif (!imageUrl) throw new Error(\"이미지 URL을 찾을 수 없습니다.\");\nif (!audioSrc) throw new Error(\"Cloudinary 오디오 URL을 찾을 수 없습니다.\");\n\n// === 5. HTML 생성 ===\nconst htmlContent = `<!DOCTYPE html>\n<html lang=\"ko\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>${level} - ${region}</title>\n  <style>\n    * { margin:0; padding:0; box-sizing:border-box; }\n    body {\n      min-height:100vh; display:flex; align-items:center; justify-content:center;\n      background:linear-gradient(135deg, #f8f0fa 0%, #e8f4f8 100%);\n      font-family:'Segoe UI', sans-serif; padding:20px;\n    }\n    .card {\n      max-width:720px; width:100%; border-radius:20px; overflow:hidden;\n      background:#fff; box-shadow:0 20px 60px rgba(0,0,0,0.15);\n    }\n    .image-wrap {\n      position:relative; cursor:pointer; overflow:hidden;\n    }\n    .image-wrap img { width:100%; display:block; transition:transform 0.3s; }\n    .image-wrap:hover img { transform:scale(1.02); }\n    .play-btn {\n      position:absolute; bottom:24px; left:50%; transform:translateX(-50%);\n      background:rgba(255,77,77,0.95); color:#fff;\n      padding:14px 36px; border-radius:50px; border:none;\n      font-size:18px; font-weight:bold; cursor:pointer;\n      box-shadow:0 8px 25px rgba(255,77,77,0.4);\n      transition:all 0.3s; display:flex; align-items:center; gap:8px;\n    }\n    .play-btn:hover { background:#e63939; transform:translateX(-50%) scale(1.05); }\n    .play-btn.playing { background:#4CAF50; box-shadow:0 8px 25px rgba(76,175,80,0.4); }\n    .controls {\n      padding:20px 24px; display:flex; align-items:center; justify-content:space-between;\n    }\n    .badge {\n      background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff;\n      padding:6px 16px; border-radius:20px; font-size:13px; font-weight:600;\n    }\n    .progress-bar {\n      flex:1; margin:0 16px; height:4px; background:#e5e7eb; border-radius:4px;\n      overflow:hidden; cursor:pointer;\n    }\n    .progress-fill {\n      height:100%; width:0%; background:linear-gradient(90deg,#6366f1,#ec4899);\n      border-radius:4px; transition:width 0.1s;\n    }\n    .time { font-size:13px; color:#9ca3af; min-width:40px; text-align:right; }\n    .error-msg {\n      color:#d32f2f; text-align:center; padding:12px; font-size:14px; display:none;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"card\">\n    <div class=\"image-wrap\" onclick=\"toggleAudio()\">\n      <img src=\"${imageUrl}\" alt=\"${level} ${region} Culture Poster\">\n      <button class=\"play-btn\" id=\"playBtn\">\n        <span id=\"playIcon\">▶</span>\n        <span id=\"playText\">소리 듣기</span>\n      </button>\n    </div>\n    <div class=\"controls\">\n      <span class=\"badge\">${level} · ${region}</span>\n      <div class=\"progress-bar\" id=\"progressBar\" onclick=\"seek(event)\">\n        <div class=\"progress-fill\" id=\"progressFill\"></div>\n      </div>\n      <span class=\"time\" id=\"timeDisplay\">0:00</span>\n    </div>\n    <p class=\"error-msg\" id=\"errorMsg\"></p>\n  </div>\n\n  <audio id=\"myAudio\" preload=\"metadata\"></audio>\n\n  <script>\n    const audio = document.getElementById(\"myAudio\");\n    const playBtn = document.getElementById(\"playBtn\");\n    const playIcon = document.getElementById(\"playIcon\");\n    const playText = document.getElementById(\"playText\");\n    const progressFill = document.getElementById(\"progressFill\");\n    const timeDisplay = document.getElementById(\"timeDisplay\");\n    const errorMsg = document.getElementById(\"errorMsg\");\n\n    audio.src = \"${audioSrc.replace(/\"/g, '\\\\\\\\\"')}\";\n\n    audio.addEventListener(\"timeupdate\", () => {\n      if (audio.duration) {\n        progressFill.style.width = (audio.currentTime / audio.duration * 100) + \"%\";\n        const sec = Math.floor(audio.currentTime);\n        timeDisplay.textContent = Math.floor(sec/60) + \":\" + String(sec%60).padStart(2,\"0\");\n      }\n    });\n\n    audio.addEventListener(\"error\", () => {\n      errorMsg.textContent = \"오디오 로드 실패: \" + (audio.error?.message || \"파일을 확인하세요\");\n      errorMsg.style.display = \"block\";\n    });\n\n    audio.addEventListener(\"ended\", () => {\n      playIcon.textContent = \"▶\";\n      playText.textContent = \"다시 듣기\";\n      playBtn.classList.remove(\"playing\");\n      progressFill.style.width = \"0%\";\n    });\n\n    function toggleAudio() {\n      if (audio.paused) {\n        audio.play().then(() => {\n          playIcon.textContent = \"⏸\";\n          playText.textContent = \"재생 중...\";\n          playBtn.classList.add(\"playing\");\n        }).catch(err => {\n          errorMsg.textContent = \"재생 오류: \" + err.message;\n          errorMsg.style.display = \"block\";\n        });\n      } else {\n        audio.pause();\n        playIcon.textContent = \"▶\";\n        playText.textContent = \"계속 듣기\";\n        playBtn.classList.remove(\"playing\");\n      }\n    }\n\n    function seek(e) {\n      e.stopPropagation();\n      const bar = document.getElementById(\"progressBar\");\n      const ratio = e.offsetX / bar.offsetWidth;\n      audio.currentTime = ratio * audio.duration;\n    }\n  </script>\n</body>\n</html>`;\n\n// === 6. Base64 변환 및 반환 ===\nconst base64Html = Buffer.from(htmlContent, \"utf-8\").toString(\"base64\");\n\nreturn [{\n  json: {\n    recordId: recordId,\n    htmlBase64: base64Html,\n    fileName: \"index.html\",\n    projectName: \"a2i-ch-\" + recordId\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2320,
+        -1136
+      ],
+      "id": "080ffa64-0be1-4490-869e-fc5c0af3d28f",
+      "name": "Ko_Dia+audio"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "5a1a3727-509e-40d2-b6aa-8fd6713dd663",
+              "leftValue": "={{ $('Get Audio from Airtable').item.json['Cultural Region'] }}",
+              "rightValue": "CH",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1712,
+        -2256
+      ],
+      "id": "89e7ca91-3f4e-4efc-b4a6-5c56ec958a71",
+      "name": "CH_Cul"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.vercel.com/v13/deployments",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer vcp_2cNHp0NI1HnVscF4EsLaEnUc0WAW9HAhiljMyREg2gCB5o5VE93ZPxLm"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"name\": \"a2l-poster-{{ $json.recordId }}\",\n  \"target\": \"production\",\n  \"project\": \"a2i_n8n_curation\",\n  \"files\": [\n    {\n      \"file\": \"{{ $json.fileName }}\",\n      \"data\": \"{{ $json.htmlBase64 }}\",\n      \"encoding\": \"base64\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2560,
+        -1376
+      ],
+      "id": "d591b739-df9f-49bb-a3f9-1dca726dbe21",
+      "name": "CH_Dia_Vercel_HTML"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.vercel.com/v13/deployments",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer vcp_2cNHp0NI1HnVscF4EsLaEnUc0WAW9HAhiljMyREg2gCB5o5VE93ZPxLm"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"name\": \"a2l-poster-{{ $json.recordId }}\",\n  \"target\": \"production\",\n  \"project\": \"a2i_n8n_curation\",\n  \"files\": [\n    {\n      \"file\": \"{{ $json.fileName }}\",\n      \"data\": \"{{ $json.htmlBase64 }}\",\n      \"encoding\": \"base64\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2560,
+        -1136
+      ],
+      "id": "9acbafe4-78a7-4ad1-ab1d-f07a72e8afb3",
+      "name": "KO_Dia_Vercel_HTML"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "numberInputs": 3,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        736,
+        -1632
+      ],
+      "id": "7b51592b-6eb3-4e3f-9330-1cab83310b7e",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        960,
+        -1616
+      ],
+      "id": "f7d98130-cd0a-4914-a350-2ea29fdf329c",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Audion Type",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1168,
+        -1600
+      ],
+      "id": "96a40d8e-cf7c-40aa-a1bd-2264fa202322",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json[\"Audion Type\"] }}",
+                    "rightValue": "Culture_Image",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "50868b27-cfee-4b54-ad5e-e0ddc44b329d"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "5fa18790-d70c-43c5-a360-4e252b501f11",
+                    "leftValue": "={{ $json[\"Audion Type\"] }}",
+                    "rightValue": "Poster",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "6544c8c9-1e99-41fe-8922-cac8a7e8a9eb",
+                    "leftValue": "={{ $json[\"Audion Type\"] }}",
+                    "rightValue": "Node-based diagram",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1376,
+        -1616
+      ],
+      "id": "83c3a69d-d4b9-4a2c-b5f6-89a54ed78eb1",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/nano-banana-2",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=prompt",
+              "value": "={{ $json.prompt }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1904,
+        -2096
+      ],
+      "id": "a17ab83d-c54f-477d-9762-9970e937be08",
+      "name": "KO_Nano-ba2 image",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WM8EAChZZeMPUryk",
+          "name": "fal.ai"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Get Audio from Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Audio from Airtable": {
+      "main": [
+        [
+          {
+            "node": "Download Audio",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Download Audio": {
+      "main": [
+        [
+          {
+            "node": "Audio to Drive",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Cloudinary_audio url",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze audio": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Generate QR Code": {
+      "main": [
+        [
+          {
+            "node": "QR to Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QR to Drive": {
+      "main": [
+        [
+          {
+            "node": "QR upload Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cul_Prompt": {
+      "main": [
+        [
+          {
+            "node": "CH_Cul",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Poster Prompt": {
+      "main": [
+        [
+          {
+            "node": "CH_Poster",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_Poster": {
+      "main": [
+        [
+          {
+            "node": "CH_Nano Ba_poster",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "KO_Nano Ba_poster",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QR upload Airtable": {
+      "main": [
+        [
+          {
+            "node": "Analyze audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_Poster_Tem": {
+      "main": [
+        [
+          {
+            "node": "Ch_Poster+audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KO_Poster_Tem": {
+      "main": [
+        [
+          {
+            "node": "Ko_Poster+audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KO_Cul_Tem": {
+      "main": [
+        [
+          {
+            "node": "Ko_Cul_Tem+audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ch_Cul_Tem": {
+      "main": [
+        [
+          {
+            "node": "Ch_Cul_Tem+audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KO_Nano Ba_poster": {
+      "main": [
+        [
+          {
+            "node": "KO_Poster_Tem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_Nano Ba_poster": {
+      "main": [
+        [
+          {
+            "node": "CH_Poster_Tem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Diagram Prompt": {
+      "main": [
+        [
+          {
+            "node": "CH_Diagram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_Diagram": {
+      "main": [
+        [
+          {
+            "node": "CH_Seedream_dia",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "KO_Nano Ba_dia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_Seedream_dia": {
+      "main": [
+        [
+          {
+            "node": "Ch_Dia_Tem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ch_Dia_Tem": {
+      "main": [
+        [
+          {
+            "node": "Ch_Dia+audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KO_Nano Ba_dia": {
+      "main": [
+        [
+          {
+            "node": "KO_Dia_Tem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KO_Dia_Tem": {
+      "main": [
+        [
+          {
+            "node": "Ko_Dia+audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_Seedream_image": {
+      "main": [
+        [
+          {
+            "node": "Ch_Cul_Tem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audio to Drive": {
+      "main": [
+        [
+          {
+            "node": "Generate QR Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_Cul_upload": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloudinary_audio url": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_Vercel_HTML": {
+      "main": [
+        [
+          {
+            "node": "CH_Cul_upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ch_Cul_Tem+audio": {
+      "main": [
+        [
+          {
+            "node": "CH_Vercel_HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ch_Poster+audio": {
+      "main": [
+        [
+          {
+            "node": "CH_Poster_Vercel_HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KO_Cul_Vercel_HTML": {
+      "main": [
+        [
+          {
+            "node": "KO_Cul_upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_Poster_Vercel_HTML": {
+      "main": [
+        [
+          {
+            "node": "CH_Poster upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KO_Poster_Vercel_HTML": {
+      "main": [
+        [
+          {
+            "node": "KO_Poster upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ch_Dia+audio": {
+      "main": [
+        [
+          {
+            "node": "CH_Dia_Vercel_HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ko_Cul_Tem+audio": {
+      "main": [
+        [
+          {
+            "node": "KO_Cul_Vercel_HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ko_Poster+audio": {
+      "main": [
+        [
+          {
+            "node": "KO_Poster_Vercel_HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ko_Dia+audio": {
+      "main": [
+        [
+          {
+            "node": "KO_Dia_Vercel_HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_Cul": {
+      "main": [
+        [
+          {
+            "node": "CH_Seedream_image",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "KO_Nano-ba2 image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_Dia_Vercel_HTML": {
+      "main": [
+        [
+          {
+            "node": "CH_Dia_upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KO_Dia_Vercel_HTML": {
+      "main": [
+        [
+          {
+            "node": "KO_Dia upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KO_Cul_upload": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_Poster upload": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KO_Poster upload": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_Dia_upload": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KO_Dia upload": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Cul_Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Poster Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Diagram Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KO_Nano-ba2 image": {
+      "main": [
+        [
+          {
+            "node": "KO_Cul_Tem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "39d4902c-19e9-4c86-80b0-7426b3ff3b41",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "324b20db7bd7622c84e52c3bee689ffea3754ee2e9d9027179fea14d6a4cb1d7"
+  },
+  "id": "v2M3M297Nk4JUmc5",
+  "tags": []
+}
