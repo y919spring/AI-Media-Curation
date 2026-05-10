@@ -1,0 +1,4114 @@
+{
+  "name": "최종_n8n_종합 워크플로우_T+I+A+V",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1296,
+        -544
+      ],
+      "id": "6b1a39dc-c7c3-4619-98ff-93938055df9c",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appuoiNIjZTJpE3i9",
+          "mode": "list",
+          "cachedResultName": "KO-CN Edu",
+          "cachedResultUrl": "https://airtable.com/appuoiNIjZTJpE3i9"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblb2aPgbp1QwpH5O",
+          "mode": "list",
+          "cachedResultName": "T,I,A,V 2 I,A,V",
+          "cachedResultUrl": "https://airtable.com/appuoiNIjZTJpE3i9/tblb2aPgbp1QwpH5O"
+        },
+        "filterByFormula": "({Status}='ready')",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -1120,
+        -544
+      ],
+      "id": "79c61f58-fa3c-40d0-9031-16a30d7edeec",
+      "name": "Search records",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "fb1e7293-fae4-4e98-bbb9-2173c18f8222",
+                    "leftValue": "={{ $json['Source Type'] }}",
+                    "rightValue": "Text",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "eb35c47d-f9fb-4105-b128-6fae97e82493",
+                    "leftValue": "={{ $json['Source Type'] }}",
+                    "rightValue": "Image",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "dfdb75af-61a4-495a-913f-7540a3727e22",
+                    "leftValue": "={{ $json['Source Type'] }}",
+                    "rightValue": "A",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "a8e03757-c281-4695-9901-08ffb469243d",
+                    "leftValue": "={{ $json['Source Type'] }}",
+                    "rightValue": "Video",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -976,
+        -576
+      ],
+      "id": "247cb7a8-c878-4a48-9cdb-86a566d8ef92",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['Output Type'] }}",
+                    "rightValue": "Image",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "0386bb5c-8f7c-4cfa-afe2-abe4982065fd"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "60b20d9b-52c4-40f1-b210-5996a6c7e207",
+                    "leftValue": "={{ $json['Output Type'] }}",
+                    "rightValue": "Audio",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "dd3da9d0-c6eb-4008-85ae-4cb75c0ab720",
+                    "leftValue": "={{ $json['Output Type'] }}",
+                    "rightValue": "Video",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -560,
+        -1392
+      ],
+      "id": "ccfb090d-c786-4350-a39d-e388a2f1a5b2",
+      "name": "T2I,A,V"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['Output Type'] }}",
+                    "rightValue": "Image",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "0386bb5c-8f7c-4cfa-afe2-abe4982065fd"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "60b20d9b-52c4-40f1-b210-5996a6c7e207",
+                    "leftValue": "={{ $json['Output Type'] }}",
+                    "rightValue": "Audio",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "dd3da9d0-c6eb-4008-85ae-4cb75c0ab720",
+                    "leftValue": "={{ $json['Output Type'] }}",
+                    "rightValue": "Video",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -560,
+        -816
+      ],
+      "id": "719c8999-4a8a-4a33-ade2-27c100591b8c",
+      "name": "I2I,A,V"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.fields['Output Type'] }}",
+                    "rightValue": "Image",
+                    "operator": {
+                      "type": "array",
+                      "operation": "contains",
+                      "rightType": "any"
+                    },
+                    "id": "0386bb5c-8f7c-4cfa-afe2-abe4982065fd"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "60b20d9b-52c4-40f1-b210-5996a6c7e207",
+                    "leftValue": "={{ $json.fields['Output Type'] }}",
+                    "rightValue": "Audio",
+                    "operator": {
+                      "type": "array",
+                      "operation": "contains",
+                      "rightType": "any"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "dd3da9d0-c6eb-4008-85ae-4cb75c0ab720",
+                    "leftValue": "={{ $json.fields['Output Type'] }}",
+                    "rightValue": "Video",
+                    "operator": {
+                      "type": "array",
+                      "operation": "contains",
+                      "rightType": "any"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "allMatchingOutputs": true
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        688,
+        -368
+      ],
+      "id": "260fa25b-adbc-410e-a7d3-1c5071097215",
+      "name": "A2I,A,V"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Search records').item.json['Output Type'] }}",
+                    "rightValue": "Image",
+                    "operator": {
+                      "type": "array",
+                      "operation": "contains",
+                      "rightType": "any"
+                    },
+                    "id": "0386bb5c-8f7c-4cfa-afe2-abe4982065fd"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "60b20d9b-52c4-40f1-b210-5996a6c7e207",
+                    "leftValue": "={{ $('Search records').item.json['Output Type'] }}",
+                    "rightValue": "Audio",
+                    "operator": {
+                      "type": "array",
+                      "operation": "contains",
+                      "rightType": "any"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "dd3da9d0-c6eb-4008-85ae-4cb75c0ab720",
+                    "leftValue": "={{ $('Search records').item.json['Output Type'] }}",
+                    "rightValue": "Video",
+                    "operator": {
+                      "type": "array",
+                      "operation": "contains",
+                      "rightType": "any"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "allMatchingOutputs": true
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -560,
+        96
+      ],
+      "id": "8a789043-2850-47e9-9023-3d0dbc8aaebf",
+      "name": "V2I,A,V"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Output Type",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -784,
+        -1376
+      ],
+      "id": "0a08f5b9-6e7e-4039-90de-8252b9a75bd9",
+      "name": "Source_Text"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Output Type",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -784,
+        -800
+      ],
+      "id": "feccc26a-ffde-4511-af3b-71175865ecaa",
+      "name": "Source_Image"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/nano-banana-2",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=prompt",
+              "value": "={{ $json.output[0].content[0].text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        16,
+        -1568
+      ],
+      "id": "5f995b5e-2009-423f-88f5-2be29e64fed6",
+      "name": "Nano Ba_T2I",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WM8EAChZZeMPUryk",
+          "name": "fal.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/minimax/speech-2.6-turbo",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=prompt",
+              "value": "={{ $('Search records').item.json.Source_text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        16,
+        -1376
+      ],
+      "id": "3230fe85-753c-4d89-be90-cbbd015dba9b",
+      "name": "Minimax_T2A",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WM8EAChZZeMPUryk",
+          "name": "fal.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=## 카드뉴스 이미지 생성\n- 역할(Role)\n한중 언어문화 교육을 위한 전문 카드뉴스 디자이너이자 교육 콘텐츠 크리에이터다\n- 지침 (Instruction)\n1. 입력 소스의 발음(정확한 병음/한글 표준 발음 표시), 의미, 유래, 예문을 한 장의 카드뉴스로 통합 시각화한다. \n2. 카드 상단에 배경 일러스트를, 하단에 텍스트로 설명과 예문을 설계한다. \n3. 입력 소스의 비유적 의미를 직관적으로 시각화한다. 문화적 상징을 활용한다. \n4. 입력 소스의 언어에 따라 해당 문화 시각 코드를 반영한다. \n5. 입력 소스의 언어에 따라 해당 언어로 텍스트를 렌더링한다. \n- 입력 소스:  {{ $('Search records').item.json.Source_text }}\n- 입력 소스 언어:{{ $('Search records').item.json.Language }}\n6. 출력 구조\n(1)입력 소스가 한국어인 경우\n   한국어\n   [한글 발음] 예시) 한국어: 국물 -- [궁물]\n   중국어 해석\n   유래\n   예문\n(2)입력 소스가 중국어인 경우\n   간체 중국어\n   [병음]\n   한국어 해석\n   유래\n   예문"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -336,
+        -1568
+      ],
+      "id": "91580d47-a4f9-4635-9fad-0bd46629213a",
+      "name": "T2I prompt",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=【역할】 의미 해석 영상 감독 + AI 영상 프롬프트 엔지니어\n【입력 소재】  {{ $('Search records').item.json.Source_text }}\n【지침】\n【입력 소재{{ $('Search records').item.json.Source_text }}】의 의미를 정확히 파악하고, 이를 해석하는 AI 영상 생성 Prompt를 출력한다.\n목표: 10초 이내의 의미 설명 영상 (Kling / Runway / Pika / Sora 적용 가능)\n【하드 제약·실행 전 필독】\n· 화면에 절대 금지: 문자, 자막, 로고, 워터마크, UI 요소, 그래픽 오버레이 일체\n· 모든 정보는 구도·카메라·조명·색채·동작·리듬 + 음성 내레이션으로만 전달\n· 총 길이 ≤ 7초 / 내레이션은 6초 이내\n【출력 구조 (순서대로, 코드블록에 담아 출력)】\n① 임무 한 줄\n영상 주제 + 스타일 기조 + 기본 파라미터 (길이/비율)\n② 문화 해독 (내부 추론 — 코드블록에는 미출력)\n입력 소재에서 핵심 문화 요소 3–5개 추출 → 시각 은유로 전환\n(예: 함께 앉음 = 공동체, 수증기 = 시간의 흐름)\n③ 씬 구성 (3–4개 씬)\n각 씬 필수 포함:\n- 시간대 (예: 0–2.5s)\n- 카메라: 종류 (풀샷/미디엄/클로즈업) + 움직임 (달리/패닝/정지 등)\n- 조명: 색온도, 방향 (측광/역광/볼류메트릭 등)\n- 색채 기조: 한 문장으로 정의\n- 피사체 동작: 인물 또는 오브젝트의 구체적 움직임 (텍스트 없이 의미 전달)\n④ 오디오 설계 \n- 환경음: 씬에 대응하는 자연 음향 \n- BGM: 스타일 한 문장 (예: \"잔잔한 가야금, 느린 호흡\")\n-  내레이션: {{ $('Search records').item.json.Language }} 언어로 구어체 짧은 설명 문장 1마디 - 명시: 내레이션 총 길이는 6초 이내로 권장\n⑤ Negative Prompt  필수 포함: no text, no subtitles, no logo, no watermark, no graphic overlays, no UI elements\n"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -336,
+        -1184
+      ],
+      "id": "b6d137e6-3c1c-42ed-9476-3ef7d2447afb",
+      "name": "T2V prompt",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/bytedance/seedance/v1.5/pro/text-to-video",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json.output[0].content[0].text }}"
+            },
+            {
+              "name": "duration",
+              "value": "10"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        16,
+        -1184
+      ],
+      "id": "e1f5d952-65d4-4949-be3d-3196bc55078a",
+      "name": "seedance_T2V"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/nano-banana-2/edit",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"prompt\": \"# 역할 (Role)\\n당신은 한중 언어문화 교육을 위한 문화 이미지 변환 전문가다.\\n업로드된 이미지를 편집 대상으로 한다.\\n# 지침 (Instruction)\\n1. 참조 이미지의 주요 사물을 식별한다.\\n2. 각 사물에 {{ $('Search records').item.json.Language }}언어(상단) 와 상대언어(하단) 라벨을 병기한다.\\n3. 라벨 배경에 반투명 박스를 추가한다. \\n4. 동일한 단어를 반복하지 마라.\",\n\"image_urls\": [\n    \"{{ $('Search records').item.json.Source_img[0].url }}\"\n  ],\n  \"aspect_ratio\": \"1:1\",\n  \"output_format\": \"png\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        16,
+        -992
+      ],
+      "id": "570f997f-a0f4-47dc-984a-b63e431285c9",
+      "name": "Nano Ba_I2I",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WM8EAChZZeMPUryk",
+          "name": "fal.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/minimax/speech-2.6-turbo",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json['0'].content[0].text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        16,
+        -800
+      ],
+      "id": "beff55cf-bb85-4a61-a814-69712dbd781a",
+      "name": "I2A_MM",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WM8EAChZZeMPUryk",
+          "name": "fal.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/bytedance/seedance/v1.5/pro/text-to-video",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json['0'].content[0].text }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        16,
+        -608
+      ],
+      "id": "e3388687-08fd-4f90-bd14-0378dc4e8894",
+      "name": "seedance_I2V"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "text": "=[입력] 이미지 업로드\n\n[처리]\n1. 이미지 분석: 핵심 중급 어휘 2–3개 선별\n   - 우선: 일상생활 고빈도 어휘\n   - 제외: 추상 개념, 배경 요소\n\n2. 비디오 구성 (총 6–8초)\n   · 원본 이미지{{ $('Search records').item.json.Source_img[0].url }}: 1–2초 (내레이션 없음, 환경음만)\n   · 어휘별 클립: 각 2–3초 + 화면 밖 내레이터 낭독\n     - 사물 단독 등장 (중앙 구도, 클로즈업)\n     - 부드러운 실내광, 아웃포커스 배경\n     - 입 움직임/자막/문자 절대 금지\n\n3. 내레이션\n   - 화면 밖 나레이션: 명확한 {{ $('Search records').item.json.Language }} 표준 발음\n   - 각 어휘 명칭만 낭독\n\n[출력]\n① 6–8초 어휘 교육 영상\n② 어휘 나레이션\n\n[스타일]\nCinematic realism, soft natural lighting, isolated objects, \nslow push-in, clean minimal background, shallow depth of field\n\n[금지 사항]\nNo text/subtitles/watermark/logos/on-screen dialogue/lip movement",
+        "imageUrls": "={{ $('Search records').item.json.Source_img[0].url }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -272,
+        -608
+      ],
+      "id": "bca9e160-1bb7-436e-9244-aa8ea5c4086e",
+      "name": "I2V prompt",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "text": "=Analyze the provided image.\n\nCreate a 30–50 second audiobook-style narration in {{ $('Search records').item.json.Language }}.\n\nStructure:\n1. Opening greeting\n2. Describe what is happening in the image\n3. Share a cultural insight related to the scene\n4. Closing remark\n\nOutput only the narration text.",
+        "imageUrls": "={{ $('Search records').item.json.Source_img[0].url }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -272,
+        -800
+      ],
+      "id": "26fa7699-dd3a-4c95-abcf-4d531a06e1f0",
+      "name": "I2A prompt",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Search records').item.json.Source_aud[0].url }}",
+        "options": {}
+      },
+      "name": "Download Audio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -784,
+        -352
+      ],
+      "id": "b976a411-41e5-494f-aec8-b9223ce4cabf"
+    },
+    {
+      "parameters": {
+        "name": "={{ $json.Source_text }}",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1_BOeSMP2YIJUqTWeuvrfIExYnvmF4E-J",
+          "mode": "list",
+          "cachedResultName": "AI박사학위논문_오디오",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1_BOeSMP2YIJUqTWeuvrfIExYnvmF4E-J"
+        },
+        "options": {}
+      },
+      "name": "Audio to Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -560,
+        -352
+      ],
+      "id": "e577ac6b-ffc3-418b-b525-f507a1962b70",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "RZzgO1tsXnGmdQyD",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.qrserver.com/v1/create-qr-code/?size=300x300&data={{ $json.webViewLink }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -272,
+        -352
+      ],
+      "id": "4ed0b215-a16c-420a-afbf-724ec49675a7",
+      "name": "Generate QR Code"
+    },
+    {
+      "parameters": {
+        "name": "=qr_{{ Date.now() }}.png",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1KOYdYmLMf1N_ess5MBtY2DqH5zKzIJGR",
+          "mode": "list",
+          "cachedResultName": "AI박사학위논문_이미지",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1KOYdYmLMf1N_ess5MBtY2DqH5zKzIJGR"
+        },
+        "options": {}
+      },
+      "name": "QR to Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        16,
+        -352
+      ],
+      "id": "e8c98bc4-f4fc-4119-8617-25a554809f98",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "RZzgO1tsXnGmdQyD",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "text": "- \"너는 고성능 오디오 분석 전문가다. 첨부된 HSK/TOPIK 오디오를 듣고 다음 규칙에 따라 전사하라.\n1. **화자 구별:** 목소리의 톤과 성별을 분석하여 '남:' 그리고 '여:'로 구분하여 대화 형식으로 작성하라. 한 명만 말하는 경우 '남','녀'를 표시하지 않음\n2. **언어:** 오디오가 중국어면 **중국어 간체(简体中文)**로, 한국어면 **표준 한국어**로 작성하라.\n3. **정확도:** 초급 수준의 단어와 문장 부호를 정확히 사용하라.\n4. **출력 형식:** 인사말이나 부연 설명 없이 아래 예시와 같은 형식으로만 출력하라.\n5. 같은 화자 두 번 연속 나오는 경우, 하나로 합침\n(예시)\n남: 안녕하세요.\n여: 네, 반갑습니다.\n男：你好。\n女：你好。\n한 명만 말하는 경우 '남','녀'를 표시하지 않음\n5. **제약**: 중국어면 반드시 简体로 출력해줘 \"",
+        "audioUrls": "={{ $('Search records').item.json.Source_aud[0].url }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        -352
+      ],
+      "id": "779d1e16-15d5-4f2e-b4a4-17c128ecbee0",
+      "name": "Analyze audio",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "cZlsETbdSpajXEar",
+          "name": "Gemini_학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/nano-banana-2",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json.output[0].content[0].text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1552,
+        -544
+      ],
+      "id": "f0103a2f-fb19-4e6f-b6d8-ab6a708ed386",
+      "name": "Nano Ba_A2I",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WM8EAChZZeMPUryk",
+          "name": "fal.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appuoiNIjZTJpE3i9",
+          "mode": "list",
+          "cachedResultName": "KO-CN Edu",
+          "cachedResultUrl": "https://airtable.com/appuoiNIjZTJpE3i9"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblb2aPgbp1QwpH5O",
+          "mode": "list",
+          "cachedResultName": "T,I,A,V 2 I,A,V",
+          "cachedResultUrl": "https://airtable.com/appuoiNIjZTJpE3i9/tblb2aPgbp1QwpH5O"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Search records').item.json.id }}",
+            "Output Type": "={{ $('Search records').item.json['Output Type'] }}",
+            "Source_img": "={{ [ { \"url\": $('QR to Drive').item.json.webContentLink} ] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Content",
+              "displayName": "Content",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source Type",
+              "displayName": "Source Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Text",
+                  "value": "Text"
+                },
+                {
+                  "name": "Image",
+                  "value": "Image"
+                },
+                {
+                  "name": "Audio",
+                  "value": "Audio"
+                },
+                {
+                  "name": "Video",
+                  "value": "Video"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source_text",
+              "displayName": "Source_text",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source_img",
+              "displayName": "Source_img",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Source_aud",
+              "displayName": "Source_aud",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source_vid",
+              "displayName": "Source_vid",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Output Type",
+              "displayName": "Output Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Image",
+                  "value": "Image"
+                },
+                {
+                  "name": "Audio",
+                  "value": "Audio"
+                },
+                {
+                  "name": "Video",
+                  "value": "Video"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Language",
+              "displayName": "Language",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Zh",
+                  "value": "Zh"
+                },
+                {
+                  "name": "Ko",
+                  "value": "Ko"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Output_img",
+              "displayName": "Output_img",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Output_aud",
+              "displayName": "Output_aud",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Output_vid",
+              "displayName": "Output_vid",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "WP_URL",
+              "displayName": "WP_URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "WP_Status",
+              "displayName": "WP_Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "pending",
+                  "value": "pending"
+                },
+                {
+                  "name": "published",
+                  "value": "published"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "WP_HTML",
+              "displayName": "WP_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "n8n/Make Webhook ID",
+              "displayName": "n8n/Make Webhook ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        464,
+        -352
+      ],
+      "id": "82549c9a-0767-4cb2-9cc2-f92fda22b317",
+      "name": "A2_Audio",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=당신은 한중 언어문화 교육을 위한 듣기 장면 시각화 전문 일러스트레이터이다. \n입력소스에서 장소, 인물(성별·신분), 핵심 행위, 감정, 맥락을 추출한다. \n추출된 요소를 하나의 통합 장면 이미지로 구성한다. 입력 소스의 언어적 배경에 따라 해당 언어 {{ $('Search records').item.json.Language }}문화국의 정체성(의상, 건축, 소품)을 반영한다. \n텍스트 삽입 금지.\n입력소스: {{ $('Analyze audio').item.json.content.parts[0].text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        1136,
+        -544
+      ],
+      "id": "990f626e-f30a-4cf1-9cc4-f6c926f45e6d",
+      "name": "A2I prompt1",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map(item => {\n  // 1. 원본 텍스트 가져오기 (경로가 맞는지 확인: 필요시 수정)\n  let rawText = item.json?.content?.parts?.[0]?.text || \n                item.json?.text || \n                item.json?.output?.[0]?.content?.[0]?.text || \n                \"\";\n\n  // 2. 가사 관련 불필요한 패턴 제거 (필요에 따라 추가/수정)\n  let cleanedText = rawText\n    .replace(/^```json\\s*/i, \"\")\n    .replace(/^```\\s*/i, \"\")\n    .replace(/```\\s*$/g, \"\")\n    .replace(/\\[Lyrics\\]:?/gi, \"\")           // [Lyrics]: 또는 [Lyrics] 제거\n    .replace(/\\[Verse \\d+\\]/gi, \"\")          // [Verse 1], [Verse 2] 등\n    .replace(/\\[Chorus\\]/gi, \"\")\n    .replace(/\\[Bridge\\]/gi, \"\")\n    .replace(/\\[Outro\\]/gi, \"\")\n    .replace(/\\([^\\)]*\\)/g, \"\")              // 괄호 안 내용 제거 (예: (laughs))\n    .replace(/\\n+/g, \" \")                    // 여러 개행 → 한 칸 공백\n    .replace(/\\r/g, \"\")                      // \\r 제거\n    .replace(/\\s+/g, \" \")                    // 연속 공백 → 한 칸\n    .trim();                                 // 앞뒤 공백 제거\n\n  // 3. 빈 문자열이면 fallback (MiniMax 에러 방지)\n  if (!cleanedText || cleanedText.length < 1) {\n    cleanedText = \"이것은 목소리 테스트용 기본 문장입니다. 확인 부탁드려요.\";\n  }\n\n  // 4. JSON 문자열로 안전하게 사용할 수 있도록 (큰따옴표 이스케이프 등)\n  //    → 다음 노드에서 그대로 \"{{ $json.cleaned_text }}\" 쓰면 됨\n  return {\n    json: {\n      ...item.json,              // 기존 데이터 유지 (voice_id 등 필요시)\n      raw_text: rawText,         // 디버깅용 원본 (필요하면 삭제 가능)\n      cleaned_text: cleanedText  // 정리된 최종 텍스트\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        -352
+      ],
+      "id": "ebb4f845-4e03-4f57-a61b-565bbb9b6af6",
+      "name": "pod_text refiner",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// 1. cleaned_text 가져오기\nconst cleanedText = $json.cleaned_text || $json.raw_text || \"\";\n\n// 2. 파싱 (JSON 형식 / \"A: 내용\" 형식 둘 다 대응)\nlet turns = [];\ntry {\n  const parsed = JSON.parse(cleanedText);\n  if (Array.isArray(parsed)) {\n    turns = parsed.map(p => ({ speaker: p.speaker, text: p.text }));\n  }\n} catch(e) {\n  const lines = cleanedText.split(/(?=[A-C]:)/).filter(line => line.trim());\n  for (const line of lines) {\n    const match = line.match(/^([A-C]):\\s*(.+)$/s);\n    if (match) {\n      turns.push({ speaker: match[1], text: match[2].trim() });\n    }\n  }\n}\n\n// 3. voiceMap\nconst voiceMap = {\n  \"A\": \"Roger\",\n  \"B\": \"Laura\",\n  \"C\": \"Will\"\n};\n\n// 4. return\nreturn {\n  json: {\n    model_id: \"eleven_v3\",\n    output_format: \"mp3_44100_128\",\n    transcript: turns.map(t => ({\n      text: t.text,\n      voice_id: voiceMap[t.speaker] || \"Aria\"\n    }))\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1552,
+        -352
+      ],
+      "id": "56ec01a4-a2c4-49bb-9d9b-40507aa49ddd",
+      "name": "pod_turn"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "text": "=# Role\n너는 교육용 오디오북 시나리오 작가이다. 제공된 [전사 텍스트]를 바탕으로 3인 대화 대본을 작성하라.\n\n# Task\n전사된 내용을 바탕으로 '교사(A)', '학생(B)', '해설자(C)' 세 명의 인물이 논리적으로 대화하는 형식을 취하되, 반드시 아래의 [분량 규칙]을 준수하라.\n\n# 분량 규칙\n- 전체 대화는 정확히 **2회 왕복(Round)**으로 구성한다.\n- 순서: [Round 1: A -> B -> C] -> [Round 2: A -> B -> C]\n- 총 6개의 대사 발언으로 종료한다.\n\n# Characters\n- 인물 A (교사/전문가): 전사 텍스트의 핵심 문장을 정확하게 전달함.\n- 인물 B (학생/질문자): 내용에 대해 궁금해하거나 리액션을 하며 학습자의 시각을 대변함.\n- 인물 C (해설자/요약자): 상황의 배경을 설명하거나 핵심 단어/표현을 한 번 더 짚어줌.\n\n# Guidelines\n1. **언어 유지:** 오디오가 중국어면 중국어(简体)로만, 한국어면 한국어로만 작성하라.\n2. **현장감:** 필요한 경우에만 [ ]를 사용하여 짧은 지시문을 추가하라.\n3. **출력 형식:** 인사말이나 설명 없이 아래 예시처럼 대본만 출력하라.\n\n(예시 형식)\nA: [밝게] (대사 내용)\nB: (대사 내용)\nC: (대사 내용)\nA: (대사 내용)\nB: (대사 내용)\nC: [차분하게] (대사 내용)\n\n---\n[전사 텍스트]\n{{ $('Analyze audio').item.json.content.parts[0].text }}\n출력 형식: JSON 배열 [{ \"speaker\": \"A\", \"text\": \"대사 [tag]\" }, ...] ",
+        "audioUrls": "={{ $('A2_Audio').item.json.fields.Source_aud[0].url }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        912,
+        -352
+      ],
+      "id": "a1299626-8095-45fa-b86f-f429b52d8c99",
+      "name": "A2A_Pod",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "cZlsETbdSpajXEar",
+          "name": "Gemini_학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "={{ $('Analyze audio').item.json.content.parts[0].text }}\n遵循该录音文本，设计地点人物\n做一个此对话的短视频prompt"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        1488,
+        -160
+      ],
+      "id": "541cf597-8ba6-4f59-8523-abefc8c251bf",
+      "name": "A2V prompt",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/bytedance/seedance/v1.5/pro/text-to-video",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json.output[0].content[0].text }}"
+            },
+            {
+              "name": "duration",
+              "value": "10"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 300000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1840,
+        -160
+      ],
+      "id": "f391fffe-b3eb-4cf4-a20e-73c5de49e07d",
+      "name": "A2V_seedance"
+    },
+    {
+      "parameters": {
+        "template": {
+          "__rl": true,
+          "value": "62841dbf-dc6b-412a-b30f-b3da98326d61",
+          "mode": "list",
+          "cachedResultName": "CH Flashcard"
+        },
+        "layers": {
+          "layer": [
+            {
+              "layerName": "Image",
+              "text": "=",
+              "image_url": "={{ $json.images[0].url }}",
+              "video_url": "=",
+              "additionalProperties": {}
+            },
+            {
+              "layerName": "image-2",
+              "text": "=",
+              "image_url": "={{ $node['QR to Drive'].json.webViewLink }}",
+              "video_url": "=",
+              "additionalProperties": {}
+            }
+          ]
+        },
+        "additionalOptions": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-templated.templated",
+      "typeVersion": 1,
+      "position": [
+        1840,
+        -544
+      ],
+      "id": "e801d9c8-a48c-48bc-ae16-4bd12cf0df51",
+      "name": "A2I_Cul_Tem",
+      "credentials": {
+        "templatedApi": {
+          "id": "8SRpZKB5HEVweuid",
+          "name": "Templated account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/elevenlabs/text-to-dialogue/eleven-v3",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"inputs\": {{ JSON.stringify($json.transcript.map(t => ({ \"text\": t.text, \"voice\": t.voice_id }))) }},\n  \"pronunciation_dictionary_locators\": []\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1840,
+        -352
+      ],
+      "id": "76e4f928-f60c-4880-acf7-84dd98e03d5e",
+      "name": "A2A_11_Pod 3p"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n// 미디어 URL 안전하게 가져오기\nconst imgUrl = $('Nano Ba_T2I').first()?.json?.images?.[0]?.url || '';\nconst audUrl = $('Minimax_T2A').first()?.json?.audio?.url || '';\nconst vidUrl = $('seedance_T2V').first()?.json?.video?.url || '';\n\n// Airtable 아이템 선택\nconst airtableItem = \n  items.find(item => item.json.Source_text && item.json.Language) ||\n  items.find(item => item.json.Source_text) ||\n  items[0];\n\nconst content     = $('Search records').first().json.Source_text || '';\nconst rawLanguage = $('Search records').first().json.Language    || '';\nconst sourceType  = $('Search records').first().json['Source Type'] || 'Text';\n\n// Language 정규화 → Zh 또는 Ko (categoryMap 키와 일치시킴)\nlet language = rawLanguage.trim().toLowerCase();\nif (language.startsWith('zh') || language.includes('중국') || language === 'cn') {\n  language = 'Zh';\n} else if (language.startsWith('ko') || language.includes('한국') || language === 'kr') {\n  language = 'Ko';\n} else {\n  language = 'Ko';\n}\n\n// categoryMap\nconst categoryMap = {\n  'Zh_Text':   8,\n  'Zh_Image':  9,\n  'Zh_Audio': 14,\n  'Zh_Video': 10,\n  'Ko_Text':  11,\n  'Ko_Image': 12,\n  'Ko_Audio': 15,\n  'Ko_Video': 13,\n};\n\n// 동적 키 생성 (language가 이미 Zh 또는 Ko)\nconst key = `${language}_${sourceType}`;\nconst categoryId = categoryMap[key] || 1;\n\n// HTML 생성\nconst html = `\n<h3>원문</h3>\n<p style=\"font-size:28px; font-weight:bold; text-align:center; padding:20px; background:#f5f0e8; border-radius:8px;\">${content}</p>\n<h3>이미지</h3>\n<img src=\"${imgUrl}\" style=\"max-width:100%\" alt=\"이미지\" />\n<h3>오디오</h3>\n<audio controls src=\"${audUrl}\"></audio>\n<h3>영상</h3>\n<video controls src=\"${vidUrl}\" style=\"max-width:100%\"></video>\n`;\n\nreturn [{\n  json: {\n    html,\n    title: content.slice(0, 30),\n    categories: [categoryId]\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        -1376
+      ],
+      "id": "5164beb4-ae35-4b22-b9d7-d132f50fbcd0",
+      "name": "Text_Code"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://krzhedu.com/wp-json/wp/v2/posts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "={{ $('Search records').item.json.Source_text }}"
+            },
+            {
+              "name": "content",
+              "value": "={{ $json.html }}"
+            },
+            {
+              "name": "status",
+              "value": "publish"
+            },
+            {
+              "name": "categories",
+              "value": "={{ $json.categories[0] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        688,
+        -1376
+      ],
+      "id": "0ef529d5-9239-4c69-b595-508edf7577bc",
+      "name": "Text_URL",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "KXK08P6Sh5mGa0fb",
+          "name": "Sanity_api.key"
+        },
+        "httpBasicAuth": {
+          "id": "itKHlLiaX0s2LwbJ",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appuoiNIjZTJpE3i9",
+          "mode": "list",
+          "cachedResultName": "KO-CN Edu",
+          "cachedResultUrl": "https://airtable.com/appuoiNIjZTJpE3i9"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblb2aPgbp1QwpH5O",
+          "mode": "list",
+          "cachedResultName": "T,I,A,V 2 I,A,V",
+          "cachedResultUrl": "https://airtable.com/appuoiNIjZTJpE3i9/tblb2aPgbp1QwpH5O"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Search records').item.json.id }}",
+            "WP_Status": "published",
+            "WP_URL": "={{ $json.link }}",
+            "WP_HTML": "={{ $('Text_Code').item.json.html }}",
+            "Status": "done",
+            "Output_img": "={{[{\"url\": $node[\"Nano Ba_T2I\"].json.images[0].url}] }}",
+            "Output_aud": "={{ [{ \"url\": $node[\"Minimax_T2A\"].json.audio.url }] }}",
+            "Output_vid": "={{ [{ \"url\": $node[\"seedance_T2V\"].json.video.url }] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Content",
+              "displayName": "Content",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source Type",
+              "displayName": "Source Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Text",
+                  "value": "Text"
+                },
+                {
+                  "name": "Image",
+                  "value": "Image"
+                },
+                {
+                  "name": "Audio",
+                  "value": "Audio"
+                },
+                {
+                  "name": "Video",
+                  "value": "Video"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source_text",
+              "displayName": "Source_text",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source_img",
+              "displayName": "Source_img",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source_aud",
+              "displayName": "Source_aud",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source_vid",
+              "displayName": "Source_vid",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Output Type",
+              "displayName": "Output Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Image",
+                  "value": "Image"
+                },
+                {
+                  "name": "Audio",
+                  "value": "Audio"
+                },
+                {
+                  "name": "Video",
+                  "value": "Video"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Language",
+              "displayName": "Language",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Zh",
+                  "value": "Zh"
+                },
+                {
+                  "name": "Ko",
+                  "value": "Ko"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Output_img",
+              "displayName": "Output_img",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Output_aud",
+              "displayName": "Output_aud",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Output_vid",
+              "displayName": "Output_vid",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "WP_URL",
+              "displayName": "WP_URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "WP_Status",
+              "displayName": "WP_Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "pending",
+                  "value": "pending"
+                },
+                {
+                  "name": "published",
+                  "value": "published"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "WP_HTML",
+              "displayName": "WP_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "n8n/Make Webhook ID",
+              "displayName": "n8n/Make Webhook ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        912,
+        -1376
+      ],
+      "id": "9f50ec3d-5b95-43d4-bbf2-78e9ed4b5932",
+      "name": "Text_WP",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst imgUrl = $('Nano Ba_I2I').first().json.images[0].url;\nconst audUrl = $('I2A_MM').first().json.audio.url;\nconst vidUrl = $('seedance_I2V').first().json.video.url;\n\nconst airtableItem = items.find(item => item.json.fields?.Source_text) || items[0];\n\nconst content     = $('Search records').first().json.Source_text || '';\nconst rawLanguage = $('Search records').first().json.Language    || '';\nconst sourceType  = $('Search records').first().json['Source Type'] || 'Image';\n\nlet language = rawLanguage.trim().toLowerCase();\nif (language.startsWith('zh') || language.includes('중국') || language === 'cn') {\n  language = 'Zh';\n} else if (language.startsWith('ko') || language.includes('한국') || language === 'kr') {\n  language = 'Ko';\n} else {\n  language = 'Ko';\n}\n\nconst categoryMap = {\n  'Zh_Text': 8,\n  'Zh_Image': 9,\n  'Zh_Audio': 14,\n  'Zh_Video': 10,\n  'Ko_Text': 11,\n  'Ko_Image': 12,\n  'Ko_Audio': 15,\n  'Ko_Video': 13,\n};\n\n// 동적 키 생성 (language가 이미 Zh 또는 Ko)\nconst key = `${language}_${sourceType}`;\nconst categoryId = categoryMap[key] || 1;\n\nconst html = `\n<h3>원문</h3>\n<p style=\"font-size:28px; font-weight:bold; text-align:center; padding:20px; background:#f5f0e8; border-radius:8px;\">${content}</p>\n<h3>이미지</h3><img src=\"${imgUrl}\" style=\"max-width:100%\"/>\n<h3>오디오</h3><audio controls src=\"${audUrl}\"></audio>\n<h3>영상</h3><video controls src=\"${vidUrl}\" style=\"max-width:100%\"></video>\n`;\n\nreturn [{ json: { html, title: content.substring(0, 30), categories: [categoryId] } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        -800
+      ],
+      "id": "386ea0f8-fcc8-481b-8d94-659b88239ce5",
+      "name": "IMG_Code"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://krzhedu.com/wp-json/wp/v2/posts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "={{ $('Search records').item.json.Source_text }}"
+            },
+            {
+              "name": "content",
+              "value": "={{ $json.html }}"
+            },
+            {
+              "name": "status",
+              "value": "publish"
+            },
+            {
+              "name": "categories",
+              "value": "={{ $json.categories[0] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        688,
+        -800
+      ],
+      "id": "e197007b-6bbc-4812-8c5c-5dda0b0941e3",
+      "name": "IMG_URL",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "KXK08P6Sh5mGa0fb",
+          "name": "Sanity_api.key"
+        },
+        "httpBasicAuth": {
+          "id": "itKHlLiaX0s2LwbJ",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appuoiNIjZTJpE3i9",
+          "mode": "list",
+          "cachedResultName": "KO-CN Edu",
+          "cachedResultUrl": "https://airtable.com/appuoiNIjZTJpE3i9"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblb2aPgbp1QwpH5O",
+          "mode": "list",
+          "cachedResultName": "T,I,A,V 2 I,A,V",
+          "cachedResultUrl": "https://airtable.com/appuoiNIjZTJpE3i9/tblb2aPgbp1QwpH5O"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Search records').item.json.id }}",
+            "WP_Status": "published",
+            "WP_URL": "={{ $json.link }}",
+            "WP_HTML": "={{ $('IMG_Code').item.json.html }}",
+            "Status": "done",
+            "Output_img": "={{[{\"url\": $node[\"Nano Ba_I2I\"].json.images[0].url}] }}",
+            "Output_aud": "={{ [{ \"url\": $node[\"I2A_MM\"].json.audio.url }] }}",
+            "Output_vid": "={{ [{ \"url\": $node[\"seedance_I2V\"].json.video.url }] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Content",
+              "displayName": "Content",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source Type",
+              "displayName": "Source Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Text",
+                  "value": "Text"
+                },
+                {
+                  "name": "Image",
+                  "value": "Image"
+                },
+                {
+                  "name": "Audio",
+                  "value": "Audio"
+                },
+                {
+                  "name": "Video",
+                  "value": "Video"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source_text",
+              "displayName": "Source_text",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source_img",
+              "displayName": "Source_img",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source_aud",
+              "displayName": "Source_aud",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source_vid",
+              "displayName": "Source_vid",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Output Type",
+              "displayName": "Output Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Image",
+                  "value": "Image"
+                },
+                {
+                  "name": "Audio",
+                  "value": "Audio"
+                },
+                {
+                  "name": "Video",
+                  "value": "Video"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Language",
+              "displayName": "Language",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Zh",
+                  "value": "Zh"
+                },
+                {
+                  "name": "Ko",
+                  "value": "Ko"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Output_img",
+              "displayName": "Output_img",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Output_aud",
+              "displayName": "Output_aud",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Output_vid",
+              "displayName": "Output_vid",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "WP_URL",
+              "displayName": "WP_URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "WP_Status",
+              "displayName": "WP_Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "pending",
+                  "value": "pending"
+                },
+                {
+                  "name": "published",
+                  "value": "published"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "WP_HTML",
+              "displayName": "WP_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "n8n/Make Webhook ID",
+              "displayName": "n8n/Make Webhook ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        912,
+        -800
+      ],
+      "id": "ce13db0a-50aa-4813-9bb0-0f39a294e795",
+      "name": "IMG_WP",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n// 미디어 URL 안전하게 가져오기 (최종 생성 노드에서 추출)\nconst imgUrl = $('Nano Ba_A2I').first()?.json?.images?.[0]?.url || '';\nconst audUrl = $('A2A_11_Pod 3p').first()?.json?.audio?.url || '';\nconst vidUrl = $('A2V_seedance').first()?.json?.video?.url || '';\n\n// Airtable 아이템 선택\nconst airtableItem = \n  items.find(item => item.json.Source_text && item.json.Language) ||\n  items.find(item => item.json.Source_text) ||\n  items[0];\n\nconst content     = $('Search records').first().json.Source_text || '';\nconst rawLanguage = $('Search records').first().json.Language    || '';\nconst sourceType  = $('Search records').first().json['Source Type'] || 'Audio';\n\n// Language 영문화 - Zh 또는 Ko (categoryMap 기의 입직지정)\nlet language = rawLanguage.trim().toLowerCase();\nif (language.startsWith('zh') || language.includes('중국') || language === 'cn') {\n  language = 'Zh';\n} else if (language.startsWith('ko') || language.includes('한국') || language === 'kr') {\n  language = 'Ko';\n} else {\n  language = 'Ko';\n}\n\n// categoryMap\nconst categoryMap = {\n  'Zh_Text':  8,\n  'Zh_Image': 9,\n  'Zh_Audio': 14,\n  'Zh_Video': 10,\n  'Ko_Text':  11,\n  'Ko_Image': 12,\n  'Ko_Audio': 15,\n  'Ko_Video': 13,\n};\n\nconst key = `${language}_${sourceType}`;\nconst categoryId = categoryMap[key] || 1;\nconsole.log(`생성된 category key: ${key} → ID: ${categoryId}`);\n\n// HTML 생성\nconst html = `\n<h3>원문</h3>\n<p style=\"font-size:28px; font-weight:bold; text-align:center; padding:20px; background:#f5f0e8; border-radius:8px;\">${content}</p>\n<h3>이미지</h3><img src=\"${imgUrl}\" style=\"max-width:100%\"/>\n<h3>오디오</h3><audio controls src=\"${audUrl}\"></audio>\n<h3>영상</h3><video controls src=\"${vidUrl}\" style=\"max-width:100%\"></video>\n`;\n\nreturn [{ json: { html, title: content.substring(0, 30), categories: [categoryId] } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2288,
+        -352
+      ],
+      "id": "b80a7685-4561-4f79-b1ff-74f28e50397d",
+      "name": "Aud_Code"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://krzhedu.com/wp-json/wp/v2/posts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "={{ $('Search records').first().json.Source_text }}"
+            },
+            {
+              "name": "content",
+              "value": "={{ $json.html }}"
+            },
+            {
+              "name": "status",
+              "value": "publish"
+            },
+            {
+              "name": "categories",
+              "value": "={{ $json.categories[0] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2512,
+        -352
+      ],
+      "id": "bc59ebb2-db80-4128-a3cc-0966372e5ded",
+      "name": "Aud_URL",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "KXK08P6Sh5mGa0fb",
+          "name": "Sanity_api.key"
+        },
+        "httpBasicAuth": {
+          "id": "itKHlLiaX0s2LwbJ",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appuoiNIjZTJpE3i9",
+          "mode": "list",
+          "cachedResultName": "KO-CN Edu",
+          "cachedResultUrl": "https://airtable.com/appuoiNIjZTJpE3i9"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblb2aPgbp1QwpH5O",
+          "mode": "list",
+          "cachedResultName": "T,I,A,V 2 I,A,V",
+          "cachedResultUrl": "https://airtable.com/appuoiNIjZTJpE3i9/tblb2aPgbp1QwpH5O"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Search records').first().json.id }}",
+            "WP_Status": "published",
+            "WP_URL": "={{ $json.link }}",
+            "WP_HTML": "={{ $('Aud_Code').item.json.html }}",
+            "Status": "done",
+            "Output_img": "={{[{\"url\": $node[\"A2I_Cul_Tem\"].json.url}] }}",
+            "Output_aud": "={{ [{ \"url\": $node[\"A2A_11_Pod 3p\"].json.audio.url }] }}",
+            "Output_vid": "={{ [{ \"url\": $node[\"A2V_seedance\"].json.video.url }] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "No.",
+              "displayName": "No.",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source Type",
+              "displayName": "Source Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Text",
+                  "value": "Text"
+                },
+                {
+                  "name": "Image",
+                  "value": "Image"
+                },
+                {
+                  "name": "Audio",
+                  "value": "Audio"
+                },
+                {
+                  "name": "Video",
+                  "value": "Video"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source_text",
+              "displayName": "Source_text",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source_img",
+              "displayName": "Source_img",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source_aud",
+              "displayName": "Source_aud",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source_vid",
+              "displayName": "Source_vid",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Language",
+              "displayName": "Language",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Zh",
+                  "value": "Zh"
+                },
+                {
+                  "name": "Ko",
+                  "value": "Ko"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Output Type",
+              "displayName": "Output Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Image",
+                  "value": "Image"
+                },
+                {
+                  "name": "Audio",
+                  "value": "Audio"
+                },
+                {
+                  "name": "Video",
+                  "value": "Video"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Output_img",
+              "displayName": "Output_img",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Output_aud",
+              "displayName": "Output_aud",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Output_vid",
+              "displayName": "Output_vid",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "WP_URL",
+              "displayName": "WP_URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "WP_Status",
+              "displayName": "WP_Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "pending",
+                  "value": "pending"
+                },
+                {
+                  "name": "published",
+                  "value": "published"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "WP_HTML",
+              "displayName": "WP_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "n8n/Make Webhook ID",
+              "displayName": "n8n/Make Webhook ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        2736,
+        -352
+      ],
+      "id": "501c59ac-076f-4971-af4e-d3189f63df44",
+      "name": "Aud_WP",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "AIzaSyDjkkwbI8JpyLrjZ0fbAB3fusNdCjquFAI"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={   \"contents\": [     {       \"parts\": [         {           \"fileData\": {             \"fileUri\": \"{{ $('Search records').item.json.Source_vid }}\",              \"mimeType\": \"video/*\"           }         },         {           \"text\": \"请用视频语言准确完整地转录音频。格式 : - 文本。请保持原始语言，不要翻译成其他语言。如果视频语言是中文，输出必须使用简体中文，可以慢些，务必转录到视频最后，不得省略。\"         }       ]     }   ] }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -784,
+        112
+      ],
+      "id": "c13f6bb3-5ab7-4f28-981b-f82941cd5fa7",
+      "name": "Gemini API 자막 추출"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/nano-banana-2",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=prompt",
+              "value": "={{ $json.output[0].content[0].text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        16,
+        -80
+      ],
+      "id": "fb6f99f4-3eba-4f4b-848e-8f7c30c55f0e",
+      "name": "V2I_Nano_만화",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WM8EAChZZeMPUryk",
+          "name": "fal.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5.2",
+          "mode": "list",
+          "cachedResultName": "GPT-5.2"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=자막 파일을 분석하여, 아래 조건을 모두 충족하는 9칸 만화 이미지 생성 프롬프트를 추출해줘.\n[이미지 구성 요소]\n1.캐릭터 일치성 — 썸네일과 동일한 캐릭터를 9개 패널 전체에 일관되게 유지\n2.패널 서사 — 영상의 시간적 흐름을 패널 1→9 순서로 반영한 장면 구성\n3.대화문 삽입 — 각 패널에 해당 소스 언어의 대화문을 말풍선 형태로 삽입\n4.나레이션 박스 — 꼬리 없는 직사각형 나레이션 박스를 각 패널 최하단에 배치\n5.문화적 배경 — 영상의 문화적 맥락(중국/한국)에 맞는 배경을 시각적으로 정확히 재현\n6.학습 수준 표시 — 난이도(초급/중급/고급 등)를 이미지 내에 시각적으로 표기\n[언어 조건]\n7. 프롬프트 언어 — 입력 파일의 소스 언어를 따라 작성\n각 항목이 프롬프트에 명확히 반영되도록 구조화하여 출력해줘.\n[자막 파일]\n {{ $('Gemini API 자막 추출').item.json.candidates[0].content.parts[0].text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -336,
+        -80
+      ],
+      "id": "8232a638-8f97-4632-9201-f5b11b838078",
+      "name": "V2I_9칸 만화 프롬프트",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        240,
+        -1392
+      ],
+      "id": "a7b8ec36-3a95-455f-904e-8bce22972b28",
+      "name": "Text_Merge"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        240,
+        -816
+      ],
+      "id": "b32e8b70-8e3d-45b5-a56f-4c572b08a83b",
+      "name": "IMG_Merge"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2064,
+        -368
+      ],
+      "id": "07ba8928-7da1-4c8d-873b-de0ed7c240fd",
+      "name": "Aud_Merge"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        240,
+        96
+      ],
+      "id": "371f990b-6579-488a-82f9-b45be2f96c9b",
+      "name": "Vid_Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n// 미디어 URL 안전하게 가져오기 (최종 생성 노드에서 추출)\nconst imgUrl = $('V2I_Nano_만화').first()?.json?.images?.[0]?.url || '';\nconst audUrl = $('V2A_MM').first()?.json?.audio?.url || '';\nconst vidUrl = $('V2V_seedance_Short').first()?.json?.video?.url || '';\n\n// Airtable 아이템 선택\nconst airtableItem = \n  items.find(item => item.json.Source_text && item.json.Language) ||\n  items.find(item => item.json.Source_text) ||\n  items[0];\n\nconst content     = $('Search records').first().json.Source_text || '';\nconst rawLanguage = $('Search records').first().json.Language    || '';\nconst sourceType  = $('Search records').first().json['Source Type'] || 'Video';\n\n// Language 영문화 - Zh 또는 Ko (categoryMap 기의 입직지정)\nlet language = rawLanguage.trim().toLowerCase();\nif (language.startsWith('zh') || language.includes('중국') || language === 'cn') {\n  language = 'Zh';\n} else if (language.startsWith('ko') || language.includes('한국') || language === 'kr') {\n  language = 'Ko';\n} else {\n  language = 'Ko';\n}\n\n// categoryMap\nconst categoryMap = {\n  'Zh_Text':  8,\n  'Zh_Image': 9,\n  'Zh_Audio': 14,\n  'Zh_Video': 10,\n  'Ko_Text':  11,\n  'Ko_Image': 12,\n  'Ko_Audio': 15,\n  'Ko_Video': 13,\n};\n\nconst key = `${language}_${sourceType}`;\nconst categoryId = categoryMap[key] || 1;\nconsole.log(`생성된 category key: ${key} → ID: ${categoryId}`);\n\n// HTML 생성\nconst html = `\n<h3>원문</h3>\n<p style=\"font-size:28px; font-weight:bold; text-align:center; padding:20px; background:#f5f0e8; border-radius:8px;\">${content}</p>\n<h3>이미지</h3><img src=\"${imgUrl}\" style=\"max-width:100%\"/>\n<h3>오디오</h3><audio controls src=\"${audUrl}\"></audio>\n<h3>영상</h3><video controls src=\"${vidUrl}\" style=\"max-width:100%\"></video>\n`;\n\nreturn [{ json: { html, title: content.substring(0, 30), categories: [categoryId] } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        112
+      ],
+      "id": "1101c483-4d0f-45ad-a0ce-af43d21500a8",
+      "name": "Vid_Code"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://krzhedu.com/wp-json/wp/v2/posts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "={{ $json.title }}"
+            },
+            {
+              "name": "content",
+              "value": "={{ $json.html }}"
+            },
+            {
+              "name": "status",
+              "value": "publish"
+            },
+            {
+              "name": "categories",
+              "value": "={{ $json.categories[0] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        688,
+        112
+      ],
+      "id": "09e81f8d-b44f-4d12-b1ed-08327a1d5da8",
+      "name": "Vid_URL",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "KXK08P6Sh5mGa0fb",
+          "name": "Sanity_api.key"
+        },
+        "httpBasicAuth": {
+          "id": "itKHlLiaX0s2LwbJ",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appuoiNIjZTJpE3i9",
+          "mode": "list",
+          "cachedResultName": "KO-CN Edu",
+          "cachedResultUrl": "https://airtable.com/appuoiNIjZTJpE3i9"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblb2aPgbp1QwpH5O",
+          "mode": "list",
+          "cachedResultName": "T,I,A,V 2 I,A,V",
+          "cachedResultUrl": "https://airtable.com/appuoiNIjZTJpE3i9/tblb2aPgbp1QwpH5O"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Vid_Code').item.json.recordId }}",
+            "WP_Status": "published",
+            "WP_URL": "={{ $json.link }}",
+            "WP_HTML": "={{ $('Vid_Code').item.json.html }}",
+            "Status": "done",
+            "Output_img": "={{[{\"url\": $node[\"V2I_Nano_만화\"].json.images[0].url}] }}",
+            "Output_aud": "={{ [{ \"url\": $node[\"V2A_MM\"].json.audio.url }] }}",
+            "Output_vid": "={{ [{ \"url\": $node[\"V2V_seedance_Short\"].json.video.url }] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "No.",
+              "displayName": "No.",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source Type",
+              "displayName": "Source Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Text",
+                  "value": "Text"
+                },
+                {
+                  "name": "Image",
+                  "value": "Image"
+                },
+                {
+                  "name": "Audio",
+                  "value": "Audio"
+                },
+                {
+                  "name": "Video",
+                  "value": "Video"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source_text",
+              "displayName": "Source_text",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source_img",
+              "displayName": "Source_img",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source_aud",
+              "displayName": "Source_aud",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source_vid",
+              "displayName": "Source_vid",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Language",
+              "displayName": "Language",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Zh",
+                  "value": "Zh"
+                },
+                {
+                  "name": "Ko",
+                  "value": "Ko"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Output Type",
+              "displayName": "Output Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Image",
+                  "value": "Image"
+                },
+                {
+                  "name": "Audio",
+                  "value": "Audio"
+                },
+                {
+                  "name": "Video",
+                  "value": "Video"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Output_img",
+              "displayName": "Output_img",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Output_aud",
+              "displayName": "Output_aud",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Output_vid",
+              "displayName": "Output_vid",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "WP_URL",
+              "displayName": "WP_URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "WP_Status",
+              "displayName": "WP_Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "pending",
+                  "value": "pending"
+                },
+                {
+                  "name": "published",
+                  "value": "published"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "WP_HTML",
+              "displayName": "WP_HTML",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "n8n/Make Webhook ID",
+              "displayName": "n8n/Make Webhook ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        912,
+        112
+      ],
+      "id": "58a04122-6deb-4b0e-be7e-00fd124e58e7",
+      "name": "Vid_WP",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/minimax/speech-2.6-turbo",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json.output[0].content[0].text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        16,
+        112
+      ],
+      "id": "055d10af-8de0-42ca-b8e7-d188f1323937",
+      "name": "V2A_MM",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WM8EAChZZeMPUryk",
+          "name": "fal.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/bytedance/seedance/v1.5/pro/text-to-video",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json.output[0].content[0].text }}"
+            },
+            {
+              "name": "duration",
+              "value": "8"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        16,
+        304
+      ],
+      "id": "952d17ca-c8fa-4ae8-a444-f70b0d9144eb",
+      "name": "V2V_seedance_Short"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=다음 유튜브 영상 스크립트를 분석하여 핵심 내용을 유지한 채 더 짧고 명확한 **팟캐스트 대본**으로 합쳐줘.\n\n조건:\n- 오디오 내레이션 대본 형식 추출\n- 중복과 군더더기 제거\n- 핵심 메시지만 유지\n- 자연스러운 구어체 사용\n- 논리적 흐름에 맞게 재구성\n- 실제 음성 낭독에 적합한 형태로 작성\n\nDo not use periods\nDo not use quotation marks\nDo not use braces\nDo not use brackets\nDo not use colons\nDo not add any label title explanation or list\n\n유튜브 영상 스크립트:\n{{ $('Gemini API 자막 추출').item.json.candidates[0].content.parts[0].text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -336,
+        112
+      ],
+      "id": "d514400b-3836-4850-a37b-b688357c553f",
+      "name": "V2A prompt",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "={{ $json.candidates[0].content.parts[0].text }}\n\n분析上述文本内容，生成一个适合8秒短视频画面描述prompt。\n要求：\n- {{ $('Search records').item.json.Language }}语 输出\n- {{ $('Search records').item.json.Language }}语 对话\n- 不需要字幕和文字\n- 符合{{ $('Search records').item.json.Language }}语言文化背景"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -336,
+        304
+      ],
+      "id": "723824d3-b7da-4589-b36b-22b3b36c80e3",
+      "name": "V2V_prompt",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "A2I_Cul_Tem": [
+      {
+        "json": {
+          "id": "0327fd6e-5ea4-4410-8bb6-999c30883c7f",
+          "width": 1024,
+          "height": 1024,
+          "url": "https://templated-assets.s3.amazonaws.com/render/0327fd6e-5ea4-4410-8bb6-999c30883c7f.jpg",
+          "render_url": "https://templated-assets.s3.amazonaws.com/render/0327fd6e-5ea4-4410-8bb6-999c30883c7f.jpg",
+          "format": "jpg",
+          "status": "COMPLETED",
+          "templateId": "62841dbf-dc6b-412a-b30f-b3da98326d61",
+          "templateName": "CH Flashcard",
+          "createdAt": "2026-04-05T08:38:19.574+00:00",
+          "payload": "{\"template\":\"62841dbf-dc6b-412a-b30f-b3da98326d61\",\"format\":\"jpg\",\"layers\":{\"Image\":{\"image_url\":\"https://v3b.fal.media/files/b/0a950323/87IPLqnDHvpzD4OtU5R-n_QDhoJ6ox.png\"},\"image-2\":{\"image_url\":\"https://drive.google.com/file/d/1a1Gtv-LjC367D2AGbysZyLYvMyDm6BbU/view?usp=drivesdk\"}}}",
+          "name": "",
+          "page": null,
+          "externalId": null
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "A2A_11_Pod 3p": [
+      {
+        "json": {
+          "audio": {
+            "url": "https://v3b.fal.media/files/b/0a95032a/Ph20lWSFJFkDQUTBIZNxX_output.mp3",
+            "content_type": "audio/mpeg",
+            "file_name": "output.mp3",
+            "file_size": 1201259
+          },
+          "seed": 650038509
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "A2V_seedance": [
+      {
+        "json": {
+          "video": {
+            "url": "https://v3b.fal.media/files/b/0a950337/N2hch92t561MEAKqt6J6g_video.mp4",
+            "content_type": "video/mp4",
+            "file_name": "video.mp4",
+            "file_size": 12428150
+          },
+          "seed": 1899342341
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Source_Text",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Source_Image",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Download Audio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gemini API 자막 추출",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Source_Text": {
+      "main": [
+        [
+          {
+            "node": "T2I,A,V",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Source_Image": {
+      "main": [
+        [
+          {
+            "node": "I2I,A,V",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "T2I,A,V": {
+      "main": [
+        [
+          {
+            "node": "T2I prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Minimax_T2A",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "T2V prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "I2I,A,V": {
+      "main": [
+        [
+          {
+            "node": "Nano Ba_I2I",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "I2A prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "I2V prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nano Ba_T2I": {
+      "main": [
+        [
+          {
+            "node": "Text_Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Minimax_T2A": {
+      "main": [
+        [
+          {
+            "node": "Text_Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "T2I prompt": {
+      "main": [
+        [
+          {
+            "node": "Nano Ba_T2I",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "T2V prompt": {
+      "main": [
+        [
+          {
+            "node": "seedance_T2V",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "seedance_T2V": {
+      "main": [
+        [
+          {
+            "node": "Text_Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "I2A_MM": {
+      "main": [
+        [
+          {
+            "node": "IMG_Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "I2V prompt": {
+      "main": [
+        [
+          {
+            "node": "seedance_I2V",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "I2A prompt": {
+      "main": [
+        [
+          {
+            "node": "I2A_MM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nano Ba_I2I": {
+      "main": [
+        [
+          {
+            "node": "IMG_Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "seedance_I2V": {
+      "main": [
+        [
+          {
+            "node": "IMG_Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Download Audio": {
+      "main": [
+        [
+          {
+            "node": "Audio to Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audio to Drive": {
+      "main": [
+        [
+          {
+            "node": "Generate QR Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate QR Code": {
+      "main": [
+        [
+          {
+            "node": "QR to Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QR to Drive": {
+      "main": [
+        [
+          {
+            "node": "Analyze audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze audio": {
+      "main": [
+        [
+          {
+            "node": "A2_Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A2I,A,V": {
+      "main": [
+        [
+          {
+            "node": "A2I prompt1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "A2A_Pod",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "A2V prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A2_Audio": {
+      "main": [
+        [
+          {
+            "node": "A2I,A,V",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A2I prompt1": {
+      "main": [
+        [
+          {
+            "node": "Nano Ba_A2I",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nano Ba_A2I": {
+      "main": [
+        [
+          {
+            "node": "A2I_Cul_Tem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pod_text refiner": {
+      "main": [
+        [
+          {
+            "node": "pod_turn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pod_turn": {
+      "main": [
+        [
+          {
+            "node": "A2A_11_Pod 3p",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A2A_Pod": {
+      "main": [
+        [
+          {
+            "node": "pod_text refiner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A2V prompt": {
+      "main": [
+        [
+          {
+            "node": "A2V_seedance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A2V_seedance": {
+      "main": [
+        [
+          {
+            "node": "Aud_Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "A2I_Cul_Tem": {
+      "main": [
+        [
+          {
+            "node": "Aud_Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A2A_11_Pod 3p": {
+      "main": [
+        [
+          {
+            "node": "Aud_Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Text_Code": {
+      "main": [
+        [
+          {
+            "node": "Text_URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text_URL": {
+      "main": [
+        [
+          {
+            "node": "Text_WP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IMG_Code": {
+      "main": [
+        [
+          {
+            "node": "IMG_URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IMG_URL": {
+      "main": [
+        [
+          {
+            "node": "IMG_WP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aud_Code": {
+      "main": [
+        [
+          {
+            "node": "Aud_URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aud_URL": {
+      "main": [
+        [
+          {
+            "node": "Aud_WP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "V2I,A,V": {
+      "main": [
+        [
+          {
+            "node": "V2I_9칸 만화 프롬프트",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "V2A prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "V2V_prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini API 자막 추출": {
+      "main": [
+        [
+          {
+            "node": "V2I,A,V",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "V2I_9칸 만화 프롬프트": {
+      "main": [
+        [
+          {
+            "node": "V2I_Nano_만화",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text_Merge": {
+      "main": [
+        [
+          {
+            "node": "Text_Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IMG_Merge": {
+      "main": [
+        [
+          {
+            "node": "IMG_Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aud_Merge": {
+      "main": [
+        [
+          {
+            "node": "Aud_Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vid_Merge": {
+      "main": [
+        [
+          {
+            "node": "Vid_Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vid_Code": {
+      "main": [
+        [
+          {
+            "node": "Vid_URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "V2I_Nano_만화": {
+      "main": [
+        [
+          {
+            "node": "Vid_Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vid_URL": {
+      "main": [
+        [
+          {
+            "node": "Vid_WP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "V2A_MM": {
+      "main": [
+        [
+          {
+            "node": "Vid_Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "V2V_seedance_Short": {
+      "main": [
+        [
+          {
+            "node": "Vid_Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "V2A prompt": {
+      "main": [
+        [
+          {
+            "node": "V2A_MM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "V2V_prompt": {
+      "main": [
+        [
+          {
+            "node": "V2V_seedance_Short",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "10f9eb44-ce1d-4c8d-8732-5307a03cbbf2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "324b20db7bd7622c84e52c3bee689ffea3754ee2e9d9027179fea14d6a4cb1d7"
+  },
+  "id": "85xtcKFTbvRpbZUm",
+  "tags": []
+}
