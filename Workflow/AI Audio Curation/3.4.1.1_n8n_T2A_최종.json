@@ -1,0 +1,3063 @@
+{
+  "name": "3.4.1.1_n8n_T2A_최종",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -3632,
+        -688
+      ],
+      "id": "170b6b62-5174-4252-8969-205902126117",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appmuDBxVEFauA5xy",
+          "mode": "list",
+          "cachedResultName": "AI 오디오 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblPOoYPlbRHlz7XL",
+          "mode": "list",
+          "cachedResultName": "3.4.1. Text to Audio_최종",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy/tblPOoYPlbRHlz7XL"
+        },
+        "filterByFormula": "{Status}='ready'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -3408,
+        -688
+      ],
+      "id": "7d6cf127-387f-4868-a2fb-f321c69865f3",
+      "name": "텍스트 불러오기",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "2d6afb0e-b290-467b-9912-67f18095f69d",
+              "leftValue": "={{ $('텍스트 불러오기').item.json['Cultural Region'] }}",
+              "rightValue": "KO",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -3184,
+        -688
+      ],
+      "id": "d0d75188-3653-426e-be1b-b0bf63980d89",
+      "name": "K or CH"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "model": "tts-1-hd",
+        "input": "={{ $('텍스트 불러오기').item.json.Text }}",
+        "voice": "fable",
+        "options": {
+          "response_format": "mp3",
+          "binaryPropertyOutput": "data"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -2464,
+        -1408
+      ],
+      "id": "8da4e077-91e4-492e-ace1-38dbe87b4505",
+      "name": "K_TTS 생성",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "=",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1_8Gey0ixz8-GQn5kDLCjBrZUBn6qswDr",
+          "mode": "list",
+          "cachedResultName": "AI 오디오 큐레이션",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1_8Gey0ixz8-GQn5kDLCjBrZUBn6qswDr"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2304,
+        -400
+      ],
+      "id": "5b9383de-6703-4b29-8611-4df96163c772",
+      "name": "CH_TTS_UP",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "RZzgO1tsXnGmdQyD",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "={{ $('K or CH').item.json['Simple TTS'][0].filename }}",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1_8Gey0ixz8-GQn5kDLCjBrZUBn6qswDr",
+          "mode": "list",
+          "cachedResultName": "AI 오디오 큐레이션",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1_8Gey0ixz8-GQn5kDLCjBrZUBn6qswDr"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2304,
+        -1408
+      ],
+      "id": "b951037f-5ef7-40cf-8a96-f0f981336845",
+      "name": "K_TTS_UP",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "RZzgO1tsXnGmdQyD",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=# 역할\n너는 외국인을 위한 한국어 교육 콘텐츠 전문가이자 작사가야. 사용자가 주제를 주면 30초 분량의 짧은 노래 가사를 만들어야 해.\n\n# 가사 작성 원칙\n1. 어휘 및 문법: '-아요/어요', '-고 싶어요' 등 사용.\n2. 발음 최적화: 한국어의 특수한 발음 규칙(비음화, 연음, 격음화 등)이 적용된 문장을 포함할 것.\n3. 가사 분량: 4~6문장 내외 (약 30초 분량).\n\n# 출력 형식 (반드시 유지)\n- [Lyrics]: (표준 맞춤법에 맞는 한국어 가사)\n\n# 예시 (주제: 식사)\n[Lyrics]: 한국 음식이 조금 매워요. 하지만 같이 먹으면 맛있어요. 국물도 정말 시원해요.\n\n주제: {{ $('텍스트 불러오기').item.json.Text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -2240,
+        -768
+      ],
+      "id": "cc8ff397-d673-427f-bfd3-2e0473b8b542",
+      "name": "K_lyrics generation",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Translate to Chinese only.\nReturn format: {\"[中文翻译]\"}\n\nText: {{ $('텍스트 불러오기').item.json.Text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -1984,
+        -1216
+      ],
+      "id": "8ea27aa3-e52d-452c-a98e-b7d14576df57",
+      "name": "K_Trans_CH_프롬프트",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map((item) => {\n  // 원본 가사 안전하게 가져오기\n  const rawText = item.json.output?.[0]?.content?.[0]?.text || \"\";\n\n  // 가사 정리 (기존과 동일한 로직)\n  const cleanedText = rawText\n    .replace(/\\[Lyrics\\]:/g, \"\")\n    .replace(/\\n/g, \" \")\n    .trim();\n\n  return {\n    json: {\n      ...item.json,     // ← 기존 데이터(아이디, Sound Type 등) 모두 유지!\n      text: cleanedText // ← 정제된 가사 (이후 노드에서 그대로 {{ $json.text }} 사용 가능)\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1968,
+        -768
+      ],
+      "id": "f7627ec8-ad28-485c-871a-ade1515f27b4",
+      "name": "K_lyrics refiner",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.elevenlabs.io/v1/music",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "xi-api-key",
+              "value": "sk_392007a0b1759ec73f86ceca9500fd309d7eb7bb511e909c"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model_id\": \"music_v1\",\n  \"prompt\": \"Upbeat and bright pop style, sincere and warm female vocals, 30-second short Korean rap, simple melody, acoustic guitar touch, clear enunciation, friendly vibe with text lyric{{ $json.text }}\",\n  \"duration_seconds\": 30\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -1776,
+        -768
+      ],
+      "id": "b62dbcd4-26b1-46f3-b903-549aa4ef3749",
+      "name": "K_11labs music"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appmuDBxVEFauA5xy",
+          "mode": "list",
+          "cachedResultName": "AI 오디오 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblPOoYPlbRHlz7XL",
+          "mode": "list",
+          "cachedResultName": "3.4.1. Text to Audio_최종",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy/tblPOoYPlbRHlz7XL"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "done",
+            "id": "={{ $('텍스트 불러오기').item.json.id }}",
+            "Music": "={{ [{ url: $json.webContentLink, filename: $json.name }] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Level",
+              "displayName": "Level",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Vocabulary",
+              "displayName": "Vocabulary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CH",
+                  "value": "CH"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Sound Type",
+              "displayName": "Sound Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Simple TTS",
+                  "value": "Simple TTS"
+                },
+                {
+                  "name": "+Translate sound",
+                  "value": "+Translate sound"
+                },
+                {
+                  "name": "Music",
+                  "value": "Music"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Simple TTS",
+              "displayName": "Simple TTS",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "+Translate sound",
+              "displayName": "+Translate sound",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Music",
+              "displayName": "Music",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Speed(0.25~4)",
+              "displayName": "Speed(0.25~4)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -2240,
+        -912
+      ],
+      "id": "3fff6fb2-18c8-4995-8bb0-d5057d2f7a02",
+      "name": "K Music",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appmuDBxVEFauA5xy",
+          "mode": "list",
+          "cachedResultName": "AI 오디오 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblPOoYPlbRHlz7XL",
+          "mode": "list",
+          "cachedResultName": "3.4.1. Text to Audio_최종",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy/tblPOoYPlbRHlz7XL"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "done",
+            "+Translate sound": "={{ [{ \"url\": $node[\"FFmeg_KO+CH\"].json.audio.url }] }}",
+            "id": "={{ $('텍스트 불러오기').item.json.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true
+            },
+            {
+              "id": "Level",
+              "displayName": "Level",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Vocabulary",
+              "displayName": "Vocabulary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CH",
+                  "value": "CH"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Sound Type",
+              "displayName": "Sound Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Simple TTS",
+                  "value": "Simple TTS"
+                },
+                {
+                  "name": "+Translate sound",
+                  "value": "+Translate sound"
+                },
+                {
+                  "name": "Music",
+                  "value": "Music"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Simple TTS",
+              "displayName": "Simple TTS",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "+Translate sound",
+              "displayName": "+Translate sound",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Music",
+              "displayName": "Music",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Speed(0.25~4)",
+              "displayName": "Speed(0.25~4)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -1376,
+        -1216
+      ],
+      "id": "38ecee49-3bbd-4ffc-8540-ca1ae08da178",
+      "name": "K trans CH",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appmuDBxVEFauA5xy",
+          "mode": "list",
+          "cachedResultName": "AI 오디오 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblPOoYPlbRHlz7XL",
+          "mode": "list",
+          "cachedResultName": "3.4.1. Text to Audio_최종",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy/tblPOoYPlbRHlz7XL"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "done",
+            "Simple TTS": "={{ [{ url: $node[\"K_TTS_UP\"].json.webContentLink, filename: $node[\"K_TTS_UP\"].json.name }] }}",
+            "id": "={{ $('텍스트 불러오기').item.json.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Source text",
+              "displayName": "Source text",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Chinese",
+                  "value": "Chinese"
+                },
+                {
+                  "name": "Korean",
+                  "value": "Korean"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Speed(0.25~4)",
+              "displayName": "Speed(0.25~4)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Sound Tone",
+              "displayName": "Sound Tone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Funny",
+                  "value": "Funny"
+                },
+                {
+                  "name": "Angry",
+                  "value": "Angry"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Sound Type",
+              "displayName": "Sound Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Simple TTS",
+                  "value": "Simple TTS"
+                },
+                {
+                  "name": "+Translate sound",
+                  "value": "+Translate sound"
+                },
+                {
+                  "name": "Dialogue",
+                  "value": "Dialogue"
+                },
+                {
+                  "name": "Music",
+                  "value": "Music"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Simple TTS",
+              "displayName": "Simple TTS",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "+Translate sound",
+              "displayName": "+Translate sound",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Dialogue",
+              "displayName": "Dialogue",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Music",
+              "displayName": "Music",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Audiobook",
+              "displayName": "Audiobook",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -2144,
+        -1408
+      ],
+      "id": "50b42a64-f86e-493c-b1f2-983161994906",
+      "name": "K TTS",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "={{ $json.text }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1_8Gey0ixz8-GQn5kDLCjBrZUBn6qswDr",
+          "mode": "list",
+          "cachedResultName": "AI 오디오 큐레이션",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1_8Gey0ixz8-GQn5kDLCjBrZUBn6qswDr"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1616,
+        -768
+      ],
+      "id": "eeb68514-eaa2-460b-b393-3405f64b0150",
+      "name": "K_music_up",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "RZzgO1tsXnGmdQyD",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "speech",
+        "voice": {
+          "__rl": true,
+          "value": "Ca5bKgudqKJzq8YRFoAz",
+          "mode": "id"
+        },
+        "text": "={{ $('텍스트 불러오기').item.json.Text }}",
+        "additionalOptions": {},
+        "requestOptions": {}
+      },
+      "type": "@elevenlabs/n8n-nodes-elevenlabs.elevenLabs",
+      "typeVersion": 1,
+      "position": [
+        -2480,
+        -400
+      ],
+      "id": "8bb998b0-39a5-4650-a598-d5a64d7a54d4",
+      "name": "CH_TTS_11labs",
+      "credentials": {
+        "elevenLabsApi": {
+          "id": "FkzZTY6iCw4wpUs1",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appmuDBxVEFauA5xy",
+          "mode": "list",
+          "cachedResultName": "AI 오디오 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblPOoYPlbRHlz7XL",
+          "mode": "list",
+          "cachedResultName": "3.4.1. Text to Audio_최종",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy/tblPOoYPlbRHlz7XL"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('텍스트 불러오기').item.json.id }}",
+            "Status": "done",
+            "Simple TTS": "={{ [{ url: $node[\"CH_TTS_UP\"].json.webContentLink, filename: $node[\"CH_TTS_UP\"].json.name }] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true
+            },
+            {
+              "id": "Level",
+              "displayName": "Level",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Vocabulary",
+              "displayName": "Vocabulary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CH",
+                  "value": "CH"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Speed(0.25~4)",
+              "displayName": "Speed(0.25~4)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Sound Type",
+              "displayName": "Sound Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Simple TTS",
+                  "value": "Simple TTS"
+                },
+                {
+                  "name": "+Translate sound",
+                  "value": "+Translate sound"
+                },
+                {
+                  "name": "Music",
+                  "value": "Music"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Simple TTS",
+              "displayName": "Simple TTS",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "+Translate sound",
+              "displayName": "+Translate sound",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Music",
+              "displayName": "Music",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -2128,
+        -400
+      ],
+      "id": "190c033b-58b9-4c65-a8a2-e1284d6ef8be",
+      "name": "CH TTS",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Translate to Korean only.\nReturn format: {\"[한글번역]\"}\nDo not include JSON, labels, keys, brackets, or quotation marks.\nText: {{ $('텍스트 불러오기').item.json.Text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -1984,
+        -208
+      ],
+      "id": "6fe691a9-9801-4613-9e3b-f18459dd7192",
+      "name": "CH_Trans_K_프롬프트",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appmuDBxVEFauA5xy",
+          "mode": "list",
+          "cachedResultName": "AI 오디오 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblPOoYPlbRHlz7XL",
+          "mode": "list",
+          "cachedResultName": "3.4.1. Text to Audio_최종",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy/tblPOoYPlbRHlz7XL"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "done",
+            "id": "={{ $('텍스트 불러오기').item.json.id }}",
+            "+Translate sound": "={{ [{ \"url\": $node[\"Minimax_trans_K\"].json.audio.url }] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Source text",
+              "displayName": "Source text",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Chinese",
+                  "value": "Chinese"
+                },
+                {
+                  "name": "Korean",
+                  "value": "Korean"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Speed(0.25~4)",
+              "displayName": "Speed(0.25~4)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Sound Tone",
+              "displayName": "Sound Tone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Funny",
+                  "value": "Funny"
+                },
+                {
+                  "name": "Angry",
+                  "value": "Angry"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Sound Type",
+              "displayName": "Sound Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Simple TTS",
+                  "value": "Simple TTS"
+                },
+                {
+                  "name": "+Translate sound",
+                  "value": "+Translate sound"
+                },
+                {
+                  "name": "Dialogue",
+                  "value": "Dialogue"
+                },
+                {
+                  "name": "Music",
+                  "value": "Music"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Simple TTS",
+              "displayName": "Simple TTS",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "+Translate sound",
+              "displayName": "+Translate sound",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Music",
+              "displayName": "Music",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Dialogue",
+              "displayName": "Dialogue",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Audiobook",
+              "displayName": "Audiobook",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -1360,
+        -208
+      ],
+      "id": "aebe6c1d-b2a6-4972-ad91-b43154f18253",
+      "name": "CH trans K",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/minimax/speech-2.6-turbo",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json.output[0].content[0].text }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -1696,
+        -208
+      ],
+      "id": "37262a11-7283-464d-b4cf-258ac00d7786",
+      "name": "Minimax_trans_K"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/minimax/speech-2.6-turbo",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json.output[0].content[0].text }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -1696,
+        -1216
+      ],
+      "id": "214b8c1c-b773-42b0-b241-b25d7f368ecc",
+      "name": "Minimax_trans_CH"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=你是一位针对外国人的汉语教育内容专家兼作词人。当用户提供主题时，你需要使用 HSK 的词汇，创作一段约30秒的短歌词。\n\n歌词创作原则\n词汇与语法：严格遵守 HSK水平（例如：使用 ‘想’、‘喜欢’、‘在’ 等基础动词及助动词）。\n\n发音优化：包含体现汉语发音特征（如：声调变化、儿化音、变调等）的句子，帮助学习者练习。\n\n内容篇幅：4-6个句子左右（时长约30秒）。\n\n输出格式（必须保持）\n[Lyrics]: (符合标准现代汉语语法的歌词)\n\n示例（主题：吃饭/用餐）\n[Lyrics]: 中国菜有一点儿辣。但是我们一起吃，很好吃。这个汤也真热。\n\n主题： {{ $('텍스트 불러오기').item.json.Text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -2256,
+        176
+      ],
+      "id": "ba993ee7-8775-429e-99ab-22f35652fb14",
+      "name": "CH_lyrics generation",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map((item) => {\n  // 원본 가사 안전하게 가져오기\n  const rawText = item.json.output?.[0]?.content?.[0]?.text || \"\";\n\n  // 가사 정리 (기존과 동일한 로직)\n  const cleanedText = rawText\n    .replace(/\\[Lyrics\\]:/g, \"\")\n    .replace(/\\n/g, \" \")\n    .trim();\n\n  return {\n    json: {\n      ...item.json,     // ← 기존 데이터(아이디, Sound Type 등) 모두 유지!\n      text: cleanedText // ← 정제된 가사 (이후 노드에서 그대로 {{ $json.text }} 사용 가능)\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1904,
+        176
+      ],
+      "id": "ddc2979b-6ee3-4abc-a432-ec1c3c3c6e26",
+      "name": "CH_lyrics refiner"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.elevenlabs.io/v1/music",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "xi-api-key",
+              "value": "sk_392007a0b1759ec73f86ceca9500fd309d7eb7bb511e909c"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model_id\": \"music_v1\",\n  \"prompt\": \"Upbeat and bright pop style, sincere and warm female vocals, 30-second short Chinese style, simple melody, acoustic guitar touch, clear enunciation, friendly vibe with text lyric{{ $json.text }}\",\n  \"duration_seconds\": 30\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -1712,
+        176
+      ],
+      "id": "97235864-b991-4d52-ad1d-88cbe307cf36",
+      "name": "CH_11labs music"
+    },
+    {
+      "parameters": {
+        "name": "={{ $json.request_id }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1_8Gey0ixz8-GQn5kDLCjBrZUBn6qswDr",
+          "mode": "list",
+          "cachedResultName": "AI 오디오 큐레이션",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1_8Gey0ixz8-GQn5kDLCjBrZUBn6qswDr"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1568,
+        176
+      ],
+      "id": "cccb0d21-63da-4579-ba81-29fa9c596bfe",
+      "name": "CH_music_up",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "RZzgO1tsXnGmdQyD",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appmuDBxVEFauA5xy",
+          "mode": "list",
+          "cachedResultName": "AI 오디오 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblPOoYPlbRHlz7XL",
+          "mode": "list",
+          "cachedResultName": "3.4.1. Text to Audio_최종",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy/tblPOoYPlbRHlz7XL"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Music": "={{ [{ url: $json.webContentLink, filename: $json.name }] }}",
+            "Status": "done",
+            "id": "={{ $('텍스트 불러오기').item.json.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true
+            },
+            {
+              "id": "Level",
+              "displayName": "Level",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Vocabulary",
+              "displayName": "Vocabulary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CH",
+                  "value": "CH"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Speed(0.25~4)",
+              "displayName": "Speed(0.25~4)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Sound Type",
+              "displayName": "Sound Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Simple TTS",
+                  "value": "Simple TTS"
+                },
+                {
+                  "name": "+Translate sound",
+                  "value": "+Translate sound"
+                },
+                {
+                  "name": "Music",
+                  "value": "Music"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Simple TTS",
+              "displayName": "Simple TTS",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "+Translate sound",
+              "displayName": "+Translate sound",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Music",
+              "displayName": "Music",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -2224,
+        0
+      ],
+      "id": "4103b1c0-8097-4601-a52a-8174976fa992",
+      "name": "CH Music",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/ffmpeg-api/merge-audios",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"audio_urls\": [\n\"{{ $('CH TTS1').item.json.fields['Simple TTS'][0].url }}\",\n    \"{{ $json.audio.url }}\"\n  ],\n  \"output_format\": \"mp3_44100_128\"\n} ",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -1520,
+        -208
+      ],
+      "id": "1f6697f1-c57c-4281-8d61-314f64b77ee7",
+      "name": "FFmeg_CH+KO"
+    },
+    {
+      "parameters": {
+        "name": "=",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1_8Gey0ixz8-GQn5kDLCjBrZUBn6qswDr",
+          "mode": "list",
+          "cachedResultName": "AI 오디오 큐레이션",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1_8Gey0ixz8-GQn5kDLCjBrZUBn6qswDr"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2304,
+        -208
+      ],
+      "id": "38880762-9736-4814-a550-7b0dbef834b0",
+      "name": "CH_TTS_UP1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "RZzgO1tsXnGmdQyD",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "speech",
+        "voice": {
+          "__rl": true,
+          "value": "Ca5bKgudqKJzq8YRFoAz",
+          "mode": "id"
+        },
+        "text": "={{ $('텍스트 불러오기').item.json.Text }}",
+        "additionalOptions": {},
+        "requestOptions": {}
+      },
+      "type": "@elevenlabs/n8n-nodes-elevenlabs.elevenLabs",
+      "typeVersion": 1,
+      "position": [
+        -2480,
+        -208
+      ],
+      "id": "1b8a6649-bea9-427b-8501-e00e90078e06",
+      "name": "CH_TTS_11labs1",
+      "credentials": {
+        "elevenLabsApi": {
+          "id": "FkzZTY6iCw4wpUs1",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appmuDBxVEFauA5xy",
+          "mode": "list",
+          "cachedResultName": "AI 오디오 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblPOoYPlbRHlz7XL",
+          "mode": "list",
+          "cachedResultName": "3.4.1. Text to Audio_최종",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy/tblPOoYPlbRHlz7XL"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('텍스트 불러오기').item.json.id }}",
+            "Status": "done",
+            "Simple TTS": "={{ [{ url: $node[\"CH_TTS_UP1\"].json.webContentLink, filename: $node[\"CH_TTS_UP1\"].json.name }] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true
+            },
+            {
+              "id": "Level",
+              "displayName": "Level",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Vocabulary",
+              "displayName": "Vocabulary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CH",
+                  "value": "CH"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Speed(0.25~4)",
+              "displayName": "Speed(0.25~4)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Sound Type",
+              "displayName": "Sound Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Simple TTS",
+                  "value": "Simple TTS"
+                },
+                {
+                  "name": "+Translate sound",
+                  "value": "+Translate sound"
+                },
+                {
+                  "name": "Music",
+                  "value": "Music"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Simple TTS",
+              "displayName": "Simple TTS",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "+Translate sound",
+              "displayName": "+Translate sound",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Music",
+              "displayName": "Music",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -2144,
+        -208
+      ],
+      "id": "8801c752-7435-4ab7-9442-4fe7fcd3fcf3",
+      "name": "CH TTS1",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "model": "tts-1-hd",
+        "input": "={{ $('텍스트 불러오기').item.json.Text }}",
+        "voice": "fable",
+        "options": {
+          "response_format": "mp3",
+          "binaryPropertyOutput": "data"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -2464,
+        -1216
+      ],
+      "id": "d95868d0-972b-42b1-a309-de48da7c7efb",
+      "name": "K_TTS 생성1",
+      "credentials": {
+        "openAiApi": {
+          "id": "JhfQgMRWYREKToKU",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "={{ $('K or CH').item.json['Simple TTS'][0].filename }}\n",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1_8Gey0ixz8-GQn5kDLCjBrZUBn6qswDr",
+          "mode": "list",
+          "cachedResultName": "AI 오디오 큐레이션",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1_8Gey0ixz8-GQn5kDLCjBrZUBn6qswDr"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2304,
+        -1216
+      ],
+      "id": "1fadd148-e4c0-4c8b-9cc9-cfb6f30978cb",
+      "name": "K_TTS_UP1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "RZzgO1tsXnGmdQyD",
+          "name": "학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appmuDBxVEFauA5xy",
+          "mode": "list",
+          "cachedResultName": "AI 오디오 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblPOoYPlbRHlz7XL",
+          "mode": "list",
+          "cachedResultName": "3.4.1. Text to Audio_최종",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy/tblPOoYPlbRHlz7XL"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "done",
+            "Simple TTS": "={{ [{ url: $node[\"K_TTS_UP1\"].json.webContentLink, filename: $node[\"K_TTS_UP1\"].json.name }] }}",
+            "id": "={{ $('텍스트 불러오기').item.json.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Source text",
+              "displayName": "Source text",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Chinese",
+                  "value": "Chinese"
+                },
+                {
+                  "name": "Korean",
+                  "value": "Korean"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Speed(0.25~4)",
+              "displayName": "Speed(0.25~4)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Sound Tone",
+              "displayName": "Sound Tone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Funny",
+                  "value": "Funny"
+                },
+                {
+                  "name": "Angry",
+                  "value": "Angry"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Sound Type",
+              "displayName": "Sound Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Simple TTS",
+                  "value": "Simple TTS"
+                },
+                {
+                  "name": "+Translate sound",
+                  "value": "+Translate sound"
+                },
+                {
+                  "name": "Dialogue",
+                  "value": "Dialogue"
+                },
+                {
+                  "name": "Music",
+                  "value": "Music"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Simple TTS",
+              "displayName": "Simple TTS",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "+Translate sound",
+              "displayName": "+Translate sound",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Dialogue",
+              "displayName": "Dialogue",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Music",
+              "displayName": "Music",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Audiobook",
+              "displayName": "Audiobook",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -2144,
+        -1216
+      ],
+      "id": "a29deb5a-9737-40a5-b681-6098ee0c395e",
+      "name": "K TTS1",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/ffmpeg-api/merge-audios",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"audio_urls\": [\n\"{{ $('K TTS1').item.json.fields['Simple TTS'][0].url }}\",\n    \"{{ $json.audio.url }}\"\n  ],\n  \"output_format\": \"mp3_44100_128\"\n} ",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -1536,
+        -1216
+      ],
+      "id": "029eac02-cdd4-4cbb-8615-65cc66698074",
+      "name": "FFmeg_KO+CH"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Sound Type",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -2912,
+        -1216
+      ],
+      "id": "6a70ebe2-a327-46e2-8909-5275f3db9973",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['Sound Type'] }}",
+                    "rightValue": "Simple TTS",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "e1b9dd28-dc99-4192-93a0-0d11d717e2d8"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "80ed1935-4b93-44da-aecf-e8f970def3db",
+                    "leftValue": "={{ $json['Sound Type'] }}",
+                    "rightValue": "+Translate sound",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "899550e8-6af6-49fe-923c-80875f2f7447",
+                    "leftValue": "={{ $json['Sound Type'] }}",
+                    "rightValue": "Music",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -2688,
+        -1232
+      ],
+      "id": "a622bfff-b25f-472c-9916-7d09d80397eb",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Sound Type",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -2928,
+        -208
+      ],
+      "id": "9257db8a-d0dc-464f-9607-b24958ac8f25",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['Sound Type'] }}",
+                    "rightValue": "Simple TTS",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "e1b9dd28-dc99-4192-93a0-0d11d717e2d8"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "80ed1935-4b93-44da-aecf-e8f970def3db",
+                    "leftValue": "={{ $json['Sound Type'] }}",
+                    "rightValue": "+Translate sound",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "899550e8-6af6-49fe-923c-80875f2f7447",
+                    "leftValue": "={{ $json['Sound Type'] }}",
+                    "rightValue": "Music",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -2704,
+        -224
+      ],
+      "id": "549cb851-f781-4344-90cf-fbe71d9b3bb6",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -2464,
+        -832
+      ],
+      "id": "78f13518-e379-4d45-a183-ff28e8c56b61",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -2480,
+        80
+      ],
+      "id": "9e11a02f-dcee-4b41-ac49-73eff746fe1b",
+      "name": "Loop Over Items1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "텍스트 불러오기",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "텍스트 불러오기": {
+      "main": [
+        [
+          {
+            "node": "K or CH",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "K or CH": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "K_TTS 생성": {
+      "main": [
+        [
+          {
+            "node": "K_TTS_UP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_TTS_UP": {
+      "main": [
+        [
+          {
+            "node": "CH TTS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "K_TTS_UP": {
+      "main": [
+        [
+          {
+            "node": "K TTS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "K_lyrics generation": {
+      "main": [
+        [
+          {
+            "node": "K_lyrics refiner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "K_Trans_CH_프롬프트": {
+      "main": [
+        [
+          {
+            "node": "Minimax_trans_CH",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "K_lyrics refiner": {
+      "main": [
+        [
+          {
+            "node": "K_11labs music",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "K_11labs music": {
+      "main": [
+        [
+          {
+            "node": "K_music_up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "K_music_up": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_TTS_11labs": {
+      "main": [
+        [
+          {
+            "node": "CH_TTS_UP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_Trans_K_프롬프트": {
+      "main": [
+        [
+          {
+            "node": "Minimax_trans_K",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Minimax_trans_K": {
+      "main": [
+        [
+          {
+            "node": "FFmeg_CH+KO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Minimax_trans_CH": {
+      "main": [
+        [
+          {
+            "node": "FFmeg_KO+CH",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_lyrics generation": {
+      "main": [
+        [
+          {
+            "node": "CH_lyrics refiner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_lyrics refiner": {
+      "main": [
+        [
+          {
+            "node": "CH_11labs music",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_11labs music": {
+      "main": [
+        [
+          {
+            "node": "CH_music_up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_music_up": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FFmeg_CH+KO": {
+      "main": [
+        [
+          {
+            "node": "CH trans K",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_TTS_UP1": {
+      "main": [
+        [
+          {
+            "node": "CH TTS1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH_TTS_11labs1": {
+      "main": [
+        [
+          {
+            "node": "CH_TTS_UP1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CH TTS1": {
+      "main": [
+        [
+          {
+            "node": "CH_Trans_K_프롬프트",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "K_TTS 생성1": {
+      "main": [
+        [
+          {
+            "node": "K_TTS_UP1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "K_TTS_UP1": {
+      "main": [
+        [
+          {
+            "node": "K TTS1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "K TTS1": {
+      "main": [
+        [
+          {
+            "node": "K_Trans_CH_프롬프트",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FFmeg_KO+CH": {
+      "main": [
+        [
+          {
+            "node": "K trans CH",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "K_TTS 생성",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "K_TTS 생성1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "CH_TTS_11labs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "CH_TTS_11labs1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "K Music",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "K_lyrics generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "CH Music",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "CH_lyrics generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "71b4a065-9878-4e7e-a054-0ec06eded386",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "324b20db7bd7622c84e52c3bee689ffea3754ee2e9d9027179fea14d6a4cb1d7"
+  },
+  "id": "gbxWaiy1mDuo8Wkv",
+  "tags": []
+}

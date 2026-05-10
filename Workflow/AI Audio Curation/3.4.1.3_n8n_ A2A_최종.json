@@ -1,0 +1,1383 @@
+{
+  "name": "3.4.1.3_n8n_ A2A_최종",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1936,
+        -1152
+      ],
+      "id": "2d3f9822-7e8b-4b95-bf54-a60354994e2f",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appmuDBxVEFauA5xy",
+          "mode": "list",
+          "cachedResultName": "3.4. AI 오디오 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbllbSJbFpP3K9Wrc",
+          "mode": "list",
+          "cachedResultName": "3.4.3. Audio to Audio_최종",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy/tbllbSJbFpP3K9Wrc"
+        },
+        "filterByFormula": "{Status}='ready'",
+        "options": {
+          "downloadFields": [
+            "Source audio"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -1760,
+        -1296
+      ],
+      "id": "479d4b01-35f9-4398-84b4-e26b0d7fc4f8",
+      "name": "A2A 텍스트 불러오기",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.0-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.0-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=# Role\n너는 영상 및 오디오 콘텐츠의 감정을 극대화하는 전문 음악 감독(Music Director)이자 AI 음악 프롬프트 엔지니어다.\n\n# Task\n제공된 [전사 데이터]를 분석하여, 해당 내용에 가장 잘 어울리는 배경음악(BGM) 생성용 프롬프트를 작성하라. 또한, 음악의 길이를 [오디오 지속 시간]과 일치시키고, **목소리가 잘 들릴 수 있도록 낮은 볼륨의 잔잔한 스타일**로 설계하라.\n\n# Analysis Steps\n1. **Mood & Tone:** 전사된 텍스트의 주제를 파악하고 그에 맞는 감정을 정의하라.\n2. **Instrumentation:** 배경음으로 적합한 부드러운 악기 구성을 제안하라. (예: 앰비언트 패드, 부드러운 피아노 등)\n3. **Tempo (BPM):** 대화의 흐름을 방해하지 않는 차분한 템포를 설정하라.\n4. **Audio Level:** 배경음악으로서의 역할을 위해 악기 구성이 너무 화려하지 않고 소리가 작게 유지되도록 설정하라.\n\n# Output Format (이 형식으로만 출력)\n[Music Generation Prompt]\n- Genre: (장르)\n- Mood: (분위기)\n- Instruments: (부드럽고 잔잔한 악기 위주 구성)\n- Style: (예: Ambient, Minimalist, Lo-fi 등)\n- Duration: [오디오 지속 시간] seconds\n- Volume: **Distant / Background Level (대화 방해 금지)**\n- Description: (음악 생성 AI를 위한 영어 설명문 - \"Subtle, quiet, and minimalist background music. Soft volume levels to ensure clear voiceover delivery.\"와 같은 표현을 반드시 포함할 것)\n\n---\n[전사 데이터]: {{ $json.transcription }}\n[오디오 지속 시간]: {{ Number($('BGM_refiner').item.json.duration) + 4 }} seconds"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -832,
+        -1072
+      ],
+      "id": "311257d1-15b1-40e5-82e0-2b748b8e01b6",
+      "name": "Message a model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "cZlsETbdSpajXEar",
+          "name": "Gemini_학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Sound Type",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -1616,
+        -1152
+      ],
+      "id": "f7d68406-85ba-4a6b-8cbc-cb91ea711d31",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['Sound Type'] }}",
+                    "rightValue": "Voice cloning",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "e1b9dd28-dc99-4192-93a0-0d11d717e2d8"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "80ed1935-4b93-44da-aecf-e8f970def3db",
+                    "leftValue": "={{ $json['Sound Type'] }}",
+                    "rightValue": "Podcast",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "899550e8-6af6-49fe-923c-80875f2f7447",
+                    "leftValue": "={{ $json['Sound Type'] }}",
+                    "rightValue": "+BGM",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -1456,
+        -1280
+      ],
+      "id": "7c5ce834-65ec-4985-b94f-07f6189b0353",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const cloudName = \"dk7gzkbvz\";\nconst voiceId = $('Cloudinary_audio').item.json.public_id;\nconst bgmId = $('Cloudinary_BGM').item.json.public_id;\n\n// BGM 볼륨 10% (10~30 사이 조절)\nconst mixedUrl = `https://res.cloudinary.com/${cloudName}/video/upload/l_video:${bgmId},e_volume:10/fl_layer_apply/${voiceId}.mp3`;\n\nreturn { json: { mixedUrl } };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -944,
+        -880
+      ],
+      "id": "e0030039-977c-4aeb-b2c7-9ed6d9cdc70b",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "text": "- \"너는 고성능 오디오 분석 전문가다. 첨부된 HSK/TOPIK 오디오를 듣고 다음 규칙에 따라 전사하라.\n1. **화자 구별:** 목소리의 톤과 성별을 분석하여 '남:' 그리고 '여:'로 구분하여 대화 형식으로 작성하라. 한 명만 말하는 경우 '남','녀'를 표시하지 않음\n2. **언어:** 오디오가 중국어면 **중국어 간체(简体中文)**로, 한국어면 **표준 한국어**로 작성하라.\n3. **정확도:** 초급 수준의 단어와 문장 부호를 정확히 사용하라.\n4. **출력 형식:** 인사말이나 부연 설명 없이 아래 예시와 같은 형식으로만 출력하라.\n(예시)\n남: 안녕하세요.\n여: 네, 반갑습니다.\n男：你好。\n女：你好。\n한 명만 말하는 경우 '남','녀'를 표시하지 않음\n5. **제약**: 중국어면 반드시 简体로 출력해줘 \"",
+        "audioUrls": "={{ $('A2A 텍스트 불러오기').item.json['Source audio'][0].url }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -1232,
+        -1456
+      ],
+      "id": "7c66f8fd-658c-4eda-971c-c97d636e62c1",
+      "name": "Analyze clone",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "cZlsETbdSpajXEar",
+          "name": "Gemini_학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// 1. Gemini 노드(K_Analyze_BGM)에서 온 텍스트를 가져옵니다.\nconst rawText = $json.content.parts[0].text;\n\n// 2. 소수점을 포함한 숫자를 추출하기 위해 정규표현식을 수정합니다.\nconst durationMatch = rawText.match(/DURATION_START:\\s*([\\d.]+)/);\n\n// 3. parseFloat을 사용하여 소수점까지 숫자로 변환합니다.\nconst duration = durationMatch ? parseFloat(durationMatch[1]) : 0;\n\n// 4. 전사 텍스트 추출\nconst transcription = rawText.replace(/DURATION_START:.*?DURATION_END/, \"\").trim();\n\nreturn {\n  json: {\n    duration: duration,\n    transcription: transcription\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1056,
+        -1072
+      ],
+      "id": "3410a7ae-72b1-421e-aa16-180b95860491",
+      "name": "BGM_refiner",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map(item => {\n  // 1. 원본 텍스트 가져오기 (경로가 맞는지 확인: 필요시 수정)\n  let rawText = item.json?.content?.parts?.[0]?.text || \n                item.json?.text || \n                item.json?.output?.[0]?.content?.[0]?.text || \n                \"\";\n\n  // 2. 가사 관련 불필요한 패턴 제거 (필요에 따라 추가/수정)\n  let cleanedText = rawText\n    .replace(/\\[Lyrics\\]:?/gi, \"\")           // [Lyrics]: 또는 [Lyrics] 제거\n    .replace(/\\[Verse \\d+\\]/gi, \"\")          // [Verse 1], [Verse 2] 등\n    .replace(/\\[Chorus\\]/gi, \"\")\n    .replace(/\\[Bridge\\]/gi, \"\")\n    .replace(/\\[Outro\\]/gi, \"\")\n    .replace(/\\([^\\)]*\\)/g, \"\")              // 괄호 안 내용 제거 (예: (laughs))\n    .replace(/\\n+/g, \" \")                    // 여러 개행 → 한 칸 공백\n    .replace(/\\r/g, \"\")                      // \\r 제거\n    .replace(/\\s+/g, \" \")                    // 연속 공백 → 한 칸\n    .trim();                                 // 앞뒤 공백 제거\n\n  // 3. 빈 문자열이면 fallback (MiniMax 에러 방지)\n  if (!cleanedText || cleanedText.length < 1) {\n    cleanedText = \"이것은 목소리 테스트용 기본 문장입니다. 확인 부탁드려요.\";\n  }\n\n  // 4. JSON 문자열로 안전하게 사용할 수 있도록 (큰따옴표 이스케이프 등)\n  //    → 다음 노드에서 그대로 \"{{ $json.cleaned_text }}\" 쓰면 됨\n  return {\n    json: {\n      ...item.json,              // 기존 데이터 유지 (voice_id 등 필요시)\n      raw_text: rawText,         // 디버깅용 원본 (필요하면 삭제 가능)\n      cleaned_text: cleanedText  // 정리된 최종 텍스트\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1072,
+        -1456
+      ],
+      "id": "c551b9ca-961d-4c95-b5f0-5175580f5f59",
+      "name": "clone_text refiner",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/minimax/speech-2.6-turbo",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"text\": \"{{ $json.cleaned_text }}\",\n  \"voice_setting\": {\n    \"voice_id\": \"Voicec70fe7bc1770715370\"\n  }\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -912,
+        -1456
+      ],
+      "id": "27bf1e3e-7e26-42be-9af5-3e143d515141",
+      "name": "MM_voice clone"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appmuDBxVEFauA5xy",
+          "mode": "list",
+          "cachedResultName": "AI 오디오 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbllbSJbFpP3K9Wrc",
+          "mode": "list",
+          "cachedResultName": "3.4.3. Audio to Audio_최종",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy/tbllbSJbFpP3K9Wrc"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "done",
+            "id": "={{ $('A2A 텍스트 불러오기').item.json.id }}",
+            "Voice cloning": "={{ [ { \"url\": $json.audio.url } ] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Level",
+              "displayName": "Level",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Source audio",
+              "displayName": "Source audio",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CH",
+                  "value": "CH"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Sound Type",
+              "displayName": "Sound Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Translation Voice",
+                  "value": "Translation Voice"
+                },
+                {
+                  "name": "+BGM",
+                  "value": "+BGM"
+                },
+                {
+                  "name": "Podcasts_single",
+                  "value": "Podcasts_single"
+                },
+                {
+                  "name": "Audio book",
+                  "value": "Audio book"
+                },
+                {
+                  "name": "Voice cloning",
+                  "value": "Voice cloning"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Voice cloning",
+              "displayName": "Voice cloning",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Audiobook",
+              "displayName": "Audiobook",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "+BGM",
+              "displayName": "+BGM",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Speed(0.25~4)",
+              "displayName": "Speed(0.25~4)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "0.25",
+                  "value": "0.25"
+                },
+                {
+                  "name": "0.5",
+                  "value": "0.5"
+                },
+                {
+                  "name": "1.5",
+                  "value": "1.5"
+                },
+                {
+                  "name": "2.0",
+                  "value": "2.0"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Podcasts_single",
+              "displayName": "Podcasts_single",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -736,
+        -1456
+      ],
+      "id": "c2745a0a-4dc6-44ac-8451-d8b1b95e1ed6",
+      "name": "TTS",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "text": "# Role\n너는 교육용 오디오북 시나리오 작가이다. 제공된 [전사 텍스트]를 바탕으로 3인 대화 대본을 작성하라.\n\n# Task\n전사된 내용을 바탕으로 '교사(A)', '학생(B)', '해설자(C)' 세 명의 인물이 논리적으로 대화하는 형식을 취하되, 반드시 아래의 [분량 규칙]을 준수하라.\n\n# 분량 규칙\n- 전체 대화는 정확히 **2회 왕복(Round)**으로 구성한다.\n- 순서: [Round 1: A -> B -> C] -> [Round 2: A -> B -> C]\n- 총 6개의 대사 발언으로 종료한다.\n\n# Characters\n- 인물 A (교사/전문가): 전사 텍스트의 핵심 문장을 정확하게 전달함.\n- 인물 B (학생/질문자): 내용에 대해 궁금해하거나 리액션을 하며 학습자의 시각을 대변함.\n- 인물 C (해설자/요약자): 상황의 배경을 설명하거나 핵심 단어/표현을 한 번 더 짚어줌.\n\n# Guidelines\n1. **언어 유지:** 오디오가 중국어면 중국어(简体)로만, 한국어면 한국어로만 작성하라.\n2. **현장감:** 필요한 경우에만 [ ]를 사용하여 짧은 지시문을 추가하라.\n3. **출력 형식:** 인사말이나 설명 없이 아래 예시처럼 대본만 출력하라.\n\n(예시 형식)\nA: [밝게] (대사 내용)\nB: (대사 내용)\nC: (대사 내용)\nA: (대사 내용)\nB: (대사 내용)\nC: [차분하게] (대사 내용)\n\n---\n[전사 텍스트]\n(여기에 전사 결과를 입력하세요)\n출력 형식: JSON 배열 [{ \"speaker\": \"A\", \"text\": \"대사 [tag]\" }, ...]",
+        "audioUrls": "={{ $('A2A 텍스트 불러오기').item.json['Source audio'][0].url }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -1232,
+        -1264
+      ],
+      "id": "4604bfa9-0572-4f17-b5f8-0eaca83cbbee",
+      "name": "Analyze_Pod",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "cZlsETbdSpajXEar",
+          "name": "Gemini_학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map(item => {\n  // 1. 원본 텍스트 가져오기 (경로가 맞는지 확인: 필요시 수정)\n  let rawText = item.json?.content?.parts?.[0]?.text || \n                item.json?.text || \n                item.json?.output?.[0]?.content?.[0]?.text || \n                \"\";\n\n  // 2. 가사 관련 불필요한 패턴 제거 (필요에 따라 추가/수정)\n  let cleanedText = rawText\n    .replace(/^```json\\s*/i, \"\")\n    .replace(/^```\\s*/i, \"\")\n    .replace(/```\\s*$/g, \"\")\n    .replace(/\\[Lyrics\\]:?/gi, \"\")           // [Lyrics]: 또는 [Lyrics] 제거\n    .replace(/\\[Verse \\d+\\]/gi, \"\")          // [Verse 1], [Verse 2] 등\n    .replace(/\\[Chorus\\]/gi, \"\")\n    .replace(/\\[Bridge\\]/gi, \"\")\n    .replace(/\\[Outro\\]/gi, \"\")\n    .replace(/\\([^\\)]*\\)/g, \"\")              // 괄호 안 내용 제거 (예: (laughs))\n    .replace(/\\n+/g, \" \")                    // 여러 개행 → 한 칸 공백\n    .replace(/\\r/g, \"\")                      // \\r 제거\n    .replace(/\\s+/g, \" \")                    // 연속 공백 → 한 칸\n    .trim();                                 // 앞뒤 공백 제거\n\n  // 3. 빈 문자열이면 fallback (MiniMax 에러 방지)\n  if (!cleanedText || cleanedText.length < 1) {\n    cleanedText = \"이것은 목소리 테스트용 기본 문장입니다. 확인 부탁드려요.\";\n  }\n\n  // 4. JSON 문자열로 안전하게 사용할 수 있도록 (큰따옴표 이스케이프 등)\n  //    → 다음 노드에서 그대로 \"{{ $json.cleaned_text }}\" 쓰면 됨\n  return {\n    json: {\n      ...item.json,              // 기존 데이터 유지 (voice_id 등 필요시)\n      raw_text: rawText,         // 디버깅용 원본 (필요하면 삭제 가능)\n      cleaned_text: cleanedText  // 정리된 최종 텍스트\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1072,
+        -1264
+      ],
+      "id": "17b9ff51-a630-46a6-b418-9f2744ccf0cd",
+      "name": "pod_text refiner",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// 1. cleaned_text 가져오기\nconst cleanedText = $json.cleaned_text || $json.raw_text || \"\";\n\n// 2. 파싱 (JSON 형식 / \"A: 내용\" 형식 둘 다 대응)\nlet turns = [];\ntry {\n  const parsed = JSON.parse(cleanedText);\n  if (Array.isArray(parsed)) {\n    turns = parsed.map(p => ({ speaker: p.speaker, text: p.text }));\n  }\n} catch(e) {\n  const lines = cleanedText.split(/(?=[A-C]:)/).filter(line => line.trim());\n  for (const line of lines) {\n    const match = line.match(/^([A-C]):\\s*(.+)$/s);\n    if (match) {\n      turns.push({ speaker: match[1], text: match[2].trim() });\n    }\n  }\n}\n\n// 3. voiceMap\nconst voiceMap = {\n  \"A\": \"Roger\",\n  \"B\": \"Laura\",\n  \"C\": \"Will\"\n};\n\n// 4. return\nreturn {\n  json: {\n    model_id: \"eleven_v3\",\n    output_format: \"mp3_44100_128\",\n    transcript: turns.map(t => ({\n      text: t.text,\n      voice_id: voiceMap[t.speaker] || \"Aria\"\n    }))\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -912,
+        -1264
+      ],
+      "id": "3b7f7a5d-6103-453c-a45c-69eab9d966ce",
+      "name": "pod_turn"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/elevenlabs/text-to-dialogue/eleven-v3",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"inputs\": {{ JSON.stringify($json.transcript.map(t => ({ \"text\": t.text, \"voice\": t.voice_id }))) }},\n  \"pronunciation_dictionary_locators\": []\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -752,
+        -1264
+      ],
+      "id": "57829671-d86d-4a9a-8626-2b52489dcab3",
+      "name": "11_Podcasts 3p"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "text": "# Role\n너는 고성능 오디오 분석 전문가다. 첨부된 오디오를 분석하여 '재생 시간'과 '전사 내용'을 구분하여 출력하라.\n\n# Rules\n1. **지속 시간:** 첫 줄에 반드시 \"DURATION_START: [숫자] DURATION_END\" 형식으로 숫자만 포함하여 작성하라. (예: DURATION_START: 45 DURATION_END)\n2. **전사 내용:** 두 번째 줄부터 화자를 구분(남:, 여:). 한 명만 말하는 경우 '남','녀'를 표시하지 않음하여 전사하라. 중국어는 간체, 한국어는 표준어를 사용한다.\n3. **출력 형식:** 다른 설명 없이 오직 아래 형식만 유지하라.\n\n(예시)\nDURATION_START: 25 DURATION_END\n남: 안녕하세요.\n여: 네, 반갑습니다.\n\n(또는 중국어인 경우)\nDURATION_START: 32.21 DURATION_END\n男：你好。\n女：你好。\n",
+        "audioUrls": "={{ $('A2A 텍스트 불러오기').item.json['Source audio'][0].url }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -1232,
+        -1072
+      ],
+      "id": "7028879a-2a28-4b2b-8c6e-c89c48dd2a48",
+      "name": "Analyze_BGM",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "cZlsETbdSpajXEar",
+          "name": "Gemini_학위논문"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/elevenlabs/music",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key 8d0dc3bb-48ca-4b19-a171-fd1e0ef3ea86:d4f52530668b12a3e3fa898a7a72cefc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json.content.parts[0].text }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -512,
+        -1072
+      ],
+      "id": "606cd0f5-5c14-4f87-9eee-39ce3d99933c",
+      "name": "11_BGM"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appmuDBxVEFauA5xy",
+          "mode": "list",
+          "cachedResultName": "AI 오디오 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbllbSJbFpP3K9Wrc",
+          "mode": "list",
+          "cachedResultName": "3.4.3. Audio to Audio_최종",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy/tbllbSJbFpP3K9Wrc"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "done",
+            "id": "={{ $('A2A 텍스트 불러오기').item.json.id }}",
+            "+BGM": "=[\n  {\n    \"url\": \"{{ $json.mixedUrl }}\"\n  }\n]"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Level",
+              "displayName": "Level",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source audio",
+              "displayName": "Source audio",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CH",
+                  "value": "CH"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Sound Type",
+              "displayName": "Sound Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "+BGM",
+                  "value": "+BGM"
+                },
+                {
+                  "name": "Podcast",
+                  "value": "Podcast"
+                },
+                {
+                  "name": "Voice cloning",
+                  "value": "Voice cloning"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Voice cloning",
+              "displayName": "Voice cloning",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Podcast",
+              "displayName": "Podcast",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "+BGM",
+              "displayName": "+BGM",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Speed(0.25~4)",
+              "displayName": "Speed(0.25~4)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "0.25",
+                  "value": "0.25"
+                },
+                {
+                  "name": "0.5",
+                  "value": "0.5"
+                },
+                {
+                  "name": "1.5",
+                  "value": "1.5"
+                },
+                {
+                  "name": "2.0",
+                  "value": "2.0"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -800,
+        -880
+      ],
+      "id": "0b0bba65-4f90-4f68-a9ef-fc39f1f5e177",
+      "name": "+BGM",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $('A2A 텍스트 불러오기').item.json['Source audio'][0].url }}",
+        "resource_type": "video",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-cloudinary.cloudinary",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        -1072
+      ],
+      "id": "4714f77c-12cb-4cd7-96af-90fb995484f7",
+      "name": "Cloudinary_audio",
+      "credentials": {
+        "cloudinaryApi": {
+          "id": "ge7i5s7xcEoREHPX",
+          "name": "Cloudinary account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $('11_BGM').item.json.audio.url }}",
+        "resource_type": "video",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-cloudinary.cloudinary",
+      "typeVersion": 1,
+      "position": [
+        -1104,
+        -880
+      ],
+      "id": "3c9f947e-079f-4e70-b83a-c83e90611c8d",
+      "name": "Cloudinary_BGM",
+      "credentials": {
+        "cloudinaryApi": {
+          "id": "ge7i5s7xcEoREHPX",
+          "name": "Cloudinary account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appmuDBxVEFauA5xy",
+          "mode": "list",
+          "cachedResultName": "AI 오디오 큐레이션 전략",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbllbSJbFpP3K9Wrc",
+          "mode": "list",
+          "cachedResultName": "3.4.3. Audio to Audio_최종",
+          "cachedResultUrl": "https://airtable.com/appmuDBxVEFauA5xy/tbllbSJbFpP3K9Wrc"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "done",
+            "id": "={{ $('A2A 텍스트 불러오기').item.json.id }}",
+            "Podcast": "={{ [ { \"url\": $json.audio.url } ] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Level",
+              "displayName": "Level",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Source audio",
+              "displayName": "Source audio",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ready",
+                  "value": "ready"
+                },
+                {
+                  "name": "done",
+                  "value": "done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Cultural Region",
+              "displayName": "Cultural Region",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CH",
+                  "value": "CH"
+                },
+                {
+                  "name": "KO",
+                  "value": "KO"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Sound Type",
+              "displayName": "Sound Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "+BGM",
+                  "value": "+BGM"
+                },
+                {
+                  "name": "Podcast",
+                  "value": "Podcast"
+                },
+                {
+                  "name": "Voice cloning",
+                  "value": "Voice cloning"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Voice cloning",
+              "displayName": "Voice cloning",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Podcast",
+              "displayName": "Podcast",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "+BGM",
+              "displayName": "+BGM",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Speed(0.25~4)",
+              "displayName": "Speed(0.25~4)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "0.25",
+                  "value": "0.25"
+                },
+                {
+                  "name": "0.5",
+                  "value": "0.5"
+                },
+                {
+                  "name": "1.5",
+                  "value": "1.5"
+                },
+                {
+                  "name": "2.0",
+                  "value": "2.0"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -544,
+        -1264
+      ],
+      "id": "8daa1082-76c9-4652-a0da-9b68a310ed4c",
+      "name": "Pod",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "AkDeXmHOyqHkM5dm",
+          "name": "AI 미디어 큐레이션"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "A2A 텍스트 불러오기",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A2A 텍스트 불러오기": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "11_BGM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Analyze clone",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Analyze_Pod",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Analyze_BGM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "+BGM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze clone": {
+      "main": [
+        [
+          {
+            "node": "clone_text refiner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BGM_refiner": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "clone_text refiner": {
+      "main": [
+        [
+          {
+            "node": "MM_voice clone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MM_voice clone": {
+      "main": [
+        [
+          {
+            "node": "TTS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze_Pod": {
+      "main": [
+        [
+          {
+            "node": "pod_text refiner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pod_text refiner": {
+      "main": [
+        [
+          {
+            "node": "pod_turn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pod_turn": {
+      "main": [
+        [
+          {
+            "node": "11_Podcasts 3p",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "11_Podcasts 3p": {
+      "main": [
+        [
+          {
+            "node": "Pod",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze_BGM": {
+      "main": [
+        [
+          {
+            "node": "BGM_refiner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "11_BGM": {
+      "main": [
+        [
+          {
+            "node": "Cloudinary_audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloudinary_audio": {
+      "main": [
+        [
+          {
+            "node": "Cloudinary_BGM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloudinary_BGM": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "760fee26-b2b3-4382-a97a-3ddba772a9aa",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "324b20db7bd7622c84e52c3bee689ffea3754ee2e9d9027179fea14d6a4cb1d7"
+  },
+  "id": "N-2xM77_JJ-2hIY4_cTIf",
+  "tags": []
+}
