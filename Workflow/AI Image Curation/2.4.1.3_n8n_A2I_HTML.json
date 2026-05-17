@@ -2308,7 +2308,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer vcp_2cNHp0NI1HnVscF4EsLaEnUc0WAW9HAhiljMyREg2gCB5o5VE93ZPxLm"
+              "value": "Bearer YOUR_VERCEL_TOKEN_HERE"
             },
             {
               "name": "Content-Type",
