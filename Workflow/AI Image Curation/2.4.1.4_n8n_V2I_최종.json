@@ -57,7 +57,7 @@
           "parameters": [
             {
               "name": "key",
-              "value": "AIzaSyDjkkwbI8JpyLrjZ0fbAB3fusNdCjquFAI"
+              "value": "AIzaSyA1y1pnXPpzd4E16Afz-IgJP7C268bzuMg"
             }
           ]
         },
@@ -206,8 +206,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 2.1,
       "position": [
-        304,
-        -1200
+        192,
+        -1056
       ],
       "id": "aa006ae9-0e35-43fa-a96d-5f53de581a3c",
       "name": "  썸네일 프롬프트",
@@ -229,7 +229,7 @@
         "responses": {
           "values": [
             {
-              "content": "=자막 파일을 분석하여, 아래 조건을 모두 충족하는 9칸 만화 이미지 생성 프롬프트를 추출해줘.\n[이미지 구성 요소]\n1.캐릭터 일치성 — 썸네일과 동일한 캐릭터를 9개 패널 전체에 일관되게 유지\n2.패널 서사 — 영상의 시간적 흐름을 패널 1→9 순서로 반영한 장면 구성\n3.대화문 삽입 — 각 패널에 해당 소스 언어의 대화문을 말풍선 형태로 삽입\n4.나레이션 박스 — 꼬리 없는 직사각형 나레이션 박스를 각 패널 최하단에 배치\n5.문화적 배경 — 영상의 문화적 맥락(중국/한국)에 맞는 배경을 시각적으로 정확히 재현\n6.학습 수준 표시 — 난이도(초급/중급/고급 등)를 이미지 내에 시각적으로 표기\n[언어 조건]\n7. 프롬프트 언어 — 입력 파일의 소스 언어를 따라 작성\n각 항목이 프롬프트에 명확히 반영되도록 구조화하여 출력해줘.\n[자막 파일]\n {{ $('Gemini API 자막 추출').item.json.candidates[0].content.parts[0].text }}"
+              "content": "=자막 파일을 분석하여, 아래 조건을 모두 충족하는 9칸 만화 이미지 생성 프롬프트를 추출해줘.\n[이미지 구성 요소]\n1.캐릭터 일치성 — 썸네일과 동일한 캐릭터를 9개 패널 전체에 일관되게 유지\n2.패널 서사 — 영상의 시간적 흐름을 패널 1→9 순서로 반영한 장면 구성\n3.대화문 삽입 — 각 패널에 해당 소스 언어의 대화문을 말풍선 형태로 삽입\n4.나레이션 박스 — 꼬리 없는 직사각형 나레이션 박스를 각 패널 최하단에 배치\n5.문화적 배경 — 영상의 문화적 맥락(중국/한국)에 맞는 배경을 시각적으로 정확히 재현\n6.학습 수준 표시 — 난이도(초급/중급/고급 등)를 이미지 내에 시각적으로 표기\n[언어 조건]\n7. 프롬프트 언어 — 입력 파일의 소스 언어를 따라 작성, 중국어면 반드시 간체자로추출\n각 항목이 프롬프트에 명확히 반영되도록 구조화하여 출력해줘.\n[자막 파일]\n {{ $('Gemini API 자막 추출').item.json.candidates[0].content.parts[0].text }}"
             }
           ]
         },
@@ -239,8 +239,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 2.1,
       "position": [
-        288,
-        -832
+        224,
+        -800
       ],
       "id": "3334dd08-22df-48f0-82fa-54a59642cf3b",
       "name": "9칸 만화 프롬프트",
@@ -280,8 +280,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        768,
-        -1296
+        672,
+        -1184
       ],
       "id": "b8a38730-f6f1-4254-b8b3-855e238c1192",
       "name": "CH_See_썸네일",
@@ -321,8 +321,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        768,
-        -1120
+        688,
+        -1024
       ],
       "id": "9d4a19a4-4cc3-4391-a012-24bfcf739991",
       "name": "KO_Nano_썸네일",
@@ -515,8 +515,8 @@
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.1,
       "position": [
-        912,
-        -1296
+        832,
+        -1184
       ],
       "id": "1bf617b5-ae74-4309-accc-5d81841d6cb2",
       "name": "CH_썸네일 업로드",
@@ -710,8 +710,8 @@
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.1,
       "position": [
-        912,
-        -1120
+        832,
+        -1024
       ],
       "id": "96b80f9a-1707-46b6-abe9-8888dd6c9208",
       "name": "KO_썸네일 업로드",
@@ -743,7 +743,7 @@
           "parameters": [
             {
               "name": "=prompt",
-              "value": "={{ $json.output[0].content[0].text }}"
+              "value": "={{ $json.prompt }}"
             }
           ]
         },
@@ -752,8 +752,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        768,
-        -752
+        896,
+        -688
       ],
       "id": "940c2c83-c57f-4ca2-88d7-06fa0dae9b08",
       "name": "KO_Nano_만화",
@@ -946,8 +946,8 @@
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.1,
       "position": [
-        928,
-        -912
+        1040,
+        -848
       ],
       "id": "d699e218-11da-4a25-aeab-66d05f74b6a9",
       "name": "CH_만화 업로드",
@@ -1141,8 +1141,8 @@
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.1,
       "position": [
-        928,
-        -752
+        1040,
+        -688
       ],
       "id": "f84eb4e8-a13c-48eb-acc2-d9e1d853a0dc",
       "name": "KO_만화 업로드",
@@ -1175,8 +1175,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 2.1,
       "position": [
-        320,
-        -496
+        80,
+        -512
       ],
       "id": "0758cebd-9885-4a20-94fe-8d9c4154b2dc",
       "name": "마인드맵 프롬프트",
@@ -1214,8 +1214,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        560,
-        -832
+        704,
+        -800
       ],
       "id": "f820e1c7-9b46-4b09-85a2-b164eccbb506",
       "name": "CH_만화"
@@ -1247,8 +1247,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        576,
-        -1200
+        496,
+        -1056
       ],
       "id": "1c969cbe-0144-431d-a24b-b0cadf9328b5",
       "name": "CH_썸네일"
@@ -1280,8 +1280,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        592,
-        -496
+        352,
+        -512
       ],
       "id": "6caef143-bf19-4890-9567-4a5fab87f6fe",
       "name": "CH_마인드맵"
@@ -1315,7 +1315,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        784,
+        560,
         -576
       ],
       "id": "7b1c4081-f14d-4761-b929-378a51a6b9f8",
@@ -1356,8 +1356,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        784,
-        -400
+        560,
+        -384
       ],
       "id": "f7229567-e8d4-4dc3-a9d2-b89d1513f7ab",
       "name": "KO_Nano_마인드맵",
@@ -1550,7 +1550,7 @@
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.1,
       "position": [
-        928,
+        720,
         -576
       ],
       "id": "846a6ade-8c0b-48d7-a66f-6a0972a68d7b",
@@ -1745,8 +1745,8 @@
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.1,
       "position": [
-        928,
-        -400
+        736,
+        -384
       ],
       "id": "ecceb5cf-f27a-47a7-a5d6-a0d948cdbbd1",
       "name": "KO_마인드맵 업로드",
@@ -1793,7 +1793,7 @@
           "parameters": [
             {
               "name": "=prompt",
-              "value": "={{ $json.output[0].content[0].text }}"
+              "value": "={{ $json.prompt }}"
             }
           ]
         },
@@ -1802,8 +1802,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        784,
-        -912
+        896,
+        -848
       ],
       "id": "731a64b6-c489-4654-a0ab-0207ae5d50cd",
       "name": "CH_Nano_만화",
@@ -1842,6 +1842,19 @@
       ],
       "id": "b7551b7e-ae1e-41e8-9f63-4ad21bc4b68a",
       "name": "Image Type 분리"
+    },
+    {
+      "parameters": {
+        "jsCode": "const fullText = $json.output[0].content[0].text;\n\n// Claude 응답에서 실제 프롬프트 부분만 추출\n// 프롬프트가 특정 구분자로 감싸져 있다면:\nconst match = fullText.match(/```[\\w]*\\n?([\\s\\S]*?)```/);\nconst prompt = match ? match[1].trim() : fullText.trim();\n\nreturn [{ json: { prompt } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        -800
+      ],
+      "id": "716c68a4-9fb3-408d-94f9-f11578b21127",
+      "name": "Code in JavaScript"
     }
   ],
   "pinData": {},
@@ -1952,7 +1965,7 @@
       "main": [
         [
           {
-            "node": "CH_만화",
+            "node": "Code in JavaScript",
             "type": "main",
             "index": 0
           }
@@ -2089,6 +2102,17 @@
           }
         ]
       ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "CH_만화",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -2097,7 +2121,7 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "0186cc18-0f58-4468-8613-9676e3b9ea0f",
+  "versionId": "34887838-f902-4402-aab0-a81f9a9272d8",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "324b20db7bd7622c84e52c3bee689ffea3754ee2e9d9027179fea14d6a4cb1d7"
